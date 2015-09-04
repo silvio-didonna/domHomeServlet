@@ -5,7 +5,6 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
-
 public class ThermometerAgent extends Agent {
 
 	/**
@@ -53,18 +52,20 @@ public class ThermometerAgent extends Agent {
 			SerialComm arduino = (SerialComm) argList[0];
 			String currTemp=null;
 			try {
-				arduino.send("therm1\n");
+				arduino.send("therm1\n"); //invia comando
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
-				currTemp=arduino.receive();
+				currTemp=arduino.receive(); //temperatura
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(currTemp);
+			
+			Float currTempFloat = Float.parseFloat(currTemp);
+			System.out.println(currTempFloat.compareTo((float) 31));
 		}
 	}
 }
