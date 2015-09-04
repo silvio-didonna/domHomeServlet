@@ -1,11 +1,14 @@
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class ThermometerAgent extends Agent {
+	Float currentTemperature;
 
 	/**
 	 * 
@@ -26,7 +29,7 @@ public class ThermometerAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new getCurrentTemperature());
+		addBehaviour(new getCurrentTemperature(this, 2000));
 		//addBehaviour(new Behaviour1bis());
 	}
 
@@ -40,14 +43,30 @@ public class ThermometerAgent extends Agent {
 		}
 		System.out.println("ThermometerAgent "+getAID().getName()+" terminating.");
 	}
+	
+	private class tempService extends CyclicBehaviour {
 
-	private class getCurrentTemperature extends OneShotBehaviour {
+		@Override
+		public void action() {
+			
+			
+		}
+		
+	}
 
+	private class getCurrentTemperature extends TickerBehaviour {
+
+		public getCurrentTemperature(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 9072626078728707911L;
-		public void action() {
+		
+		@Override
+		public void onTick() {
 			Object[] argList=myAgent.getArguments();
 			SerialComm arduino = (SerialComm) argList[0];
 			String currTemp=null;
@@ -64,8 +83,9 @@ public class ThermometerAgent extends Agent {
 				e.printStackTrace();
 			}
 			
-			Float currTempFloat = Float.parseFloat(currTemp);
-			System.out.println(currTempFloat.compareTo((float) 31));
+			//Float currTempFloat = Float.parseFloat(currTemp);
+			//System.out.println(currTempFloat.compareTo((float) 31));
+			currentTemperature = Float.parseFloat(currTemp);
 		}
 	}
 }

@@ -62,17 +62,21 @@ public class SerialComm {
 	public String receive() throws Exception {
 		byte[] readBuffer=null;
 		try {
-			while (serialPort.bytesAvailable() == 0)
+			while (serialPort.bytesAvailable() != 9)
 				Thread.sleep(20);
-
+			
 			readBuffer = new byte[serialPort.bytesAvailable()];
-			int numRead = serialPort.readBytes(readBuffer, readBuffer.length);
-			System.out.println("Read " + numRead + " bytes.");
+			
+			//int numRead = serialPort.readBytes(readBuffer, readBuffer.length);
+			
+			//int numRead=
+			serialPort.getInputStream().read(readBuffer);
+			//System.out.println("Read " + numRead + " bytes.");
 
 		} catch (Exception e) { e.printStackTrace(); }
 		
 		String str = new String(readBuffer); // conversione in String (provare con UTF-8)
-		System.out.println(str);
+		//System.out.println(str);
 		return str;
 
 	}
