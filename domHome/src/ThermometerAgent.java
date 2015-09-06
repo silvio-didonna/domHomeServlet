@@ -8,7 +8,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class ThermometerAgent extends Agent {
-	Float currentTemperature;
+	private Float currentTemperature;
 
 	/**
 	 * 
@@ -70,6 +70,7 @@ public class ThermometerAgent extends Agent {
 			Object[] argList=myAgent.getArguments();
 			SerialComm arduino = (SerialComm) argList[0];
 			String currTemp=null;
+			/*
 			try {
 				arduino.send("therm1\n"); //invia comando
 			} catch (Exception e) {
@@ -82,10 +83,18 @@ public class ThermometerAgent extends Agent {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
+			try {
+				currTemp = arduino.sendreceive("therm1\n");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			//Float currTempFloat = Float.parseFloat(currTemp);
 			//System.out.println(currTempFloat.compareTo((float) 31));
 			currentTemperature = Float.parseFloat(currTemp);
+			System.out.println(currTemp);
 		}
 	}
 }

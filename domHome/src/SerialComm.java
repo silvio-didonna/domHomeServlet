@@ -80,4 +80,11 @@ public class SerialComm {
 		return str;
 
 	}
+	
+	public String sendreceive(String str) throws Exception {
+		send(str);
+		return receive();
+	}
+	
+	
 }
