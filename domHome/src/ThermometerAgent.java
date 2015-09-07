@@ -32,7 +32,7 @@ public class ThermometerAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new RequestCurrentTemperature(this, 2000));
+		addBehaviour(new RequestCurrentTemperature(this, 5000));
 		addBehaviour(new getCurrentTemperature());
 	}
 
@@ -70,8 +70,8 @@ public class ThermometerAgent extends Agent {
 
 		@Override
 		public void onTick() {
-			Object[] argList=myAgent.getArguments();
-			SerialComm arduino = (SerialComm) argList[0];
+			//Object[] argList=myAgent.getArguments();
+			//SerialComm arduino = (SerialComm) argList[0];
 			String currTemp=null;
 			/*
 			try {
