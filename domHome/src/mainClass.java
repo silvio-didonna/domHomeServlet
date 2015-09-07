@@ -47,20 +47,20 @@ public class mainClass {
 
 
 		// Agent creation on local container
-		SerialComm arduino = new SerialComm();
+		//SerialComm arduino = new SerialComm();
 		//List<Object> argList = new ArrayList<Object>();
 		//argList.add(arduino);
-		Object[] argList = new Object[1];
-		argList[0]=arduino;
+		//Object[] argList = new Object[1];
+		//argList[0]=arduino;
 		AgentController fanAgent = cont.createNewAgent (fanName, "FanAgent", null);
 
 		fanAgent.start();
 
-		AgentController thermometerAgent = cont.createNewAgent (thermometerName, "ThermometerAgent", argList);
+		AgentController thermometerAgent = cont.createNewAgent (thermometerName, "ThermometerAgent", null);
 
 		thermometerAgent.start();
 		
-		AgentController serialCommAgent = cont.createNewAgent (serialCommName, "SerialCommAgent", argList);
+		AgentController serialCommAgent = cont.createNewAgent (serialCommName, "SerialCommAgent", null);
 
 		serialCommAgent.start();
 		

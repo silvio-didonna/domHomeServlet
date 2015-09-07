@@ -1,3 +1,8 @@
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import com.fazecast.jSerialComm.SerialPort;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -10,6 +15,9 @@ import jade.lang.acl.MessageTemplate;
 
 public class SerialCommAgent extends Agent {
 	SerialComm arduino;
+	SerialPort serialPort;
+	String port;
+	int baud;
 
 	/**
 	 * 
@@ -17,8 +25,11 @@ public class SerialCommAgent extends Agent {
 	private static final long serialVersionUID = 138736042772986486L;
 
 	protected void setup() {
-		Object[] argList=this.getArguments(); //ottiene la porta seriale
-		arduino = (SerialComm) argList[0];
+		port="COM7";
+		baud=9600;
+
+		//Object[] argList=this.getArguments(); //ottiene la porta seriale
+		//arduino = (SerialComm) argList[0];
 
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -32,6 +43,23 @@ public class SerialCommAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
+
+		serialPort = SerialPort.getCommPort(port);
+		serialPort.setComPortParameters(this.baud, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+
+		System.out.println("Porta: " + serialPort.getDescriptivePortName() + " baud: " + baud);
+
+		// Apre porta seriale
+		serialPort.openPort();
+
+		// Questa istruzione è necessaria perchè Arduino si riavvia dopo aver aperto la seriale
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		addBehaviour(new SendSerialServiceBehaviour());
 		addBehaviour(new ReceiveSerialServiceBehaviour());
 	}
@@ -41,18 +69,29 @@ public class SerialCommAgent extends Agent {
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			//System.out.println("Server behaviour 1 wait a message.");
-			ACLMessage msg = myAgent.receive(mt);
+			System.out.println("SendSerialServiceBehaviour wait a message.");
+			ACLMessage msg = myAgent.receive();
+			//System.out.println(msg.getContent());
 			if (msg!=null) {
+				//System.out.println(msg.getContent());
 				String msgSender = msg.getSender().getLocalName();
 				String msgContent = msg.getContent();
 				if (!msgContent.isEmpty()) {
 					try {
+						serialPort.getOutputStream().write((msgSender + "#" + msgContent).getBytes());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					/*
+					try {
+
 						arduino.send(msgSender + "#" + msgContent);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					 */
 				}
 			}
 			else {
@@ -64,22 +103,39 @@ public class SerialCommAgent extends Agent {
 		}
 
 	}
-	
+
 	private class ReceiveSerialServiceBehaviour extends CyclicBehaviour {
 
 		@Override
 		public void action() {
+
 			//MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			//System.out.println("Server behaviour 1 wait a message.");
 			// Send the cfp to all sellers
-			AID msgReceiver= new AID("agentname",AID.ISLOCALNAME);
+			String msgArd;
+
+			byte[] readBuffer=null;
+			try {
+				//while (serialPort.bytesAvailable() == 0)
+				//	Thread.sleep(20);
+				if (serialPort.bytesAvailable() > 0) {
+					readBuffer = new byte[serialPort.bytesAvailable()];
+					serialPort.getInputStream().read(readBuffer);
+					//System.out.println("Read " + numRead + " bytes.");
+					msgArd = new String(readBuffer); // conversione in String (provare con UTF-8)
+
+					AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
+
+					ACLMessage serialAnswer = new ACLMessage(ACLMessage.INFORM);
+					serialAnswer.addReceiver(msgReceiver);
+					serialAnswer.setContent(msgArd);
+					//cfp.setConversationId("mex1");
+					//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+					myAgent.send(serialAnswer);
+				}
+			} catch (Exception e) { e.printStackTrace(); }
+
 			
-			ACLMessage serialAnswer = new ACLMessage(ACLMessage.INFORM);
-			serialAnswer.addReceiver(msgReceiver);
-			serialAnswer.setContent("answer");
-			//cfp.setConversationId("mex1");
-			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
-			myAgent.send(serialAnswer);
 			/*
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
@@ -96,7 +152,7 @@ public class SerialCommAgent extends Agent {
 			}
 			else {
 				block();
-			*/
+			 */
 
 
 
@@ -112,6 +168,7 @@ public class SerialCommAgent extends Agent {
 		catch (FIPAException fe) {
 			fe.printStackTrace();
 		}
+		serialPort.closePort();
 		System.out.println("SerialCommAgent "+getAID().getName()+" terminating.");
 	}
 }
