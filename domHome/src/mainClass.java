@@ -11,6 +11,7 @@ public class mainClass {
 	static String fanName = "Ventilatore";
 	static String temperatureName = "Gestore-Temperatura";
 	static String roomName = "Gestore-Salone";
+	static String serialCommName = "Gestore-Seriale";
 
 	public static void main (String args[]) throws Exception {
 
@@ -58,6 +59,10 @@ public class mainClass {
 		AgentController thermometerAgent = cont.createNewAgent (thermometerName, "ThermometerAgent", argList);
 
 		thermometerAgent.start();
+		
+		AgentController serialCommAgent = cont.createNewAgent (serialCommName, "SerialCommAgent", argList);
+
+		serialCommAgent.start();
 		
 
 
