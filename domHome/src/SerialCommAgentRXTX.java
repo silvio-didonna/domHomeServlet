@@ -1,8 +1,6 @@
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import com.fazecast.jSerialComm.SerialPort;
-
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -13,16 +11,39 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class SerialCommAgent extends Agent {
-	//SerialComm arduino;
-	SerialPort serialPort;
-	String port;
-	int baud;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
+import java.util.Enumeration;
 
+public class SerialCommAgentRXTX extends Agent {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 138736042772986486L;
+	//SerialComm arduino;
+	//SerialPort serialPort;
+	SerialClass obj;
+	String port;
+	int baud;
+
+	public static BufferedReader input;
+	public static OutputStream output;
+
+	public static synchronized void writeData(String data) {
+		//System.out.println("Sent: " + data);
+		try {
+			output.write(data.getBytes());
+		} catch (Exception e) {
+			System.out.println("could not write to port");
+		}
+	}
+
+
 
 	protected void setup() {
 		port="COM7";
@@ -44,15 +65,11 @@ public class SerialCommAgent extends Agent {
 			fe.printStackTrace();
 		}
 
-		serialPort = SerialPort.getCommPort(port);
-		serialPort.setComPortParameters(this.baud, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+		obj = new SerialClass();
+		obj.initialize();
+		input = SerialClass.input;
+		output = SerialClass.output;
 
-		System.out.println("Porta: " + serialPort.getDescriptivePortName() + " baud: " + baud);
-
-		// Apre porta seriale
-		serialPort.openPort();
-
-		// Questa istruzione è necessaria perchè Arduino si riavvia dopo aver aperto la seriale
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -69,7 +86,7 @@ public class SerialCommAgent extends Agent {
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			System.out.println("SendSerialServiceBehaviour wait a message.");
+			//System.out.println("SendSerialServiceBehaviour wait a message.");
 			ACLMessage msg = myAgent.receive();
 			//System.out.println(msg.getContent());
 			if (msg!=null) {
@@ -77,48 +94,29 @@ public class SerialCommAgent extends Agent {
 				String msgSender = msg.getSender().getLocalName();
 				String msgContent = msg.getContent();
 				if (!msgContent.isEmpty()) {
-					try {
-						//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
-						serialPort.getOutputStream().write(("Termometro#therm1").getBytes());
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					//System.out.println(msgSender + '#' + msgContent);
+					writeData(msgSender + '#' + msgContent + '\n');
+					//writeData("Termometro#therm1\n");
+					String msgArd=null;
 					
-					String msgArd;
-
-					byte[] readBuffer=null;
 					try {
-						//while (serialPort.bytesAvailable() == 0)
-						//	Thread.sleep(20);
-						if (serialPort.bytesAvailable() > 0) {
-							int dim = serialPort.getInputStream().read();
-							while (serialPort.bytesAvailable() != dim)
-								Thread.sleep(20);
-							readBuffer = new byte[serialPort.bytesAvailable()];
-							serialPort.getInputStream().read(readBuffer);
-							//System.out.println("Read " + numRead + " bytes.");
-							msgArd = new String(readBuffer); // conversione in String (provare con UTF-8)
-
-							AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
-
-							ACLMessage serialAnswer = new ACLMessage(ACLMessage.INFORM);
-							serialAnswer.addReceiver(msgReceiver);
-							serialAnswer.setContent(msgArd);
-
-							myAgent.send(serialAnswer);
-						}
-					} catch (Exception e) { e.printStackTrace(); }
-					
-					/*
-					try {
-
-						arduino.send(msgSender + "#" + msgContent);
-					} catch (Exception e) {
+						msgArd=input.readLine();
+					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					 */
+					//System.out.println(msgArd);
+
+					
+
+					AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
+
+					ACLMessage serialAnswer = new ACLMessage(ACLMessage.INFORM);
+					serialAnswer.addReceiver(msgReceiver);
+					serialAnswer.setContent(msgArd);
+
+					myAgent.send(serialAnswer);
+
 				}
 			}
 			else {
@@ -139,9 +137,9 @@ public class SerialCommAgent extends Agent {
 			//MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			//System.out.println("Server behaviour 1 wait a message.");
 			// Send the cfp to all sellers
-			
 
-			
+
+
 			/*
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
@@ -174,7 +172,8 @@ public class SerialCommAgent extends Agent {
 		catch (FIPAException fe) {
 			fe.printStackTrace();
 		}
-		serialPort.closePort();
+		//serialPort.closePort();
+		obj.close();
 		System.out.println("SerialCommAgent "+getAID().getName()+" terminating.");
 	}
 }

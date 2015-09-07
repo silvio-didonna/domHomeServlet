@@ -100,7 +100,7 @@ public class ThermometerAgent extends Agent {
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
 			serialAnswer.addReceiver(msgReceiver);
-			serialAnswer.setContent(myAgent.getLocalName() + '#' + "therm1" );
+			serialAnswer.setContent("therm1");
 			//cfp.setConversationId("mex1");
 			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
 			myAgent.send(serialAnswer);
@@ -126,7 +126,7 @@ public class ThermometerAgent extends Agent {
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
-				System.out.println(messageContenut);
+				System.out.println("AgenteTermometro::::"+messageContenut);
 
 			}
 			else {
