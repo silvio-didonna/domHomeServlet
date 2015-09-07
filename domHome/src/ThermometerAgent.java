@@ -6,6 +6,8 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 public class ThermometerAgent extends Agent {
 	private Float currentTemperature;
@@ -84,17 +86,33 @@ public class ThermometerAgent extends Agent {
 				e.printStackTrace();
 			}
 			*/
+			/*
 			try {
 				currTemp = arduino.sendreceive("therm1\n");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			//System.out.println("Server behaviour 1 wait a message.");
+			ACLMessage msg = myAgent.receive(mt);
+			if (msg!=null) {
+
+				String messageContenut=msg.getContent();
+				System.out.println(messageContenut);
+				
+			}
+			else {
+				block();
+			}
+			
 			
 			//Float currTempFloat = Float.parseFloat(currTemp);
 			//System.out.println(currTempFloat.compareTo((float) 31));
-			currentTemperature = Float.parseFloat(currTemp);
-			System.out.println(currTemp);
+			
+			//currentTemperature = Float.parseFloat(currTemp);
+			//System.out.println(currTemp);
 		}
 	}
 }
