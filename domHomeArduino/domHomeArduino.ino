@@ -49,6 +49,7 @@ void loop(void) {
         daInviare += mittente[i];
         daInviare += '#';
         daInviare += String(temp);
+        Serial.print(daInviare.length());
         /*
         Serial.println(daInviare.length());
         for(int i=0;i<daInviare.length();i++){
