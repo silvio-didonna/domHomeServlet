@@ -49,6 +49,7 @@ public class SerialComm {
 	}
 
 	public void finalize() {
+		
 		serialPort.closePort();
 	}
 
