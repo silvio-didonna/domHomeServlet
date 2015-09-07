@@ -14,10 +14,12 @@ import jade.lang.acl.MessageTemplate;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+
 import java.util.Enumeration;
 
 public class SerialCommAgentRXTX extends Agent {
@@ -94,11 +96,22 @@ public class SerialCommAgentRXTX extends Agent {
 				String msgSender = msg.getSender().getLocalName();
 				String msgContent = msg.getContent();
 				if (!msgContent.isEmpty()) {
-					//System.out.println(msgSender + '#' + msgContent);
+					System.out.println(msgSender + '#' + msgContent + '\n');
+					try {
+						TimeUnit.SECONDS.sleep(2);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
 					writeData(msgSender + '#' + msgContent + '\n');
 					//writeData("Termometro#therm1\n");
 					String msgArd=null;
-					
+					try {
+						TimeUnit.SECONDS.sleep(2);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
 					try {
 						msgArd=input.readLine();
 					} catch (IOException e) {
