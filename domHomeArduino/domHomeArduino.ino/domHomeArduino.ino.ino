@@ -8,28 +8,86 @@
 // http://milesburton.com/Dallas_Temperature_Control_Library
 
 OneWire  ds(10);  // on pin 10 (a 4.7K resistor is necessary)
+boolean thermFlag=false;
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
+boolean rigaLibera[50];
+String mittente[50]; //non ha il \n finale
+String contenuto[50]; //ha il \n finale
+double tempoiniz[50];
+//String matrice[50][3];
+int righeOccupate=0;
 
 
 void setup(void) {
   Serial.begin(9600);
   // reserve 100 bytes for the inputString:
   inputString.reserve(100);
+  for(int i=0;i<50;i++)
+  rigaLibera[i]=true;
 }
 
 void loop(void) {
   serialEvent(); //call the function
   // print the string when a newline arrives:
+  //Serial.println(inputString);
   if (stringComplete) {
-    if (inputString.equals("therm1\n")) {
-      float temp=getTemperature();
-      Serial.println(temp, 4);
-    }
-    // clear the string:
+      riempiMatrice();
+          // clear the string:
     inputString = "";
     stringComplete = false;
-  }
+    }
+    int i=0;
+    int contNonVuote=0;
+    while(i<50 && contNonVuote<righeOccupate) {
+      if (contenuto[i].equals("therm1\n")) { 
+      float temp=getTemperature();
+      String daInviare="";
+      daInviare += mittente[i];
+      daInviare +='#';
+      daInviare+=String(temp);
+      /*
+      Serial.println(daInviare.length());
+    for(int i=0;i<daInviare.length();i++){
+    Serial.print(daInviare[i],DEC);
+    Serial.print("-");
+    }
+    */
+      Serial.println(daInviare); //non ha \n finale
+      i++;
+    }
+    }
+
+  
+}
+
+void riempiMatrice() {
+  int pos = trovaLibera();
+  mittente[pos]="";
+  contenuto[pos]="";
+  /*
+    Serial.println(inputString.length());
+    for(int i=0;i<inputString.length();i++){
+    Serial.print(inputString[i],DEC);
+    Serial.print("-");
+    }
+    */
+    
+    int hashPos = inputString.indexOf('#');
+    for(int i=0;i<hashPos;i++)
+    mittente[pos]+=inputString[i];
+
+    for(int i=hashPos+1;i<inputString.length();i++)
+      contenuto[pos]+=inputString[i];
+      
+   righeOccupate++;
+   rigaLibera[pos]=false;
+}
+
+int trovaLibera() {
+  int i=0;
+  while(!rigaLibera[i]) {i++;}
+  return i;
 }
 
 /*
@@ -52,12 +110,8 @@ void serialEvent() {
   }
 }
 
-float getTemperature() {
-  byte i;
-  byte present = 0;
-  byte data[12];
+void initTemperature() {
   byte addr[8];
-  float celsius;
 
 //28 FF C5 1F 12 14 0 C8
 addr[0]=0x28;
@@ -72,6 +126,26 @@ addr[7]=0xC8;
   ds.reset();
   ds.select(addr);
   ds.write(0x44, 1);        // start conversion, with parasite power on at the end
+  
+
+}
+
+float getTemperature() {
+    byte i;
+  byte present = 0;
+  byte data[12];
+  byte addr[8];
+  float celsius;
+
+//28 FF C5 1F 12 14 0 C8
+addr[0]=0x28;
+addr[1]=0xFF;
+addr[2]=0xC5;
+addr[3]=0x1F;
+addr[4]=0x12;
+addr[5]=0x14;
+addr[6]=0x0;
+addr[7]=0xC8;
   
   delay(1000);     // maybe 750ms is enough, maybe not
   // we might do a ds.depower() here, but the reset will take care of it.
