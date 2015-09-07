@@ -32,7 +32,7 @@ public class ThermometerAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new RequestCurrentTemperature(this, 5000));
+		addBehaviour(new RequestCurrentTemperature(this, 3000));
 		addBehaviour(new getCurrentTemperature());
 	}
 
