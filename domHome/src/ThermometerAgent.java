@@ -1,3 +1,4 @@
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
@@ -31,8 +32,8 @@ public class ThermometerAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new getCurrentTemperature(this, 2000));
-		//addBehaviour(new Behaviour1bis());
+		addBehaviour(new RequestCurrentTemperature(this, 2000));
+		addBehaviour(new getCurrentTemperature());
 	}
 
 	protected void takeDown() {
@@ -45,20 +46,20 @@ public class ThermometerAgent extends Agent {
 		}
 		System.out.println("ThermometerAgent "+getAID().getName()+" terminating.");
 	}
-	
+
 	private class tempService extends CyclicBehaviour {
 
 		@Override
 		public void action() {
-			
-			
+
+
 		}
-		
+
 	}
 
-	private class getCurrentTemperature extends TickerBehaviour {
+	private class RequestCurrentTemperature extends TickerBehaviour {
 
-		public getCurrentTemperature(Agent a, long period) {
+		public RequestCurrentTemperature(Agent a, long period) {
 			super(a, period);
 			// TODO Auto-generated constructor stub
 		}
@@ -66,7 +67,7 @@ public class ThermometerAgent extends Agent {
 		 * 
 		 */
 		private static final long serialVersionUID = 9072626078728707911L;
-		
+
 		@Override
 		public void onTick() {
 			Object[] argList=myAgent.getArguments();
@@ -85,7 +86,7 @@ public class ThermometerAgent extends Agent {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			*/
+			 */
 			/*
 			try {
 				currTemp = arduino.sendreceive("therm1\n");
@@ -93,7 +94,32 @@ public class ThermometerAgent extends Agent {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			*/
+			 */
+
+			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
+
+			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+			serialAnswer.addReceiver(msgReceiver);
+			serialAnswer.setContent(myAgent.getLocalName() + '#' + "therm1" );
+			//cfp.setConversationId("mex1");
+			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+			myAgent.send(serialAnswer);
+
+			
+
+
+			//Float currTempFloat = Float.parseFloat(currTemp);
+			//System.out.println(currTempFloat.compareTo((float) 31));
+
+			//currentTemperature = Float.parseFloat(currTemp);
+			//System.out.println(currTemp);
+		}
+	}
+	
+	private class getCurrentTemperature extends CyclicBehaviour {
+
+		@Override
+		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
 			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
@@ -101,19 +127,14 @@ public class ThermometerAgent extends Agent {
 
 				String messageContenut=msg.getContent();
 				System.out.println(messageContenut);
-				
+
 			}
 			else {
 				block();
 			}
 			
-			
-			//Float currTempFloat = Float.parseFloat(currTemp);
-			//System.out.println(currTempFloat.compareTo((float) 31));
-			
-			//currentTemperature = Float.parseFloat(currTemp);
-			//System.out.println(currTemp);
 		}
+	
 	}
 }
 
