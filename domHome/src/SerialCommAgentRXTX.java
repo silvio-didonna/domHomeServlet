@@ -35,7 +35,7 @@ public class SerialCommAgentRXTX extends Agent {
 
 	public static BufferedReader input;
 	public static OutputStream output;
-
+/*
 	public static synchronized void writeData(String data) {
 		//System.out.println("Sent: " + data);
 		try {
@@ -44,7 +44,7 @@ public class SerialCommAgentRXTX extends Agent {
 			System.out.println("could not write to port");
 		}
 	}
-
+*/
 
 
 	protected void setup() {
@@ -87,8 +87,6 @@ public class SerialCommAgentRXTX extends Agent {
 
 		@Override
 		public void action() {
-			input = SerialClass.input;
-			output = SerialClass.output;
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			//System.out.println("SendSerialServiceBehaviour wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
@@ -122,11 +120,11 @@ public class SerialCommAgentRXTX extends Agent {
 					try {
 						char a='a';
 						do {
-							if (input.ready()) {
+							//if (input.ready()) {
 							a = (char) input.read();
 							//System.out.println(a);
 							msgArd+=a;
-							}
+							//}
 						}while(a!='\n');
 						
 						
