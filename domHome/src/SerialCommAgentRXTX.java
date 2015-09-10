@@ -87,6 +87,8 @@ public class SerialCommAgentRXTX extends Agent {
 
 		@Override
 		public void action() {
+			input = SerialClass.input;
+			output = SerialClass.output;
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			//System.out.println("SendSerialServiceBehaviour wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
@@ -108,7 +110,7 @@ public class SerialCommAgentRXTX extends Agent {
 					//writeData(msgSender + '#' + msgContent + '\n');
 					writeData("therm1\n"); //DA MODIFICARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-----
 					//writeData("Termometro#therm1\n");
-					String msgArd=null;
+					String msgArd="";
 					/*
 					try {
 						TimeUnit.SECONDS.sleep(2);
@@ -118,11 +120,27 @@ public class SerialCommAgentRXTX extends Agent {
 					} 
 					*/
 					try {
-						msgArd=input.readLine();
+						char a='a';
+						do {
+							if (input.ready()) {
+							a = (char) input.read();
+							//System.out.println(a);
+							msgArd+=a;
+							}
+						}while(a!='\n');
+						
+						
+						//msgArd=input.readLine();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					} 
+					/*
+					catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+					*/
 					System.out.println(msgArd);
 
 					
