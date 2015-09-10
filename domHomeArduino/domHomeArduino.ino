@@ -41,7 +41,7 @@ void loop(void) {
   int contNonVuote = 0;
   while (i < 50 && contNonVuote < righeOccupate) {
     if (!rigaLibera[i]) {
-      if (contenuto[i].equals("therm1\n")) {
+      if (contenuto[i].equals("therm1")) {
         initTemperature();
         delay(1000);
         float temp = getTemperature();
@@ -49,7 +49,7 @@ void loop(void) {
         daInviare += mittente[i];
         daInviare += '#';
         daInviare += String(temp);
-        Serial.print(daInviare.length());
+        //Serial.print(daInviare.length());
         /*
         Serial.println(daInviare.length());
         for(int i=0;i<daInviare.length();i++){
@@ -113,11 +113,14 @@ void serialEvent() {
     // get the new byte:
     char inChar = (char)Serial.read();
     // add it to the inputString:
-    inputString += inChar;
+    //inputString += inChar;
     // if the incoming character is a newline, set a flag
     // so the main loop can do something about it:
     if (inChar == '\n') {
       stringComplete = true;
+    }
+    else {
+      inputString += inChar;
     }
   }
 }
