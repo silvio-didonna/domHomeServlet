@@ -34,6 +34,7 @@ public class ThermometerAgent extends Agent {
 		}
 		addBehaviour(new RequestCurrentTemperature(this, 3000));
 		addBehaviour(new getCurrentTemperature());
+		addBehaviour(new tempService());
 	}
 
 	protected void takeDown() {
@@ -51,7 +52,24 @@ public class ThermometerAgent extends Agent {
 
 		@Override
 		public void action() {
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+			//System.out.println("Server behaviour 1 wait a message.");
+			ACLMessage msg = myAgent.receive(mt);
+			if (msg!=null) {
 
+				if(currentTemperature!=null) {
+					String messageContenut=msg.getContent();
+					//System.out.println("AgenteTermometro::::"+messageContenut);
+					ACLMessage reply = msg.createReply();
+					reply.setPerformative(ACLMessage.INFORM);
+					reply.setContent(currentTemperature.toString());
+					myAgent.send(reply);
+				}
+
+			}
+			else {
+				block();
+			}
 
 		}
 
@@ -70,31 +88,8 @@ public class ThermometerAgent extends Agent {
 
 		@Override
 		public void onTick() {
-			//Object[] argList=myAgent.getArguments();
-			//SerialComm arduino = (SerialComm) argList[0];
+
 			String currTemp=null;
-			/*
-			try {
-				arduino.send("therm1\n"); //invia comando
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				currTemp=arduino.receive(); //temperatura
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			 */
-			/*
-			try {
-				currTemp = arduino.sendreceive("therm1\n");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			 */
 
 			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 
@@ -105,8 +100,6 @@ public class ThermometerAgent extends Agent {
 			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
 			myAgent.send(serialAnswer);
 
-			
-
 
 			//Float currTempFloat = Float.parseFloat(currTemp);
 			//System.out.println(currTempFloat.compareTo((float) 31));
@@ -115,7 +108,7 @@ public class ThermometerAgent extends Agent {
 			//System.out.println(currTemp);
 		}
 	}
-	
+
 	private class getCurrentTemperature extends CyclicBehaviour {
 
 		@Override
@@ -127,14 +120,15 @@ public class ThermometerAgent extends Agent {
 
 				String messageContenut=msg.getContent();
 				System.out.println("AgenteTermometro::::"+messageContenut);
+				currentTemperature = Float.parseFloat(messageContenut);
 
 			}
 			else {
 				block();
 			}
-			
+
 		}
-	
+
 	}
 }
 

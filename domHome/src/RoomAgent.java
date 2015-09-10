@@ -1,12 +1,22 @@
+import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 
 
 public class RoomAgent extends Agent {
+	private float temperature;
+	private float lumens;
+	private boolean door;
+	private boolean motion;
+	private boolean flame;
 
 	/**
 	 * 
@@ -27,8 +37,58 @@ public class RoomAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		//addBehaviour(new Behaviour1());
-		//addBehaviour(new Behaviour1bis());
+		addBehaviour(new askCurrentTemperature(this,5000));
+		addBehaviour(new getCurrentTemperature());
+	}
+	
+	private class askCurrentTemperature extends TickerBehaviour {
+
+		public askCurrentTemperature(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 9072626078728707911L;
+
+		@Override
+		public void onTick() {
+
+			String currTemp=null;
+
+			AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
+
+			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+			serialAnswer.addReceiver(msgReceiver);
+			//serialAnswer.setContent("therm1");
+			myAgent.send(serialAnswer);
+
+
+			//temperature = Float.parseFloat(currTemp);
+			//System.out.println(currTemp);
+		}
+	}
+	
+	private class getCurrentTemperature extends CyclicBehaviour {
+
+		@Override
+		public void action() {
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			//System.out.println("Server behaviour 1 wait a message.");
+			ACLMessage msg = myAgent.receive(mt);
+			if (msg!=null) {
+
+				String messageContenut=msg.getContent();
+				System.out.println("Room::::"+messageContenut);
+
+			}
+			else {
+				block();
+			}
+			
+		}
+	
 	}
 	
 	protected void takeDown() {

@@ -89,36 +89,41 @@ public class SerialCommAgentRXTX extends Agent {
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			//System.out.println("SendSerialServiceBehaviour wait a message.");
-			ACLMessage msg = myAgent.receive();
+			ACLMessage msg = myAgent.receive(mt);
 			//System.out.println(msg.getContent());
 			if (msg!=null) {
-				//System.out.println(msg.getContent());
+				System.out.println(msg.getContent());
 				String msgSender = msg.getSender().getLocalName();
 				String msgContent = msg.getContent();
 				if (!msgContent.isEmpty()) {
-					System.out.println(msgSender + '#' + msgContent + '\n');
+					//System.out.println(msgSender + '#' + msgContent + '\n');
+					/*
 					try {
 						TimeUnit.SECONDS.sleep(2);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} 
-					writeData(msgSender + '#' + msgContent + '\n');
+					*/
+					//writeData(msgSender + '#' + msgContent + '\n');
+					writeData("therm1\n"); //DA MODIFICARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-----
 					//writeData("Termometro#therm1\n");
 					String msgArd=null;
+					/*
 					try {
 						TimeUnit.SECONDS.sleep(2);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} 
+					*/
 					try {
 						msgArd=input.readLine();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					//System.out.println(msgArd);
+					System.out.println(msgArd);
 
 					
 

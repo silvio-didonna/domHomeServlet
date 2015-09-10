@@ -79,7 +79,7 @@ public class SerialCommAgent extends Agent {
 				if (!msgContent.isEmpty()) {
 					try {
 						//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
-						serialPort.getOutputStream().write(("Termometro#therm1").getBytes());
+						serialPort.getOutputStream().write(("therm1").getBytes());
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -99,6 +99,7 @@ public class SerialCommAgent extends Agent {
 							serialPort.getInputStream().read(readBuffer);
 							//System.out.println("Read " + numRead + " bytes.");
 							msgArd = new String(readBuffer); // conversione in String (provare con UTF-8)
+							System.out.println("Messaggio: " + msgArd);
 
 							AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
 
