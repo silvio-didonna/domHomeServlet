@@ -79,7 +79,7 @@ public class SerialCommAgent extends Agent {
 				if (!msgContent.isEmpty()) {
 					try {
 						//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
-						serialPort.getOutputStream().write(("therm1\n").getBytes());
+						serialPort.getOutputStream().write((msgContent).getBytes());
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -98,15 +98,17 @@ public class SerialCommAgent extends Agent {
 							serialPort.getInputStream().read(readBuffer);
 							//System.out.println("Read " + numRead + " bytes.");
 							msgArd = new String(readBuffer); // conversione in String (provare con UTF-8)
-							System.out.println("Messaggio: " + msgArd);
+							//System.out.println("Messaggio: " + msgArd);
 
-							AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
+							//AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
+							ACLMessage reply = msg.createReply();
+							reply.setPerformative(ACLMessage.INFORM);
 
-							ACLMessage serialAnswer = new ACLMessage(ACLMessage.INFORM);
-							serialAnswer.addReceiver(msgReceiver);
-							serialAnswer.setContent(msgArd);
+							//ACLMessage serialAnswer = new ACLMessage(ACLMessage.INFORM);
+							//serialAnswer.addReceiver(msgReceiver);
+							reply.setContent(msgArd);
 
-							myAgent.send(serialAnswer);
+							myAgent.send(reply);
 						
 					} catch (Exception e) { e.printStackTrace(); }
 					
