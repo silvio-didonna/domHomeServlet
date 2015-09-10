@@ -69,7 +69,7 @@ public class SerialCommAgent extends Agent {
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			System.out.println("SendSerialServiceBehaviour wait a message.");
+			//System.out.println("SendSerialServiceBehaviour wait a message.");
 			ACLMessage msg = myAgent.receive();
 			//System.out.println(msg.getContent());
 			if (msg!=null) {
@@ -79,7 +79,7 @@ public class SerialCommAgent extends Agent {
 				if (!msgContent.isEmpty()) {
 					try {
 						//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
-						serialPort.getOutputStream().write(("therm1").getBytes());
+						serialPort.getOutputStream().write(("therm1\n").getBytes());
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -91,10 +91,11 @@ public class SerialCommAgent extends Agent {
 					try {
 						//while (serialPort.bytesAvailable() == 0)
 						//	Thread.sleep(20);
-						if (serialPort.bytesAvailable() > 0) {
-							int dim = serialPort.getInputStream().read();
-							while (serialPort.bytesAvailable() != dim)
-								Thread.sleep(20);
+						while (serialPort.bytesAvailable() == 0)
+							Thread.sleep(20);
+							//int dim = serialPort.getInputStream().read();
+							//while (serialPort.bytesAvailable() != dim)
+								//Thread.sleep(20);
 							readBuffer = new byte[serialPort.bytesAvailable()];
 							serialPort.getInputStream().read(readBuffer);
 							//System.out.println("Read " + numRead + " bytes.");
@@ -108,7 +109,7 @@ public class SerialCommAgent extends Agent {
 							serialAnswer.setContent(msgArd);
 
 							myAgent.send(serialAnswer);
-						}
+						
 					} catch (Exception e) { e.printStackTrace(); }
 					
 					/*

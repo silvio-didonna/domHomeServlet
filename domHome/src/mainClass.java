@@ -60,7 +60,7 @@ public class mainClass {
 
 		thermometerAgent.start();
 		
-		AgentController serialCommAgent = cont.createNewAgent (serialCommName, "SerialCommAgentRXTX", null);
+		AgentController serialCommAgent = cont.createNewAgent (serialCommName, "SerialCommAgent", null);
 
 		serialCommAgent.start();
 		

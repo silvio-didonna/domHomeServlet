@@ -62,9 +62,10 @@ public class SerialComm {
 	public String receive() throws Exception {
 		byte[] readBuffer=null;
 		try {
-			while (serialPort.bytesAvailable() != 9)
+			while (serialPort.bytesAvailable() == 0)
 				Thread.sleep(20);
 			
+			Thread.sleep(50); // per sicurezza
 			readBuffer = new byte[serialPort.bytesAvailable()];
 			
 			//int numRead = serialPort.readBytes(readBuffer, readBuffer.length);
