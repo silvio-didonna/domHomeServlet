@@ -89,8 +89,6 @@ public class SerialCommAgent extends Agent {
 
 					byte[] readBuffer=null;
 					try {
-						//while (serialPort.bytesAvailable() == 0)
-						//	Thread.sleep(20);
 						while (serialPort.bytesAvailable() == 0)
 							Thread.sleep(20);
 							//int dim = serialPort.getInputStream().read();
@@ -112,15 +110,6 @@ public class SerialCommAgent extends Agent {
 						
 					} catch (Exception e) { e.printStackTrace(); }
 					
-					/*
-					try {
-
-						arduino.send(msgSender + "#" + msgContent);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					 */
 				}
 			}
 			else {

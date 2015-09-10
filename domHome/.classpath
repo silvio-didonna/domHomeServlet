@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="SerialCommAgentRXTX.java" kind="src" path="src"/>
+	<classpathentry excluding="SerialCommAgentRXTX.java|SerialClass.java|SerialComm.java" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JADE4"/>
 	<classpathentry kind="lib" path="libs/jSerialComm-1.3.7.jar"/>
