@@ -33,8 +33,8 @@ public class ThermometerAgent extends Agent {
 			fe.printStackTrace();
 		}
 		addBehaviour(new RequestCurrentTemperature(this, 3000));
-		addBehaviour(new getCurrentTemperature());
-		addBehaviour(new tempService());
+		addBehaviour(new GetCurrentTemperature());
+		addBehaviour(new TempService());
 	}
 
 	protected void takeDown() {
@@ -48,7 +48,7 @@ public class ThermometerAgent extends Agent {
 		System.out.println("ThermometerAgent "+getAID().getName()+" terminating.");
 	}
 
-	private class tempService extends CyclicBehaviour {
+	private class TempService extends CyclicBehaviour {
 
 		@Override
 		public void action() {
@@ -96,20 +96,13 @@ public class ThermometerAgent extends Agent {
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
 			serialAnswer.addReceiver(msgReceiver);
 			serialAnswer.setContent("therm1\n");
-			//cfp.setConversationId("mex1");
-			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+
 			myAgent.send(serialAnswer);
 
-
-			//Float currTempFloat = Float.parseFloat(currTemp);
-			//System.out.println(currTempFloat.compareTo((float) 31));
-
-			//currentTemperature = Float.parseFloat(currTemp);
-			//System.out.println(currTemp);
 		}
 	}
 
-	private class getCurrentTemperature extends CyclicBehaviour {
+	private class GetCurrentTemperature extends CyclicBehaviour {
 
 		@Override
 		public void action() {
