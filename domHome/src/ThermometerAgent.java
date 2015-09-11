@@ -11,6 +11,7 @@ import jade.lang.acl.MessageTemplate;
 
 public class ThermometerAgent extends Agent {
 	private Float currentTemperature;
+	String temperatureReplyWith = "temperature";
 
 	/**
 	 * 
@@ -96,8 +97,9 @@ public class ThermometerAgent extends Agent {
 			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+			serialAnswer.setReplyWith(temperatureReplyWith);
 			serialAnswer.addReceiver(msgReceiver);
-			serialAnswer.setContent("therm1");
+			serialAnswer.setContent("therm1\n");
 			//cfp.setConversationId("mex1");
 			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
 			myAgent.send(serialAnswer);
@@ -114,7 +116,9 @@ public class ThermometerAgent extends Agent {
 
 		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt1 = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt2 = MessageTemplate.MatchInReplyTo(temperatureReplyWith);
+			MessageTemplate mt = MessageTemplate.and(mt1, mt2);
 			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {

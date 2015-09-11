@@ -11,6 +11,7 @@ import jade.lang.acl.MessageTemplate;
 
 public class LightSensorAgent extends Agent {
 	private int currentLumen;
+	String lumenReplyWith = "lumen";
 
 	/**
 	 * 
@@ -91,8 +92,9 @@ protected void takeDown() {
 			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+			serialAnswer.setReplyWith(lumenReplyWith);
 			serialAnswer.addReceiver(msgReceiver);
-			serialAnswer.setContent("lm1");
+			serialAnswer.setContent("lm1\n");
 
 			myAgent.send(serialAnswer);
 
@@ -103,16 +105,23 @@ protected void takeDown() {
 
 		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt1 = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt2 = MessageTemplate.MatchInReplyTo(lumenReplyWith);
+			MessageTemplate mt = MessageTemplate.and(mt1, mt2);
 			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
 				System.out.println("AgenteLightSensor::::"+messageContenut);
-				if (messageContenut!=null)
+				if (messageContenut!=null) {
+					messageContenut=messageContenut.trim();
+					try {
 					currentLumen = Integer.parseInt(messageContenut);
-
+					}catch (NumberFormatException e) {
+						System.out.println("AgenteLightSensor::::numero errato");
+					}
+				}
 			}
 			else {
 				block();

@@ -12,6 +12,8 @@ import jade.lang.acl.MessageTemplate;
 
 
 public class RoomAgent extends Agent {
+	String temperatureReplyWith = "temperature";
+	String lumenReplyWith = "lumen";
 	private float temperature;
 	private float lumens;
 	private boolean door;
@@ -62,6 +64,7 @@ public class RoomAgent extends Agent {
 			AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+			serialAnswer.setReplyWith(temperatureReplyWith);
 			serialAnswer.addReceiver(msgReceiver);
 			//serialAnswer.setContent("therm1");
 			myAgent.send(serialAnswer);
@@ -81,7 +84,9 @@ public class RoomAgent extends Agent {
 
 		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt1 = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt2 = MessageTemplate.MatchInReplyTo(temperatureReplyWith);
+			MessageTemplate mt = MessageTemplate.and(mt1, mt2);
 			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
@@ -116,8 +121,9 @@ public class RoomAgent extends Agent {
 			AID msgReceiver= new AID("Sensore-Luci",AID.ISLOCALNAME);
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+			serialAnswer.setReplyWith(lumenReplyWith);
 			serialAnswer.addReceiver(msgReceiver);
-			//serialAnswer.setContent("therm1");
+			//serialAnswer.setContent("lm1");
 			myAgent.send(serialAnswer);
 
 
@@ -135,7 +141,9 @@ public class RoomAgent extends Agent {
 
 		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt1 = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt2 = MessageTemplate.MatchInReplyTo(lumenReplyWith);
+			MessageTemplate mt = MessageTemplate.and(mt1, mt2);
 			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
