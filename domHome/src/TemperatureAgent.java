@@ -11,8 +11,8 @@ public class TemperatureAgent extends Agent {
 	 */
 	private static final long serialVersionUID = 138736042772986486L;
 
-protected void setup() {
-		
+	protected void setup() {
+
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
@@ -28,7 +28,7 @@ protected void setup() {
 		//addBehaviour(new Behaviour1());
 		//addBehaviour(new Behaviour1bis());
 	}
-	
+
 	protected void takeDown() {
 		// Deregister from the yellow pages
 		try {

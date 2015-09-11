@@ -81,7 +81,7 @@ public class SerialCommAgent extends Agent {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 					String msgArd;
 
 					byte[] readBuffer=null;
@@ -89,20 +89,21 @@ public class SerialCommAgent extends Agent {
 						while (serialPort.bytesAvailable() == 0)
 							Thread.sleep(20);
 
-							readBuffer = new byte[serialPort.bytesAvailable()];
-							serialPort.getInputStream().read(readBuffer);
-							msgArd = new String(readBuffer);
-							//System.out.println("Messaggio: " + msgArd);
+						Thread.sleep(50);
+						readBuffer = new byte[serialPort.bytesAvailable()];
+						serialPort.getInputStream().read(readBuffer);
+						msgArd = new String(readBuffer);
+						//System.out.println("Messaggio: " + msgArd);
 
-							ACLMessage reply = msg.createReply();
-							reply.setPerformative(ACLMessage.INFORM);
+						ACLMessage reply = msg.createReply();
+						reply.setPerformative(ACLMessage.INFORM);
 
-							reply.setContent(msgArd);
+						reply.setContent(msgArd);
 
-							myAgent.send(reply);
-						
+						myAgent.send(reply);
+
 					} catch (Exception e) { e.printStackTrace(); }
-					
+
 				}
 			}
 			else {
@@ -123,9 +124,9 @@ public class SerialCommAgent extends Agent {
 			//MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			//System.out.println("Server behaviour 1 wait a message.");
 			// Send the cfp to all sellers
-			
 
-			
+
+
 			/*
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {

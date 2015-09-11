@@ -16,7 +16,7 @@ public class mainClass {
 	static String lightningName = "Gestore-Luci";
 
 	public static void main (String args[]) throws Exception {
-		
+
 
 		//---------------------********************************************-----------------------------------
 		// http://jade.tilab.com/pipermail/jade-develop/2008q3/012874.html
@@ -62,23 +62,23 @@ public class mainClass {
 		AgentController roomAgent = cont.createNewAgent (roomName, "RoomAgent", null);	
 		AgentController temperatureAgent = cont.createNewAgent (temperatureName, "TemperatureAgent", null);	
 		AgentController lightningAgent = cont.createNewAgent (lightningName, "LightningAgent", null);
-		
+
 		try {
 			Thread.sleep(8000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		serialCommAgent.start();
-		
+
 		fanAgent.start();
 		thermometerAgent.start();
 		temperatureAgent.start();
-		
+
 		lightSensorAgent.start();
 		lightningAgent.start();
-		
+
 		roomAgent.start();
 
 

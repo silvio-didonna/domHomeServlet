@@ -12,8 +12,8 @@ public class LightningAgent extends Agent {
 	 */
 	private static final long serialVersionUID = -7451204929985603495L;
 
-protected void setup() {
-		
+	protected void setup() {
+
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
@@ -29,7 +29,7 @@ protected void setup() {
 		//addBehaviour(new Behaviour1());
 		//addBehaviour(new Behaviour1bis());
 	}
-	
+
 	protected void takeDown() {
 		// Deregister from the yellow pages
 		try {

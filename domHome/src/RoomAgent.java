@@ -24,9 +24,9 @@ public class RoomAgent extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = -7504622688999058316L;
-	
+
 	protected void setup() {
-		
+
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
@@ -41,11 +41,11 @@ public class RoomAgent extends Agent {
 		}
 		addBehaviour(new AskCurrentTemperature(this,5000));
 		addBehaviour(new GetCurrentTemperature());
-		
+
 		addBehaviour(new AskCurrentLumen(this, 5000));
 		addBehaviour(new GetCurrentLumen());
 	}
-	
+
 	private class AskCurrentTemperature extends TickerBehaviour {
 
 		public AskCurrentTemperature(Agent a, long period) {
@@ -74,7 +74,7 @@ public class RoomAgent extends Agent {
 			//System.out.println(currTemp);
 		}
 	}
-	
+
 	private class GetCurrentTemperature extends CyclicBehaviour {
 
 		/**
@@ -98,11 +98,11 @@ public class RoomAgent extends Agent {
 			else {
 				block();
 			}
-			
+
 		}
-	
+
 	}
-	
+
 	private class AskCurrentLumen extends TickerBehaviour {
 
 		public AskCurrentLumen(Agent a, long period) {
@@ -131,7 +131,7 @@ public class RoomAgent extends Agent {
 			//System.out.println(currTemp);
 		}
 	}
-	
+
 	private class GetCurrentLumen extends CyclicBehaviour {
 
 		/**
@@ -155,11 +155,11 @@ public class RoomAgent extends Agent {
 			else {
 				block();
 			}
-			
+
 		}
-	
+
 	}
-	
+
 	protected void takeDown() {
 		// Deregister from the yellow pages
 		try {
