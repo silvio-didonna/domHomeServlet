@@ -37,16 +37,16 @@ public class RoomAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new askCurrentTemperature(this,5000));
-		addBehaviour(new getCurrentTemperature());
+		addBehaviour(new AskCurrentTemperature(this,5000));
+		addBehaviour(new GetCurrentTemperature());
 		
-		addBehaviour(new askCurrentLumen(this, 5000));
-		addBehaviour(new getCurrentLumen());
+		addBehaviour(new AskCurrentLumen(this, 5000));
+		addBehaviour(new GetCurrentLumen());
 	}
 	
-	private class askCurrentTemperature extends TickerBehaviour {
+	private class AskCurrentTemperature extends TickerBehaviour {
 
-		public askCurrentTemperature(Agent a, long period) {
+		public AskCurrentTemperature(Agent a, long period) {
 			super(a, period);
 			// TODO Auto-generated constructor stub
 		}
@@ -58,7 +58,6 @@ public class RoomAgent extends Agent {
 		@Override
 		public void onTick() {
 
-			String currTemp=null;
 
 			AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
 
@@ -73,7 +72,12 @@ public class RoomAgent extends Agent {
 		}
 	}
 	
-	private class getCurrentTemperature extends CyclicBehaviour {
+	private class GetCurrentTemperature extends CyclicBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7188335783111581107L;
 
 		@Override
 		public void action() {
@@ -94,9 +98,9 @@ public class RoomAgent extends Agent {
 	
 	}
 	
-	private class askCurrentLumen extends TickerBehaviour {
+	private class AskCurrentLumen extends TickerBehaviour {
 
-		public askCurrentLumen(Agent a, long period) {
+		public AskCurrentLumen(Agent a, long period) {
 			super(a, period);
 			// TODO Auto-generated constructor stub
 		}
@@ -108,7 +112,6 @@ public class RoomAgent extends Agent {
 		@Override
 		public void onTick() {
 
-			String currTemp=null;
 
 			AID msgReceiver= new AID("Sensore-Luci",AID.ISLOCALNAME);
 
@@ -123,7 +126,12 @@ public class RoomAgent extends Agent {
 		}
 	}
 	
-	private class getCurrentLumen extends CyclicBehaviour {
+	private class GetCurrentLumen extends CyclicBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3165583707741329448L;
 
 		@Override
 		public void action() {

@@ -1,7 +1,6 @@
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -33,8 +32,8 @@ public class ThermometerAgent extends Agent {
 			fe.printStackTrace();
 		}
 		addBehaviour(new RequestCurrentTemperature(this, 3000));
-		addBehaviour(new getCurrentTemperature());
-		addBehaviour(new tempService());
+		addBehaviour(new GetCurrentTemperature());
+		addBehaviour(new TempService());
 	}
 
 	protected void takeDown() {
@@ -48,7 +47,12 @@ public class ThermometerAgent extends Agent {
 		System.out.println("ThermometerAgent "+getAID().getName()+" terminating.");
 	}
 
-	private class tempService extends CyclicBehaviour {
+	private class TempService extends CyclicBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6607101087483781538L;
 
 		@Override
 		public void action() {
@@ -89,8 +93,6 @@ public class ThermometerAgent extends Agent {
 		@Override
 		public void onTick() {
 
-			String currTemp=null;
-
 			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
@@ -100,16 +102,15 @@ public class ThermometerAgent extends Agent {
 			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
 			myAgent.send(serialAnswer);
 
-
-			//Float currTempFloat = Float.parseFloat(currTemp);
-			//System.out.println(currTempFloat.compareTo((float) 31));
-
-			//currentTemperature = Float.parseFloat(currTemp);
-			//System.out.println(currTemp);
 		}
 	}
 
-	private class getCurrentTemperature extends CyclicBehaviour {
+	private class GetCurrentTemperature extends CyclicBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2794051229003161225L;
 
 		@Override
 		public void action() {

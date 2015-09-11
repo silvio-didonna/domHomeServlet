@@ -69,11 +69,8 @@ public class SerialCommAgent extends Agent {
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			//System.out.println("SendSerialServiceBehaviour wait a message.");
 			ACLMessage msg = myAgent.receive();
-			//System.out.println(msg.getContent());
 			if (msg!=null) {
-				//System.out.println(msg.getContent());
 				String msgSender = msg.getSender().getLocalName();
 				String msgContent = msg.getContent();
 				if (!msgContent.isEmpty()) {
@@ -91,21 +88,15 @@ public class SerialCommAgent extends Agent {
 					try {
 						while (serialPort.bytesAvailable() == 0)
 							Thread.sleep(20);
-							//int dim = serialPort.getInputStream().read();
-							//while (serialPort.bytesAvailable() != dim)
-								//Thread.sleep(20);
+
 							readBuffer = new byte[serialPort.bytesAvailable()];
 							serialPort.getInputStream().read(readBuffer);
-							//System.out.println("Read " + numRead + " bytes.");
-							msgArd = new String(readBuffer); // conversione in String (provare con UTF-8)
+							msgArd = new String(readBuffer);
 							//System.out.println("Messaggio: " + msgArd);
 
-							//AID msgReceiver= new AID("Termometro",AID.ISLOCALNAME);
 							ACLMessage reply = msg.createReply();
 							reply.setPerformative(ACLMessage.INFORM);
 
-							//ACLMessage serialAnswer = new ACLMessage(ACLMessage.INFORM);
-							//serialAnswer.addReceiver(msgReceiver);
 							reply.setContent(msgArd);
 
 							myAgent.send(reply);

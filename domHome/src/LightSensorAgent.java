@@ -52,13 +52,11 @@ protected void takeDown() {
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
 
 				if(currentLumen>=0) {
 					String messageContenut = msg.getContent();
-					//System.out.println("AgenteTermometro::::"+messageContenut);
 					ACLMessage reply = msg.createReply();
 					reply.setPerformative(ACLMessage.INFORM);
 					reply.setContent(Integer.toString(currentLumen));
@@ -95,16 +93,9 @@ protected void takeDown() {
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
 			serialAnswer.addReceiver(msgReceiver);
 			serialAnswer.setContent("lm1");
-			//cfp.setConversationId("mex1");
-			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+
 			myAgent.send(serialAnswer);
 
-
-			//Float currTempFloat = Float.parseFloat(currTemp);
-			//System.out.println(currTempFloat.compareTo((float) 31));
-
-			//currentTemperature = Float.parseFloat(currTemp);
-			//System.out.println(currTemp);
 		}
 	}
 
