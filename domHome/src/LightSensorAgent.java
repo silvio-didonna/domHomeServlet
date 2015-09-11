@@ -17,37 +17,37 @@ public class LightSensorAgent extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = 7925627535445537735L;
-	
-	protected void setup() {
-	
-	DFAgentDescription dfd = new DFAgentDescription();
-	dfd.setName(getAID());
-	ServiceDescription sd = new ServiceDescription();
-	sd.setType("light-sensor-manager");
-	sd.setName("JADE-light-sensor");
-	dfd.addServices(sd);
-	try {
-		DFService.register(this, dfd);
-	}
-	catch(FIPAException fe) {
-		fe.printStackTrace();
-	}
-	addBehaviour(new RequestCurrentLumen(this, 3000));
-	addBehaviour(new GetCurrentLumen());
-	addBehaviour(new LightSensorService());
-}
 
-protected void takeDown() {
-	// Deregister from the yellow pages
-	try {
-		DFService.deregister(this);
+	protected void setup() {
+
+		DFAgentDescription dfd = new DFAgentDescription();
+		dfd.setName(getAID());
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("light-sensor-manager");
+		sd.setName("JADE-light-sensor");
+		dfd.addServices(sd);
+		try {
+			DFService.register(this, dfd);
+		}
+		catch(FIPAException fe) {
+			fe.printStackTrace();
+		}
+		addBehaviour(new RequestCurrentLumen(this, 3000));
+		addBehaviour(new GetCurrentLumen());
+		addBehaviour(new LightSensorService());
 	}
-	catch (FIPAException fe) {
-		fe.printStackTrace();
+
+	protected void takeDown() {
+		// Deregister from the yellow pages
+		try {
+			DFService.deregister(this);
+		}
+		catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+		System.out.println("LightSensorAgent "+getAID().getName()+" terminating.");
 	}
-	System.out.println("LightSensorAgent "+getAID().getName()+" terminating.");
-}
-	
+
 	private class LightSensorService extends CyclicBehaviour {
 
 		@Override
@@ -117,9 +117,9 @@ protected void takeDown() {
 				if (messageContenut!=null) {
 					messageContenut=messageContenut.trim();
 					try {
-					currentLumen = Integer.parseInt(messageContenut);
+						currentLumen = Integer.parseInt(messageContenut);
 					}catch (NumberFormatException e) {
-						System.out.println("AgenteLightSensor::::numero errato");
+						System.out.println("AgenteLightSensor::::errore");
 					}
 				}
 			}
