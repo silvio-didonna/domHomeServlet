@@ -16,6 +16,7 @@ public class mainClass {
 	static String lightningName = "Gestore-Luci";
 
 	public static void main (String args[]) throws Exception {
+		
 
 		//---------------------********************************************-----------------------------------
 		// http://jade.tilab.com/pipermail/jade-develop/2008q3/012874.html
@@ -55,43 +56,30 @@ public class mainClass {
 		//Object[] argList = new Object[1];
 		//argList[0]=arduino;
 		AgentController fanAgent = cont.createNewAgent (fanName, "FanAgent", null);
-
-		fanAgent.start();
-
-		AgentController thermometerAgent = cont.createNewAgent (thermometerName, "ThermometerAgent", null);
-
-		thermometerAgent.start();
+		AgentController thermometerAgent = cont.createNewAgent (thermometerName, "ThermometerAgent", null);		
+		AgentController serialCommAgent = cont.createNewAgent (serialCommName, "SerialCommAgent", null);	
+		AgentController lightSensorAgent = cont.createNewAgent (lightSensorName, "LightSensorAgent", null);	
+		AgentController roomAgent = cont.createNewAgent (roomName, "RoomAgent", null);	
+		AgentController temperatureAgent = cont.createNewAgent (temperatureName, "TemperatureAgent", null);	
+		AgentController lightningAgent = cont.createNewAgent (lightningName, "LightningAgent", null);
 		
-		AgentController serialCommAgent = cont.createNewAgent (serialCommName, "SerialCommAgent", null);
-
-		serialCommAgent.start();
-		
-		AgentController lightSensorAgent = cont.createNewAgent (lightSensorName, "LightSensorAgent", null);
-		
-		lightSensorAgent.start();
-		
-
-
-		/*
 		try {
-			TimeUnit.SECONDS.sleep(5);
+			Thread.sleep(8000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		 */
+		}
 		
-		AgentController roomAgent = cont.createNewAgent (roomName, "RoomAgent", null);
-
-		roomAgent.start();
+		serialCommAgent.start();
 		
-		AgentController temperatureAgent = cont.createNewAgent (temperatureName, "TemperatureAgent", null);
-
+		fanAgent.start();
+		thermometerAgent.start();
 		temperatureAgent.start();
 		
-		AgentController lightningAgent = cont.createNewAgent (lightningName, "LightningAgent", null);
-		
+		lightSensorAgent.start();
 		lightningAgent.start();
+		
+		roomAgent.start();
 
 
 	}
