@@ -92,7 +92,7 @@ public class RoomAgent extends Agent {
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
-				System.out.println("Room::::"+messageContenut);
+				System.out.println("Room-Temp::::"+messageContenut);
 
 			}
 			else {
@@ -149,7 +149,7 @@ public class RoomAgent extends Agent {
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
-				System.out.println("Room::::"+messageContenut);
+				System.out.println("Room-Lumen::::"+messageContenut);
 
 			}
 			else {
