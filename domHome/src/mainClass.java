@@ -12,6 +12,8 @@ public class mainClass {
 	static String temperatureName = "Gestore-Temperatura";
 	static String roomName = "Gestore-Salone";
 	static String serialCommName = "Gestore-Seriale";
+	static String lightSensorName = "Sensore-Luci";
+	static String lightningName = "Gestore-Luci";
 
 	public static void main (String args[]) throws Exception {
 
@@ -64,6 +66,10 @@ public class mainClass {
 
 		serialCommAgent.start();
 		
+		AgentController lightSensorAgent = cont.createNewAgent (lightSensorName, "LightSensorAgent", null);
+		
+		lightSensorAgent.start();
+		
 
 
 		/*
@@ -82,6 +88,10 @@ public class mainClass {
 		AgentController temperatureAgent = cont.createNewAgent (temperatureName, "TemperatureAgent", null);
 
 		temperatureAgent.start();
+		
+		AgentController lightningAgent = cont.createNewAgent (lightningName, "LightningAgent", null);
+		
+		lightningAgent.start();
 
 
 	}

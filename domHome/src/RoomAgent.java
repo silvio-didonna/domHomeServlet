@@ -39,6 +39,9 @@ public class RoomAgent extends Agent {
 		}
 		addBehaviour(new askCurrentTemperature(this,5000));
 		addBehaviour(new getCurrentTemperature());
+		
+		addBehaviour(new askCurrentLumen(this, 5000));
+		addBehaviour(new getCurrentLumen());
 	}
 	
 	private class askCurrentTemperature extends TickerBehaviour {
@@ -71,6 +74,56 @@ public class RoomAgent extends Agent {
 	}
 	
 	private class getCurrentTemperature extends CyclicBehaviour {
+
+		@Override
+		public void action() {
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			//System.out.println("Server behaviour 1 wait a message.");
+			ACLMessage msg = myAgent.receive(mt);
+			if (msg!=null) {
+
+				String messageContenut=msg.getContent();
+				System.out.println("Room::::"+messageContenut);
+
+			}
+			else {
+				block();
+			}
+			
+		}
+	
+	}
+	
+	private class askCurrentLumen extends TickerBehaviour {
+
+		public askCurrentLumen(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4558099421600874487L;
+
+		@Override
+		public void onTick() {
+
+			String currTemp=null;
+
+			AID msgReceiver= new AID("Sensore-Luci",AID.ISLOCALNAME);
+
+			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+			serialAnswer.addReceiver(msgReceiver);
+			//serialAnswer.setContent("therm1");
+			myAgent.send(serialAnswer);
+
+
+			//temperature = Float.parseFloat(currTemp);
+			//System.out.println(currTemp);
+		}
+	}
+	
+	private class getCurrentLumen extends CyclicBehaviour {
 
 		@Override
 		public void action() {
