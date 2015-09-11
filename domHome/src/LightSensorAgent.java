@@ -1,7 +1,6 @@
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -10,45 +9,45 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class ThermometerAgent extends Agent {
-	private Float currentTemperature;
+public class LightSensorAgent extends Agent {
+	private int currentLumen;
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8355663085154105053L;
-
+	private static final long serialVersionUID = 7925627535445537735L;
+	
 	protected void setup() {
-
-		DFAgentDescription dfd = new DFAgentDescription();
-		dfd.setName(getAID());
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType("thermometer-manager");
-		sd.setName("JADE-thermometer");
-		dfd.addServices(sd);
-		try {
-			DFService.register(this, dfd);
-		}
-		catch(FIPAException fe) {
-			fe.printStackTrace();
-		}
-		addBehaviour(new RequestCurrentTemperature(this, 3000));
-		addBehaviour(new getCurrentTemperature());
-		addBehaviour(new tempService());
+	
+	DFAgentDescription dfd = new DFAgentDescription();
+	dfd.setName(getAID());
+	ServiceDescription sd = new ServiceDescription();
+	sd.setType("light-sensor-manager");
+	sd.setName("JADE-light-sensor");
+	dfd.addServices(sd);
+	try {
+		DFService.register(this, dfd);
 	}
-
-	protected void takeDown() {
-		// Deregister from the yellow pages
-		try {
-			DFService.deregister(this);
-		}
-		catch (FIPAException fe) {
-			fe.printStackTrace();
-		}
-		System.out.println("ThermometerAgent "+getAID().getName()+" terminating.");
+	catch(FIPAException fe) {
+		fe.printStackTrace();
 	}
+	addBehaviour(new RequestCurrentLumen(this, 3000));
+	addBehaviour(new GetCurrentLumen());
+	addBehaviour(new LightSensorService());
+}
 
-	private class tempService extends CyclicBehaviour {
+protected void takeDown() {
+	// Deregister from the yellow pages
+	try {
+		DFService.deregister(this);
+	}
+	catch (FIPAException fe) {
+		fe.printStackTrace();
+	}
+	System.out.println("LightSensorAgent "+getAID().getName()+" terminating.");
+}
+	
+	private class LightSensorService extends CyclicBehaviour {
 
 		@Override
 		public void action() {
@@ -57,12 +56,12 @@ public class ThermometerAgent extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
 
-				if(currentTemperature!=null) {
-					String messageContenut=msg.getContent();
+				if(currentLumen>=0) {
+					String messageContenut = msg.getContent();
 					//System.out.println("AgenteTermometro::::"+messageContenut);
 					ACLMessage reply = msg.createReply();
 					reply.setPerformative(ACLMessage.INFORM);
-					reply.setContent(currentTemperature.toString());
+					reply.setContent(Integer.toString(currentLumen));
 					myAgent.send(reply);
 				}
 
@@ -75,27 +74,27 @@ public class ThermometerAgent extends Agent {
 
 	}
 
-	private class RequestCurrentTemperature extends TickerBehaviour {
+	private class RequestCurrentLumen extends TickerBehaviour {
 
-		public RequestCurrentTemperature(Agent a, long period) {
-			super(a, period);
-			// TODO Auto-generated constructor stub
-		}
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 9072626078728707911L;
+		private static final long serialVersionUID = 1L;
+		public RequestCurrentLumen(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
 
 		@Override
 		public void onTick() {
 
-			String currTemp=null;
+			String currLumen=null;
 
 			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
 			serialAnswer.addReceiver(msgReceiver);
-			serialAnswer.setContent("therm1");
+			serialAnswer.setContent("lm1");
 			//cfp.setConversationId("mex1");
 			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
 			myAgent.send(serialAnswer);
@@ -109,7 +108,7 @@ public class ThermometerAgent extends Agent {
 		}
 	}
 
-	private class getCurrentTemperature extends CyclicBehaviour {
+	private class GetCurrentLumen extends CyclicBehaviour {
 
 		@Override
 		public void action() {
@@ -119,9 +118,9 @@ public class ThermometerAgent extends Agent {
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
-				System.out.println("AgenteTermometro::::"+messageContenut);
+				System.out.println("AgenteLightSensor::::"+messageContenut);
 				if (messageContenut!=null)
-					currentTemperature = Float.parseFloat(messageContenut);
+					currentLumen = Integer.parseInt(messageContenut);
 
 			}
 			else {
