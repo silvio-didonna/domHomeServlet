@@ -7,9 +7,19 @@
 // The DallasTemperature library can do all this work for you!
 // http://milesburton.com/Dallas_Temperature_Control_Library
 
-OneWire  ds(10);  // on pin 10 (a 4.7K resistor is necessary)
+//Gestione stringa in input
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
+
+//Temperatura
+OneWire  ds(10);  // on pin 10 (a 4.7K resistor is necessary)
+
+//Luce
+int photocell1Pin = 0;     // the first cell and 10K pulldown are connected to a0
+int photocell2Pin = 1;     // the second cell and 10K pulldown are connected to a1
+int photocell1Reading;     // the first analog reading from the sensor divider
+int photocell2Reading;     // the second analog reading from the sensor divider
+
 //unsigned long time;
 //int led = 13;
 //SoftwareSerial mySerial(2, 3); // RX, TX
@@ -37,6 +47,11 @@ void loop(void) {
       //mySerial.print(tempString);
       //Serial.println(temp, 4);
           // clear the string:
+    }
+    else if(inputString.equals("lm1\n")) { 
+      analogRead(photocell1Pin); //Pulisce la lettura
+  photocell1Reading = analogRead(photocell1Pin);
+  Serial.println(photocell1Reading);     // the raw analog reading  
     }
     else
     Serial.println("errore\n");
