@@ -62,14 +62,16 @@ public class mainClass {
 		AgentController roomAgent = cont.createNewAgent (roomName, "RoomAgent", null);	
 		AgentController temperatureAgent = cont.createNewAgent (temperatureName, "TemperatureAgent", null);	
 		AgentController lightningAgent = cont.createNewAgent (lightningName, "LightningAgent", null);
-
+		
+		/*
 		try {
 			Thread.sleep(8000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		 */
+		
 		serialCommAgent.start();
 
 		fanAgent.start();
