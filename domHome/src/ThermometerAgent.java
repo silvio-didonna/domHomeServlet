@@ -100,8 +100,7 @@ public class ThermometerAgent extends Agent {
 			serialAnswer.setReplyWith(temperatureReplyWith);
 			serialAnswer.addReceiver(msgReceiver);
 			serialAnswer.setContent("therm1\n");
-			//cfp.setConversationId("mex1");
-			//cfp.setReplyWith("cfp"+System.currentTimeMillis()); // Unique value
+
 			myAgent.send(serialAnswer);
 
 		}
