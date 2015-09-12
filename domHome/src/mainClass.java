@@ -71,18 +71,22 @@ public class mainClass {
 			e.printStackTrace();
 		}
 		 */
-		
+		//Gestore seriale
 		serialCommAgent.start();
-
+		
+		//Agenti base per temperatura
 		fanAgent.start();
 		thermometerAgent.start();
-		temperatureAgent.start();
-
+		
+		//Agenti base per l'illuminazione
 		lightSensorAgent.start();
-		lightningAgent.start();
-
+		
+		//Gestore ambiente
 		roomAgent.start();
-
+		
+		//Gestori generali
+		temperatureAgent.start();
+		lightningAgent.start();
 
 	}
 }
