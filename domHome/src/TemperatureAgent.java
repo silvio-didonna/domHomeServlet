@@ -151,10 +151,12 @@ public class TemperatureAgent extends Agent {
 
 		@Override
 		public void onTick() {
+			Float tempMaxValue = new Float(30);
 			for(CurrentTemperatureInRoom currentTemperatureInRoom:currentTemperatures) {
 				System.out.println("setFan:::: " +currentTemperatureInRoom.getCurrentTemperature());
-				if ((currentTemperatureInRoom.getCurrentTemperature() != null) && (currentTemperatureInRoom.getCurrentTemperature() > 30.0)) {
-					if (!currentTemperatureInRoom.getfanOn()) {
+				if (!currentTemperatureInRoom.getfanOn()) {
+					if ((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
+
 						ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
 						AID msgReceiver= new AID("Ventilatore",AID.ISLOCALNAME);
 						serialAnswer.addReceiver(msgReceiver);
@@ -167,8 +169,9 @@ public class TemperatureAgent extends Agent {
 
 							String messageContenut=msg.getContent();
 							if (messageContenut!=null)
-								currentTemperatureInRoom.setfanOn(Boolean.getBoolean(messageContenut));
-							System.out.println("AgenteGestore-Temperatura (true/false)::::"+messageContenut);
+								currentTemperatureInRoom.setfanOn(Boolean.valueOf(messageContenut));
+							System.out.println("AgenteGestore-Temperatura (on)::::"+messageContenut);
+							System.out.println("AgenteGestore-Temperatura (on)::::"+currentTemperatureInRoom.getfanOn());
 							//if (messageContenut!=null)
 							//fanStatus = Boolean.getBoolean(messageContenut);
 
@@ -176,13 +179,35 @@ public class TemperatureAgent extends Agent {
 						else {
 							block();
 						}
+
+					}
+				}
+				else if((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) < 0))) {
+					ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+					AID msgReceiver= new AID("Ventilatore",AID.ISLOCALNAME);
+					serialAnswer.addReceiver(msgReceiver);
+					//serialAnswer.setContent("fan1\n");
+					myAgent.send(serialAnswer);
+
+					MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.AGREE);
+					ACLMessage msg = myAgent.receive(mt);
+					if (msg!=null) {
+
+						String messageContenut=msg.getContent();
+						if (messageContenut!=null)
+							currentTemperatureInRoom.setfanOn(Boolean.valueOf(messageContenut));
+						System.out.println("AgenteGestore-Temperatura (off)::::"+messageContenut);
+						System.out.println("AgenteGestore-Temperatura (off)::::"+currentTemperatureInRoom.getfanOn());
+						//if (messageContenut!=null)
+						//fanStatus = Boolean.getBoolean(messageContenut);
+
+					}
+					else {
+						block();
 					}
 				}
 			}
-
 		}
-
-
 	}
 
 	private class CurrentTemperatureInRoom {
