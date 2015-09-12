@@ -44,6 +44,46 @@ public class RoomAgent extends Agent {
 
 		addBehaviour(new AskCurrentLumen(this, 5000));
 		addBehaviour(new GetCurrentLumen());
+		
+		addBehaviour(new RoomService());
+	}
+
+	private class RoomService extends CyclicBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6847439043781775939L;
+
+		@Override
+		public void action() {
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+			ACLMessage msg = myAgent.receive(mt);
+			if (msg!=null) {
+
+				String messageContenut=msg.getContent();
+				String messageReply="";
+				
+				switch(messageContenut) {
+				case("temperatura"): 
+					messageReply=String.valueOf(temperature);
+				break;
+				case("lumen"):
+					messageReply=String.valueOf(lumens);
+				break;
+				}
+
+				ACLMessage reply = msg.createReply();
+				reply.setPerformative(ACLMessage.INFORM);
+				reply.setContent(messageReply.toString());
+				myAgent.send(reply);
+			}
+			else {
+				block();
+			}
+
+		}
+
 	}
 
 	private class AskCurrentTemperature extends TickerBehaviour {
@@ -92,6 +132,7 @@ public class RoomAgent extends Agent {
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
+				temperature = Float.parseFloat(messageContenut);
 				System.out.println("Room-Temp::::"+messageContenut);
 
 			}

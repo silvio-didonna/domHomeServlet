@@ -11,7 +11,7 @@ import jade.lang.acl.MessageTemplate;
 
 
 public class FanAgent extends Agent {
-	boolean fanStatus;
+	Boolean fanStatus=false;
 
 	/**
 	 * 
@@ -32,31 +32,42 @@ public class FanAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new RequestFanAction(this,5000));
+		addBehaviour(new toggleFan());
 		addBehaviour(new checkFanStatus());
 	}
-	
-	private class RequestFanAction extends TickerBehaviour {
 
-		public RequestFanAction(Agent a, long period) {
-			super(a, period);
-			// TODO Auto-generated constructor stub
-		}
+	private class toggleFan extends CyclicBehaviour {
+
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 9072626078728707911L;
 
 		@Override
-		public void onTick() {
+		public void action() {
 
-			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+			//System.out.println("Server behaviour 1 wait a message.");
+			ACLMessage msg = myAgent.receive(mt);
+			if (msg!=null) {
+				
+				AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
+				ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+				serialAnswer.addReceiver(msgReceiver);
+				serialAnswer.setContent("fan1\n");
+				myAgent.send(serialAnswer);
+				
+				//checkFanStatus
+				
+				ACLMessage reply = msg.createReply();
+				reply.setPerformative(ACLMessage.AGREE);
+				reply.setContent(fanStatus.toString());
+				myAgent.send(reply);
 
-			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
-			serialAnswer.addReceiver(msgReceiver);
-			serialAnswer.setContent("fan1\n");
-
-			myAgent.send(serialAnswer);
+			}
+			else {
+				block();
+			}
 
 		}
 	}
@@ -71,20 +82,13 @@ public class FanAgent extends Agent {
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-			//MessageTemplate mt2 = MessageTemplate.MatchInReplyTo(temperatureReplyWith);
-			//MessageTemplate mt = MessageTemplate.and(mt1, mt2);
-			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
 				System.out.println("AgenteVentilatore::::"+messageContenut);
 				if (messageContenut!=null)
-					//try {
-						fanStatus = Boolean.getBoolean(messageContenut);
-					//} catch (NumberFormatException e) {
-					//	System.out.println("AgenteTermometro::::errore");
-					//}
+					fanStatus = Boolean.getBoolean(messageContenut);
 
 			}
 			else {
