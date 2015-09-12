@@ -13,6 +13,8 @@ boolean stringComplete = false;  // whether the string is complete
 
 //Temperatura
 OneWire  ds(10);  // on pin 10 (a 4.7K resistor is necessary)
+int fanPin=2;
+bool fanOn;
 
 //Luce
 int photocell1Pin = 0;     // the first cell and 10K pulldown are connected to a0
@@ -27,6 +29,11 @@ int photocell2Reading;     // the second analog reading from the sensor divider
 void setup(void) {
   //pinMode(led,OUTPUT);
   //digitalWrite(led, HIGH); 
+  
+  pinMode(fanPin,OUTPUT);
+  digitalWrite(fanPin, LOW);
+  fanOn=false; 
+  
   Serial.begin(9600);
     //mySerial.begin(9600);
   // reserve 100 bytes for the inputString:
@@ -52,6 +59,18 @@ void loop(void) {
       analogRead(photocell1Pin); //Pulisce la lettura
   photocell1Reading = analogRead(photocell1Pin);
   Serial.println(photocell1Reading);     // the raw analog reading  
+    }
+    else if(inputString.equals("fan1\n")) { 
+      if (fanOn==false) { //se è spenta l'accende
+        digitalWrite(fanPin, HIGH);
+        fanOn=true;
+        Serial.println("true\n"); 
+      }
+      else {// se è accesa la spegne
+        digitalWrite(fanPin, LOW);
+        fanOn=false;
+        Serial.println("false\n");  
+      }
     }
     else
     Serial.println("errore\n");
