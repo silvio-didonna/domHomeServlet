@@ -25,6 +25,7 @@ public class SerialCommAgent extends Agent {
 	private static final long serialVersionUID = 138736042772986486L;
 
 	protected void setup() {
+		//port="/dev/ttyUSB1";
 		port="COM7";
 		baud=9600;
 
