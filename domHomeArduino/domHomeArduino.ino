@@ -1,4 +1,7 @@
 #include <OneWire.h>
+#include <DallasTemperature.h>
+
+
 //#include <SoftwareSerial.h>
 // OneWire DS18S20, DS18B20, DS1822 Temperature Example
 //
@@ -7,13 +10,22 @@
 // The DallasTemperature library can do all this work for you!
 // http://milesburton.com/Dallas_Temperature_Control_Library
 
-//Gestione stringa in input
-String inputString = "";         // a string to hold incoming data
-boolean stringComplete = false;  // whether the string is complete
 
 //Temperatura
-OneWire  ds(10);  // on pin 10 (a 4.7K resistor is necessary)
-int fanPin=2;
+//ONEWIRE----------------------------------------------------------------------START
+// Data wire is plugged into port 10 on the Arduino
+#define ONE_WIRE_BUS 10
+OneWire oneWire(ONE_WIRE_BUS);
+// Pass our oneWire reference to Dallas Temperature.
+DallasTemperature sensors(&oneWire);
+DeviceAddress tempDeviceAddress;
+int  resolution = 10;
+unsigned long lastTempRequest = 0;
+int  delayInMillis = 0;
+float temperature = 0.0;
+//ONEWIRE----------------------------------------------------------------------STOP
+
+int fanPin = 2;
 bool fanOn;
 
 //Luce
@@ -26,59 +38,66 @@ int photocell2Reading;     // the second analog reading from the sensor divider
 //int led = 13;
 //SoftwareSerial mySerial(2, 3); // RX, TX
 
+//Gestione stringa in input
+String inputString = "";         // a string to hold incoming data
+boolean stringComplete = false;  // whether the string is complete
+
 void setup(void) {
   //pinMode(led,OUTPUT);
-  //digitalWrite(led, HIGH); 
-  
-  pinMode(fanPin,OUTPUT);
+  //digitalWrite(led, HIGH);
+
+  pinMode(fanPin, OUTPUT);
   digitalWrite(fanPin, LOW);
-  fanOn=false; 
-  
+  fanOn = false;
+
   Serial.begin(9600);
-    //mySerial.begin(9600);
+  //mySerial.begin(9600);
   // reserve 100 bytes for the inputString:
   inputString.reserve(100);
+  initThermometer();
 }
 
 void loop(void) {
-//digitalWrite(led, HIGH); 
+  updateTemperature();
+  //digitalWrite(led, HIGH);
   if (stringComplete) {
-    
+
     if (inputString.equals("therm1\n")) {
-      float temp=getTemperature();
-      String tempString = String(temp);
-      tempString+='\n';
-      Serial.print(tempString);
-      //digitalWrite(led, LOW); 
+      //float temp = getTemperature();
+     // String tempString = String(temp);
+      //tempString += '\n';
+      //Serial.print(tempString);
+      Serial.println(temperature, resolution - 8); 
+      //digitalWrite(led, LOW);
       //delay(500);
       //mySerial.print(tempString);
       //Serial.println(temp, 4);
-          // clear the string:
+      // clear the string:
     }
-    else if(inputString.equals("lm1\n")) { 
+    else if (inputString.equals("lm1\n")) {
       analogRead(photocell1Pin); //Pulisce la lettura
-  photocell1Reading = analogRead(photocell1Pin);
-  Serial.println(photocell1Reading);     // the raw analog reading  
+      photocell1Reading = analogRead(photocell1Pin);
+      Serial.println(photocell1Reading);     // the raw analog reading
     }
-    else if(inputString.equals("fan1\n")) { 
-      if (fanOn==false) { //se è spenta l'accende
+    else if (inputString.equals("fan1\n")) {
+      if (fanOn == false) { //se è spenta l'accende
         digitalWrite(fanPin, HIGH);
-        fanOn=true;
-        Serial.println("true\n"); 
+        fanOn = true;
+        Serial.println("true\n");
       }
       else {// se è accesa la spegne
         digitalWrite(fanPin, LOW);
-        fanOn=false;
-        Serial.println("false\n");  
+        fanOn = false;
+        Serial.println("false\n");
       }
     }
     else
-    Serial.println("errore\n");
-    
+      Serial.println("errore\n");
+
     inputString = "";
     stringComplete = false;
   }
-    else
+  else
     serialEvent(); //call the function
 }
 
@@ -103,51 +122,26 @@ void serialEvent() {
   }
 }
 
-float getTemperature() {
-  byte i;
-  byte present = 0;
-  byte data[12];
-  byte addr[8];
-  float celsius;
+void initThermometer() {
+  sensors.begin();
+  sensors.getAddress(tempDeviceAddress, 0);
+  sensors.setResolution(tempDeviceAddress, resolution);
 
-//28 FF C5 1F 12 14 0 C8
-addr[0]=0x28;
-addr[1]=0xFF;
-addr[2]=0xC5;
-addr[3]=0x1F;
-addr[4]=0x12;
-addr[5]=0x14;
-addr[6]=0x0;
-addr[7]=0xC8;
-
-  ds.reset();
-  ds.select(addr);
-  ds.write(0x44, 1);        // start conversion, with parasite power on at the end
-  
-  delay(1000);     // maybe 750ms is enough, maybe not
-  // we might do a ds.depower() here, but the reset will take care of it.
-  
-  present = ds.reset();
-  ds.select(addr);    
-  ds.write(0xBE);         // Read Scratchpad
-
-  for ( i = 0; i < 9; i++) {           // we need 9 bytes
-    data[i] = ds.read();
-  }
-
-  // Convert the data to actual temperature
-  // because the result is a 16 bit signed integer, it should
-  // be stored to an "int16_t" type, which is always 16 bits
-  // even when compiled on a 32 bit processor.
-  int16_t raw = (data[1] << 8) | data[0];
-
-    byte cfg = (data[4] & 0x60);
-    // at lower res, the low bits are undefined, so let's zero them
-    if (cfg == 0x00) raw = raw & ~7;  // 9 bit resolution, 93.75 ms
-    else if (cfg == 0x20) raw = raw & ~3; // 10 bit res, 187.5 ms
-    else if (cfg == 0x40) raw = raw & ~1; // 11 bit res, 375 ms
-    //// default is 12 bit resolution, 750 ms conversion time
- // }
-  celsius = (float)raw / 16.0;
-  return celsius;
+  sensors.setWaitForConversion(false);
+  sensors.requestTemperatures();
+  delayInMillis = 750 / (1 << (12 - resolution));
+  lastTempRequest = millis();
 }
+
+void updateTemperature() {
+  if (millis() - lastTempRequest >= delayInMillis) // waited long enough??
+  {
+    temperature = sensors.getTempCByIndex(0);
+
+    sensors.requestTemperatures(); 
+    delayInMillis = 750 / (1 << (12 - resolution));
+    lastTempRequest = millis(); 
+  }
+}
+
+
