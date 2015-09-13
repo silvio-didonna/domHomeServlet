@@ -87,10 +87,10 @@ public class FanAgent extends Agent {
 
 				String messageContenut=msg.getContent();
 				messageContenut=messageContenut.trim();
-				System.out.println("AgenteVentilatore::::"+messageContenut);
+				//System.out.println("AgenteVentilatore::::"+messageContenut);
 				if (messageContenut!=null)
 					fanStatus = Boolean.valueOf(messageContenut);
-				System.out.println("AgenteVentilatore::::"+fanStatus);
+				//System.out.println("AgenteVentilatore::::"+fanStatus);
 
 			}
 			else {

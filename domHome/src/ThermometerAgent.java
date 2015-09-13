@@ -123,7 +123,7 @@ public class ThermometerAgent extends Agent {
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
-				System.out.println("AgenteTermometro::::"+messageContenut);
+				//System.out.println("AgenteTermometro::::"+messageContenut);
 				if (messageContenut!=null)
 					try {
 						currentTemperature = Float.parseFloat(messageContenut);

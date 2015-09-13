@@ -113,7 +113,7 @@ public class LightSensorAgent extends Agent {
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
-				System.out.println("AgenteLightSensor::::"+messageContenut);
+				//System.out.println("AgenteLightSensor::::"+messageContenut);
 				if (messageContenut!=null) {
 					messageContenut=messageContenut.trim();
 					try {

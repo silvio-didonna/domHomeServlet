@@ -170,7 +170,7 @@ public class TemperatureAgent extends Agent {
 							String messageContenut=msg.getContent();
 							if (messageContenut!=null)
 								currentTemperatureInRoom.setfanOn(Boolean.valueOf(messageContenut));
-							System.out.println("AgenteGestore-Temperatura (on)::::"+messageContenut);
+							//System.out.println("AgenteGestore-Temperatura (on)::::"+messageContenut);
 							System.out.println("AgenteGestore-Temperatura (on)::::"+currentTemperatureInRoom.getfanOn());
 							//if (messageContenut!=null)
 							//fanStatus = Boolean.getBoolean(messageContenut);
@@ -196,7 +196,7 @@ public class TemperatureAgent extends Agent {
 						String messageContenut=msg.getContent();
 						if (messageContenut!=null)
 							currentTemperatureInRoom.setfanOn(Boolean.valueOf(messageContenut));
-						System.out.println("AgenteGestore-Temperatura (off)::::"+messageContenut);
+						//System.out.println("AgenteGestore-Temperatura (off)::::"+messageContenut);
 						System.out.println("AgenteGestore-Temperatura (off)::::"+currentTemperatureInRoom.getfanOn());
 						//if (messageContenut!=null)
 						//fanStatus = Boolean.getBoolean(messageContenut);
