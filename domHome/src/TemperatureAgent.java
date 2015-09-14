@@ -1,9 +1,6 @@
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -65,6 +62,7 @@ public class TemperatureAgent extends Agent {
 		addBehaviour(new RequestCurrentTemperature(this,5000));
 		addBehaviour(new getCurrentTemperature());
 		addBehaviour(new setFan(this,6000));
+		addBehaviour(new getFan());
 	}
 
 	private class RequestCurrentTemperature extends TickerBehaviour {
@@ -152,7 +150,7 @@ public class TemperatureAgent extends Agent {
 		@Override
 		public void onTick() {
 			Float tempMaxValue = new Float(30);
-			for(CurrentTemperatureInRoom currentTemperatureInRoom:currentTemperatures) {
+			for(CurrentTemperatureInRoom currentTemperatureInRoom:currentTemperatures) { // per ogni stanza
 				System.out.println("setFan:::: " +currentTemperatureInRoom.getCurrentTemperature());
 				if (!currentTemperatureInRoom.getfanOn()) {
 					if ((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
@@ -163,23 +161,6 @@ public class TemperatureAgent extends Agent {
 						//serialAnswer.setContent("fan1\n");
 						myAgent.send(serialAnswer);
 
-						MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.AGREE);
-						ACLMessage msg = myAgent.receive(mt);
-						if (msg!=null) {
-
-							String messageContenut=msg.getContent();
-							if (messageContenut!=null)
-								currentTemperatureInRoom.setfanOn(Boolean.valueOf(messageContenut));
-							//System.out.println("AgenteGestore-Temperatura (on)::::"+messageContenut);
-							System.out.println("AgenteGestore-Temperatura (on)::::"+currentTemperatureInRoom.getfanOn());
-							//if (messageContenut!=null)
-							//fanStatus = Boolean.getBoolean(messageContenut);
-
-						}
-						else {
-							block();
-						}
-
 					}
 				}
 				else if((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) < 0))) {
@@ -189,26 +170,46 @@ public class TemperatureAgent extends Agent {
 					//serialAnswer.setContent("fan1\n");
 					myAgent.send(serialAnswer);
 
-					MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.AGREE);
-					ACLMessage msg = myAgent.receive(mt);
-					if (msg!=null) {
 
-						String messageContenut=msg.getContent();
-						if (messageContenut!=null)
-							currentTemperatureInRoom.setfanOn(Boolean.valueOf(messageContenut));
-						//System.out.println("AgenteGestore-Temperatura (off)::::"+messageContenut);
-						System.out.println("AgenteGestore-Temperatura (off)::::"+currentTemperatureInRoom.getfanOn());
-						//if (messageContenut!=null)
-						//fanStatus = Boolean.getBoolean(messageContenut);
-
-					}
-					else {
-						block();
-					}
 				}
 			}
 		}
 	}
+
+	private class getFan extends CyclicBehaviour {
+
+		@Override
+		public void action() {
+
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.AGREE); //modificare il performative
+			ACLMessage msg = myAgent.receive(mt);
+			if (msg!=null) {
+
+				String messageContenut=msg.getContent();
+				if (messageContenut!=null) {
+					Iterator <CurrentTemperatureInRoom> it = currentTemperatures.iterator();
+					while(it.hasNext()) {
+
+						CurrentTemperatureInRoom currentTemperatureInRoom = it.next();
+
+						//if (currentTemperatureInRoom.getroomAgent().getName().equals(msg.getSender().getName())) {
+						if (currentTemperatureInRoom.getroomAgent().getLocalName().equals("Gestore-Salone")) {	
+							currentTemperatureInRoom.setfanOn(Boolean.valueOf(messageContenut));
+							System.out.println("AgenteGestore-Temperatura (getFan)::::"+currentTemperatureInRoom.getfanOn());
+						}
+					}
+
+				}
+
+			}
+			else {
+				block();
+			}
+
+		}
+
+	}
+
 
 	private class CurrentTemperatureInRoom {
 		private Float currentTemperature;
