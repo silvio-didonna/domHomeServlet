@@ -1,9 +1,5 @@
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import com.fazecast.jSerialComm.SerialPort;
-
-import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
