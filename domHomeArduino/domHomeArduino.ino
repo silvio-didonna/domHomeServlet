@@ -58,47 +58,30 @@ void setup(void) {
 }
 
 void loop(void) {
-  updateTemperature();
-  //digitalWrite(led, HIGH);
+  updateTemperature(); // ad ogni ciclo controlla se è pronto il termometro e nel caso aggiorna il valore della temperatura.
+
   if (stringComplete) {
 
     if (inputString.equals("therm1\n")) {
-      //float temp = getTemperature();
-     // String tempString = String(temp);
-      //tempString += '\n';
-      //Serial.print(tempString);
-      Serial.println(temperature, resolution - 8); 
-      //digitalWrite(led, LOW);
-      //delay(500);
-      //mySerial.print(tempString);
-      //Serial.println(temp, 4);
-      // clear the string:
+      Serial.println(temperature, resolution - 8); //Temperatura con le giuste cifre decimali
     }
     else if (inputString.equals("lm1\n")) {
       analogRead(photocell1Pin); //Pulisce la lettura
       photocell1Reading = analogRead(photocell1Pin);
-      Serial.println(photocell1Reading);     // the raw analog reading
+      Serial.println(photocell1Reading);     // valore raw.
     }
     else if (inputString.equals("fan1\n")) {
-      if (fanOn == false) { //se è spenta l'accende
-        digitalWrite(fanPin, HIGH);
-        fanOn = true;
-        Serial.println("true\n");
-      }
-      else {// se è accesa la spegne
-        digitalWrite(fanPin, LOW);
-        fanOn = false;
-        Serial.println("false\n");
-      }
+      setFan();
+      Serial.println(fanOn ? "true" : "false");
     }
     else
       Serial.println("errore\n");
-
+      // clear the string:
     inputString = "";
     stringComplete = false;
   }
   else
-    serialEvent(); //call the function
+    serialEvent(); // solo se la stringa non è completa
 }
 
 /*
@@ -120,6 +103,17 @@ void serialEvent() {
       stringComplete = true;
     }
   }
+}
+
+void setFan () {
+  if (fanOn == false) { //se è spenta l'accende
+        digitalWrite(fanPin, HIGH);
+        fanOn = true;
+      }
+      else {// se è accesa la spegne
+        digitalWrite(fanPin, LOW);
+        fanOn = false;
+      }
 }
 
 void initThermometer() {
