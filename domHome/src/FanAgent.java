@@ -1,7 +1,7 @@
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.TickerBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -11,7 +11,8 @@ import jade.lang.acl.MessageTemplate;
 
 
 public class FanAgent extends Agent {
-	Boolean fanStatus=false;
+	Boolean fanStatus=true; // per non far spegnere il ventilatore dopo il primo ciclo
+	AID fromAgent;
 
 	/**
 	 * 
@@ -19,6 +20,7 @@ public class FanAgent extends Agent {
 	private static final long serialVersionUID = 6998352636636720971L;
 
 	protected void setup() {
+
 
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -33,7 +35,9 @@ public class FanAgent extends Agent {
 			fe.printStackTrace();
 		}
 		addBehaviour(new toggleFan());
-		addBehaviour(new checkFanStatus());
+		//addBehaviour(new checkFanStatus());
+		//addBehaviour(new fanService());
+
 	}
 
 	private class toggleFan extends CyclicBehaviour {
@@ -49,30 +53,27 @@ public class FanAgent extends Agent {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
+
 			if (msg!=null) {
-				
+				fromAgent = new AID(msg.getSender().getLocalName(),AID.ISLOCALNAME);
 				AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 				ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
 				serialAnswer.addReceiver(msgReceiver);
 				serialAnswer.setContent("fan1\n");
 				myAgent.send(serialAnswer);
-				
-				//checkFanStatus
-				
-				ACLMessage reply = msg.createReply();
-				reply.setPerformative(ACLMessage.AGREE);
-				reply.setContent(fanStatus.toString());
-				myAgent.send(reply);
+
+				addBehaviour(new checkFanStatus());
+				addBehaviour(new replyWithStatus());
+
 
 			}
-			else {
+			else
 				block();
-			}
 
 		}
 	}
 
-	private class checkFanStatus extends CyclicBehaviour {
+	private class checkFanStatus extends OneShotBehaviour {
 
 		/**
 		 * 
@@ -82,22 +83,73 @@ public class FanAgent extends Agent {
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
+			ACLMessage msgFromSerial = myAgent.blockingReceive(mt); // ATTENZIONE, è una BLOCKING
+			if (msgFromSerial!=null) {
 
-				String messageContenut=msg.getContent();
+				String messageContenut=msgFromSerial.getContent();
 				messageContenut=messageContenut.trim();
 				//System.out.println("AgenteVentilatore::::"+messageContenut);
 				if (messageContenut!=null)
 					fanStatus = Boolean.valueOf(messageContenut);
-				//System.out.println("AgenteVentilatore::::"+fanStatus);
-
+				System.out.println("AgenteVentilatore::::"+fanStatus);
 			}
-			else {
-				block();
-			}
+			//else
+			//block();
 
 		}
+
+	}
+
+
+	private class replyWithStatus extends OneShotBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7851399022936675519L;
+
+		@Override
+		public void action() {
+
+			//ACLMessage reply = msg.createReply();
+			ACLMessage reply = new ACLMessage(ACLMessage.AGREE);
+			reply.addReceiver(fromAgent);
+			//reply.setPerformative(ACLMessage.AGREE);
+			reply.setContent(fanStatus.toString());
+			myAgent.send(reply);
+		}
+
+	}
+
+	private class fanService extends CyclicBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7077823714595289649L;
+
+		@Override
+		public void action() {
+			/*
+		SequentialBehaviour sq =new SequentialBehaviour() { 
+			  public int onEnd() { 
+				    reset(); 
+				    myAgent.addBehaviour(this); 
+				    return super.onEnd(); 
+				  } 
+				}; 
+		sq.addSubBehaviour(new toggleFan());
+		sq.addSubBehaviour(new checkFanStatus());
+		sq.addSubBehaviour(new replyWithStatus());
+		addBehaviour(sq);
+			 */
+
+
+
+			//addBehaviour(fsm);
+
+		}
+
 
 	}
 
