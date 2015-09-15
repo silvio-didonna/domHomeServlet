@@ -55,13 +55,13 @@ public class mainClass {
 		//argList.add(arduino);
 		//Object[] argList = new Object[1];
 		//argList[0]=arduino;
-		AgentController fanAgent = cont.createNewAgent (fanName, "FanAgent", null);
-		AgentController thermometerAgent = cont.createNewAgent (thermometerName, "ThermometerAgent", null);		
+		AgentController fanAgent = cont.createNewAgent (fanName, "temperature.FanAgent", null);
+		AgentController thermometerAgent = cont.createNewAgent (thermometerName, "temperature.ThermometerAgent", null);		
 		AgentController serialCommAgent = cont.createNewAgent (serialCommName, "SerialCommAgent", null);	
-		AgentController lightSensorAgent = cont.createNewAgent (lightSensorName, "LightSensorAgent", null);	
+		AgentController lightSensorAgent = cont.createNewAgent (lightSensorName, "light.LightSensorAgent", null);	
 		AgentController roomAgent = cont.createNewAgent (roomName, "RoomAgent", null);	
-		AgentController temperatureAgent = cont.createNewAgent (temperatureName, "TemperatureAgent", null);	
-		AgentController lightningAgent = cont.createNewAgent (lightningName, "LightningAgent", null);
+		AgentController temperatureAgent = cont.createNewAgent (temperatureName, "temperature.TemperatureAgent", null);	
+		AgentController lightningAgent = cont.createNewAgent (lightningName, "light.LightningAgent", null);
 		
 		/*
 		try {

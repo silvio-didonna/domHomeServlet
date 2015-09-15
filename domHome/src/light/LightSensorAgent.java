@@ -1,3 +1,4 @@
+package light;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -9,22 +10,22 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class ThermometerAgent extends Agent {
-	private Float currentTemperature;
-	String temperatureReplyWith = "temperature";
+public class LightSensorAgent extends Agent {
+	private int currentLumen;
+	String lumenReplyWith = "lumen";
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8355663085154105053L;
+	private static final long serialVersionUID = 7925627535445537735L;
 
 	protected void setup() {
 
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
-		sd.setType("thermometer-manager");
-		sd.setName("JADE-thermometer");
+		sd.setType("light-sensor-manager");
+		sd.setName("JADE-light-sensor");
 		dfd.addServices(sd);
 		try {
 			DFService.register(this, dfd);
@@ -32,9 +33,9 @@ public class ThermometerAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new RequestCurrentTemperature(this, 3000));
-		addBehaviour(new GetCurrentTemperature());
-		addBehaviour(new TempService());
+		addBehaviour(new RequestCurrentLumen(this, 3000));
+		addBehaviour(new GetCurrentLumen());
+		addBehaviour(new LightSensorService());
 	}
 
 	protected void takeDown() {
@@ -45,29 +46,22 @@ public class ThermometerAgent extends Agent {
 		catch (FIPAException fe) {
 			fe.printStackTrace();
 		}
-		System.out.println("ThermometerAgent "+getAID().getName()+" terminating.");
+		System.out.println("LightSensorAgent "+getAID().getName()+" terminating.");
 	}
 
-	private class TempService extends CyclicBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -6607101087483781538L;
+	private class LightSensorService extends CyclicBehaviour {
 
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
 
-				if(currentTemperature!=null) {
-					String messageContenut=msg.getContent();
-					//System.out.println("AgenteTermometro::::"+messageContenut);
+				if(currentLumen>=0) {
+					String messageContenut = msg.getContent();
 					ACLMessage reply = msg.createReply();
 					reply.setPerformative(ACLMessage.INFORM);
-					reply.setContent(currentTemperature.toString());
+					reply.setContent(Integer.toString(currentLumen));
 					myAgent.send(reply);
 				}
 
@@ -80,57 +74,55 @@ public class ThermometerAgent extends Agent {
 
 	}
 
-	private class RequestCurrentTemperature extends TickerBehaviour {
+	private class RequestCurrentLumen extends TickerBehaviour {
 
-		public RequestCurrentTemperature(Agent a, long period) {
-			super(a, period);
-			// TODO Auto-generated constructor stub
-		}
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 9072626078728707911L;
+		private static final long serialVersionUID = 1L;
+		public RequestCurrentLumen(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
 
 		@Override
 		public void onTick() {
 
+			String currLumen=null;
+
 			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
-			serialAnswer.setReplyWith(temperatureReplyWith);
+			serialAnswer.setReplyWith(lumenReplyWith);
 			serialAnswer.addReceiver(msgReceiver);
-			serialAnswer.setContent("therm1\n");
+			serialAnswer.setContent("lm1\n");
 
 			myAgent.send(serialAnswer);
 
 		}
 	}
 
-	private class GetCurrentTemperature extends CyclicBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -2794051229003161225L;
+	private class GetCurrentLumen extends CyclicBehaviour {
 
 		@Override
 		public void action() {
 			MessageTemplate mt1 = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-			MessageTemplate mt2 = MessageTemplate.MatchInReplyTo(temperatureReplyWith);
+			MessageTemplate mt2 = MessageTemplate.MatchInReplyTo(lumenReplyWith);
 			MessageTemplate mt = MessageTemplate.and(mt1, mt2);
 			//System.out.println("Server behaviour 1 wait a message.");
 			ACLMessage msg = myAgent.receive(mt);
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
-				//System.out.println("AgenteTermometro::::"+messageContenut);
-				if (messageContenut!=null)
+				//System.out.println("AgenteLightSensor::::"+messageContenut);
+				if (messageContenut!=null) {
+					messageContenut=messageContenut.trim();
 					try {
-						currentTemperature = Float.parseFloat(messageContenut);
-					} catch (NumberFormatException e) {
-						System.out.println("AgenteTermometro::::errore");
+						currentLumen = Integer.parseInt(messageContenut);
+					}catch (NumberFormatException e) {
+						System.out.println("AgenteLightSensor::::errore");
 					}
-
+				}
 			}
 			else {
 				block();

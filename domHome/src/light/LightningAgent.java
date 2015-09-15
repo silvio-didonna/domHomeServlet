@@ -1,3 +1,4 @@
+package light;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
