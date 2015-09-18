@@ -1,3 +1,4 @@
+import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -19,6 +20,8 @@ public class RoomAgent extends Agent {
 	private boolean door;
 	private boolean motion;
 	private boolean flame;
+
+	private boolean tempOrLumen=true;
 
 	/**
 	 * 
@@ -44,8 +47,10 @@ public class RoomAgent extends Agent {
 
 		addBehaviour(new AskCurrentLumen(this, 5000));
 		addBehaviour(new GetCurrentLumen());
-		
+
 		addBehaviour(new RoomService());
+
+		addBehaviour(new sendToThingSpeak(this,16000));
 	}
 
 	private class RoomService extends CyclicBehaviour {
@@ -63,7 +68,7 @@ public class RoomAgent extends Agent {
 
 				String messageContenut=msg.getContent();
 				String messageReply="";
-				
+
 				switch(messageContenut) {
 				case("temperatura"): 
 					messageReply=String.valueOf(temperature);
@@ -197,6 +202,46 @@ public class RoomAgent extends Agent {
 			else {
 				block();
 			}
+
+		}
+
+	}
+
+	private class sendToThingSpeak extends TickerBehaviour {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8713839390230869708L;
+
+		public sendToThingSpeak(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		protected void onTick() {
+			if (tempOrLumen) {
+				//invia temperatura
+
+				try {
+					ThingSpeak.getHTML("https://api.thingspeak.com/update?api_key=OW7HWDZ4UTP04RT6&field1="+String.valueOf(temperature));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+
+			} else {
+				//invia lumen
+
+				try {
+					ThingSpeak.getHTML("https://api.thingspeak.com/update?api_key=OW7HWDZ4UTP04RT6&field2="+String.valueOf(lumens));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			tempOrLumen=!tempOrLumen;
 
 		}
 
