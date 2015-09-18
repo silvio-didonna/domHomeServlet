@@ -23,7 +23,7 @@ public class SerialCommAgent extends Agent {
 	protected void setup() {
 		//port="/dev/ttyUSB1";
 		port="COM7";
-		baud=9600;
+		baud=115200;
 
 		//Object[] argList=this.getArguments(); //ottiene la porta seriale
 		//arduino = (SerialComm) argList[0];
