@@ -33,6 +33,8 @@ int photocell1Pin = 0;     // the first cell and 10K pulldown are connected to a
 int photocell2Pin = 1;     // the second cell and 10K pulldown are connected to a1
 int photocell1Reading;     // the first analog reading from the sensor divider
 int photocell2Reading;     // the second analog reading from the sensor divider
+bool lightOn;
+int lightPin = 13;
 
 //unsigned long time;
 //int led = 13;
@@ -43,14 +45,15 @@ String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 
 void setup(void) {
-  //pinMode(led,OUTPUT);
-  //digitalWrite(led, HIGH);
+  pinMode(lightPin,OUTPUT);
+  digitalWrite(lightPin, LOW);
+  lightOn = false;
 
   pinMode(fanPin, OUTPUT);
   digitalWrite(fanPin, LOW);
   fanOn = false;
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   //mySerial.begin(9600);
   // reserve 100 bytes for the inputString:
   inputString.reserve(100);
@@ -73,6 +76,10 @@ void loop(void) {
     else if (inputString.equals("fan1\n")) {
       setFan();
       Serial.println(fanOn ? "true" : "false");
+    }
+    else if (inputString.equals("light1\n")) {
+      setLight();
+      Serial.println(lightOn ? "true" : "false");
     }
     else
       Serial.println("errore\n");
@@ -113,6 +120,17 @@ void setFan () {
       else {// se è accesa la spegne
         digitalWrite(fanPin, LOW);
         fanOn = false;
+      }
+}
+
+void setLight () {
+  if (lightOn == false) { //se è spenta l'accende
+        digitalWrite(lightPin, HIGH);
+        lightOn = true;
+      }
+      else {// se è accesa la spegne
+        digitalWrite(lightPin, LOW);
+        lightOn = false;
       }
 }
 
