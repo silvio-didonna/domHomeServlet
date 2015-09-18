@@ -1,4 +1,5 @@
 package light;
+import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -63,6 +64,8 @@ public class LightSensorAgent extends Agent {
 					reply.setPerformative(ACLMessage.INFORM);
 					reply.setContent(Integer.toString(currentLumen));
 					myAgent.send(reply);
+
+					
 				}
 
 			}

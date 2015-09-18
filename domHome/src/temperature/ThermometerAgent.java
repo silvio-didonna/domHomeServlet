@@ -72,17 +72,6 @@ public class ThermometerAgent extends Agent {
 					reply.setPerformative(ACLMessage.INFORM);
 					reply.setContent(currentTemperature.toString());
 					myAgent.send(reply);
-					
-					//test hingspeak
-					
-					try {
-						ThingSpeak.getHTML("https://api.thingspeak.com/update?api_key=OW7HWDZ4UTP04RT6&field1="+currentTemperature.toString());
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					//fine test
 				}
 
 			}
