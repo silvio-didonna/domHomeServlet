@@ -15,7 +15,7 @@ public class RoomAgent extends Agent {
 	String temperatureReplyWith = "temperature";
 	String lumenReplyWith = "lumen";
 	private float temperature;
-	private float lumens;
+	private int lumens;
 	private boolean door;
 	private boolean motion;
 	private boolean flame;
@@ -190,6 +190,7 @@ public class RoomAgent extends Agent {
 			if (msg!=null) {
 
 				String messageContenut=msg.getContent();
+				lumens = Integer.parseInt(messageContenut);
 				System.out.println("Room-Lumen::::"+messageContenut);
 
 			}
