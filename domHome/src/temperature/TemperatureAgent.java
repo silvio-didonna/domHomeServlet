@@ -1,17 +1,22 @@
 package temperature;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREInitiator;
 
 public class TemperatureAgent extends Agent {
 
@@ -61,22 +66,23 @@ public class TemperatureAgent extends Agent {
 		}
 
 		addBehaviour(new RequestCurrentTemperature(this,5000));
-		addBehaviour(new getCurrentTemperature());
 		addBehaviour(new setFan(this,6000));
 		addBehaviour(new getFan());
 	}
-
+	
 	private class RequestCurrentTemperature extends TickerBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4219050278752369718L;
+		private int nResponders;
 
 		public RequestCurrentTemperature(Agent a, long period) {
 			super(a, period);
 			// TODO Auto-generated constructor stub
 		}
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -7544895415079804828L;
 
 		@Override
 		protected void onTick() {
@@ -86,54 +92,67 @@ public class TemperatureAgent extends Agent {
 			for (int i = 0; i < serverAgents.length; ++i) {
 				requestTemperatureMessage.addReceiver(serverAgents[i]);
 			}
+			
+
+			requestTemperatureMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			// We want to receive a reply in 10 secs
+			requestTemperatureMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
 			requestTemperatureMessage.setContent("temperatura");
-			myAgent.send(requestTemperatureMessage);
-		}
-	}
+			
+			addBehaviour(new AchieveREInitiator(myAgent, requestTemperatureMessage) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 4875568271828534008L;
+				protected void handleInform(ACLMessage inform) {
+					//System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
+					String messageContenut=inform.getContent();
+					System.out.println("AgenteGestore-Temperatura::::"+messageContenut);
+					if (messageContenut!=null) {
+						try {
+							Float temp=new Float(messageContenut);
+							//System.out.println("AgenteGestore-Temperaturafloat::::"+temp);
+							//Float.parseFloat(messageContenut);
 
-	private class getCurrentTemperature extends CyclicBehaviour {
+							Iterator <CurrentTemperatureInRoom> it = currentTemperatures.iterator();
+							while(it.hasNext()) {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -2518394469526299190L;
-
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
-
-				String messageContenut=msg.getContent();
-				System.out.println("AgenteGestore-Temperatura::::"+messageContenut);
-				if (messageContenut!=null)
-					try {
-						Float temp=new Float(messageContenut);
-						//System.out.println("AgenteGestore-Temperaturafloat::::"+temp);
-						//Float.parseFloat(messageContenut);
-
-						Iterator <CurrentTemperatureInRoom> it = currentTemperatures.iterator();
-						while(it.hasNext()) {
-
-							CurrentTemperatureInRoom currentTemperatureInRoom = it.next();
-							//System.out.println(currentTemperatureInRoom.getroomAgent().getName() + " " + msg.getSender().getName());
-							if (currentTemperatureInRoom.getroomAgent().getName().equals(msg.getSender().getName())) {
-								currentTemperatureInRoom.setCurrentTemperature(temp);
-								//System.out.println(currentTemperatureInRoom.getCurrentTemperature());
+								CurrentTemperatureInRoom currentTemperatureInRoom = it.next();
+								//System.out.println(currentTemperatureInRoom.getroomAgent().getName() + " " + msg.getSender().getName());
+								if (currentTemperatureInRoom.getroomAgent().getName().equals(inform.getSender().getName())) {
+									currentTemperatureInRoom.setCurrentTemperature(temp);
+									//System.out.println(currentTemperatureInRoom.getCurrentTemperature());
+								}
 							}
+
+						} catch (NumberFormatException e) {
+							System.out.println("AgenteGestore-Temperatura::::errore");
 						}
-
-					} catch (NumberFormatException e) {
-						System.out.println("AgenteGestore-Temperatura::::errore");
 					}
-
-			}
-			else {
-				block();
-			}
+				}
+				protected void handleRefuse(ACLMessage refuse) {
+					System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
+					nResponders--;
+				}
+				protected void handleFailure(ACLMessage failure) {
+					if (failure.getSender().equals(myAgent.getAMS())) {
+						// FAILURE notification from the JADE runtime: the receiver
+						// does not exist
+						System.out.println("Responder does not exist");
+					}
+					else {
+						System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
+					}
+				}
+				protected void handleAllResultNotifications(Vector notifications) {
+					if (notifications.size() < nResponders) {
+						// Some responder didn't reply within the specified timeout
+						System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
+					}
+				}
+			} );
 
 		}
-
 	}
 
 	private class setFan extends TickerBehaviour {
