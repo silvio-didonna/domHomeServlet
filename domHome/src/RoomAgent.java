@@ -2,13 +2,19 @@ import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 
 
 
@@ -49,47 +55,68 @@ public class RoomAgent extends Agent {
 		addBehaviour(new GetCurrentLumen());
 
 		addBehaviour(new RoomService());
+		
 
 		addBehaviour(new sendToThingSpeak(this,16000));
 	}
 
-	private class RoomService extends CyclicBehaviour {
+	public class RoomService extends OneShotBehaviour{
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -6847439043781775939L;
-
-		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
+			MessageTemplate template = MessageTemplate.and(
+					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
-				String messageContenut=msg.getContent();
-				String messageReply="";
+			addBehaviour(new AchieveREResponder(myAgent, template) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
-				switch(messageContenut) {
-				case("temperatura"): 
-					messageReply=String.valueOf(temperature);
-				break;
-				case("lumen"):
-					messageReply=String.valueOf(lumens);
-				break;
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+					//System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
+					if (request.getContent().equalsIgnoreCase("temperatura") || request.getContent().equalsIgnoreCase("lumen")) {
+						// We agree to perform the action. Note that in the FIPA-Request
+						// protocol the AGREE message is optional. Return null if you
+						// don't want to send it.
+						//System.out.println("Agent "+getLocalName()+": Agree");
+						ACLMessage agree = request.createReply();
+						agree.setPerformative(ACLMessage.AGREE);
+						return agree;
+					}
+					else {
+						// We refuse to perform the action
+						//System.out.println("Agent "+getLocalName()+": Refuse");
+						throw new RefuseException("Message content not supported");
+					}
 				}
 
-				ACLMessage reply = msg.createReply();
-				reply.setPerformative(ACLMessage.INFORM);
-				reply.setContent(messageReply.toString());
-				myAgent.send(reply);
-			}
-			else {
-				block();
-			}
+				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+					//if (performAction()) {
+					//System.out.println("Agent "+getLocalName()+": Action successfully performed");
+					ACLMessage inform = request.createReply();
+					inform.setPerformative(ACLMessage.INFORM);
 
+					switch(request.getContent()) {
+					case("temperatura"): 
+						inform.setContent(String.valueOf(temperature));
+					break;
+					case("lumen"):
+						inform.setContent(String.valueOf(lumens));
+					break;
+					}
+
+					return inform;
+					//}
+					//else {
+					//System.out.println("Agent "+getLocalName()+": Action failed");
+					//throw new FailureException("unexpected-error");
+					//}	
+				}
+			} );
 		}
-
 	}
+
 
 	private class AskCurrentTemperature extends TickerBehaviour {
 
