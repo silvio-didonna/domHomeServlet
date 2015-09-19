@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -65,9 +66,7 @@ public class LightningAgent extends Agent {
 		}
 
 
-
 		addBehaviour(new RequestCurrentLumen(this,5000));
-		addBehaviour(new GetCurrentLumen());
 		addBehaviour(new SetLight(this,6000));
 	}
 
@@ -77,7 +76,7 @@ public class LightningAgent extends Agent {
 		 * 
 		 */
 		private static final long serialVersionUID = -4219050278752369718L;
-
+		private int nResponders;
 
 		public RequestCurrentLumen(Agent a, long period) {
 			super(a, period);
@@ -93,57 +92,66 @@ public class LightningAgent extends Agent {
 			for (int i = 0; i < serverAgents.length; ++i) {
 				requestLumenMessage.addReceiver(serverAgents[i]);
 			}
+
+			requestLumenMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			// We want to receive a reply in 10 secs
+			requestLumenMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
 			requestLumenMessage.setContent("lumen");
-			myAgent.send(requestLumenMessage);
-		}
-	}
 
-	private class GetCurrentLumen extends CyclicBehaviour {
+			addBehaviour(new AchieveREInitiator(myAgent, requestLumenMessage) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 4875568271828534008L;
+				protected void handleInform(ACLMessage inform) {
+					//System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
+					String messageContenut=inform.getContent();
+					System.out.println("AgenteGestore-Luce::::"+messageContenut);
+					if (messageContenut!=null) {
+						try {
+							int lumen = Integer.parseInt(messageContenut);
+							//System.out.println("AgenteGestore-Temperaturafloat::::"+temp);
+							//Float.parseFloat(messageContenut);
 
+							Iterator <CurrentLumenInRoom> it = currentLumens.iterator();
+							while(it.hasNext()) {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -3184000795409465535L;
-
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.and(
-					MessageTemplate.not(MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST)),
-					MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
-
-				String messageContenut=msg.getContent();
-				System.out.println("AgenteGestore-Luce::::"+messageContenut);
-				if (messageContenut!=null)
-					try {
-						int lumen = Integer.parseInt(messageContenut);
-						//System.out.println("AgenteGestore-Temperaturafloat::::"+temp);
-						//Float.parseFloat(messageContenut);
-
-						Iterator <CurrentLumenInRoom> it = currentLumens.iterator();
-						while(it.hasNext()) {
-
-							CurrentLumenInRoom currentLumenInRoom = it.next();
-							//System.out.println(currentTemperatureInRoom.getroomAgent().getName() + " " + msg.getSender().getName());
-							if (currentLumenInRoom.getroomAgent().getName().equals(msg.getSender().getName())) {
-								currentLumenInRoom.setCurrentLumen(lumen);
-								//System.out.println(currentTemperatureInRoom.getCurrentTemperature());
+								CurrentLumenInRoom currentLumenInRoom = it.next();
+								//System.out.println(currentTemperatureInRoom.getroomAgent().getName() + " " + msg.getSender().getName());
+								if (currentLumenInRoom.getroomAgent().getName().equals(inform.getSender().getName())) {
+									currentLumenInRoom.setCurrentLumen(lumen);
+									//System.out.println(currentTemperatureInRoom.getCurrentTemperature());
+								}
 							}
+
+						} catch (NumberFormatException e) {
+							System.out.println("AgenteGestore-Luce::::errore");
 						}
-
-					} catch (NumberFormatException e) {
-						System.out.println("AgenteGestore-Luce::::errore");
 					}
-
-			}
-			else {
-				block();
-			}
+				}
+				protected void handleRefuse(ACLMessage refuse) {
+					System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
+					nResponders--;
+				}
+				protected void handleFailure(ACLMessage failure) {
+					if (failure.getSender().equals(myAgent.getAMS())) {
+						// FAILURE notification from the JADE runtime: the receiver
+						// does not exist
+						System.out.println("Responder does not exist");
+					}
+					else {
+						System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
+					}
+				}
+				protected void handleAllResultNotifications(Vector notifications) {
+					if (notifications.size() < nResponders) {
+						// Some responder didn't reply within the specified timeout
+						System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
+					}
+				}
+			} );
 
 		}
-
 	}
 
 	private class SetLight extends TickerBehaviour {
