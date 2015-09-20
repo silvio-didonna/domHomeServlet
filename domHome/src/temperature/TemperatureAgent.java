@@ -66,8 +66,8 @@ public class TemperatureAgent extends Agent {
 		}
 
 		addBehaviour(new RequestCurrentTemperature(this,5000));
-		addBehaviour(new SetFanFIPA(this,6000));
-		//addBehaviour(new getFan());
+		addBehaviour(new SetFan(this,6000));
+
 	}
 	
 	private class RequestCurrentTemperature extends TickerBehaviour {
@@ -155,7 +155,7 @@ public class TemperatureAgent extends Agent {
 		}
 	}
 	
-	private class SetFanFIPA extends TickerBehaviour {
+	private class SetFan extends TickerBehaviour {
 
 
 		/**
@@ -164,7 +164,7 @@ public class TemperatureAgent extends Agent {
 		private static final long serialVersionUID = -8454124241057674169L;
 		private int nResponders;
 
-		public SetFanFIPA(Agent a, long period) {
+		public SetFan(Agent a, long period) {
 			super(a, period);
 			// TODO Auto-generated constructor stub
 		}
@@ -240,80 +240,6 @@ public class TemperatureAgent extends Agent {
 		}
 	}
 
-	private class setFan extends TickerBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 8612995381883772852L;
-
-		public setFan(Agent a, long period) {
-			super(a, period);
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public void onTick() {
-			Float tempMaxValue = new Float(30);
-			for(CurrentTemperatureInRoom currentTemperatureInRoom:currentTemperatures) { // per ogni stanza
-				System.out.println("setFan:::: " +currentTemperatureInRoom.getCurrentTemperature());
-				if (!currentTemperatureInRoom.getfanOn()) {
-					if ((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
-
-						ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
-						AID msgReceiver= new AID("Ventilatore",AID.ISLOCALNAME);
-						serialAnswer.addReceiver(msgReceiver);
-						//serialAnswer.setContent("fan1\n");
-						myAgent.send(serialAnswer);
-
-					}
-				}
-				else if((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) < 0))) {
-					ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
-					AID msgReceiver= new AID("Ventilatore",AID.ISLOCALNAME);
-					serialAnswer.addReceiver(msgReceiver);
-					//serialAnswer.setContent("fan1\n");
-					myAgent.send(serialAnswer);
-
-
-				}
-			}
-		}
-	}
-
-	private class getFan extends CyclicBehaviour {
-
-		@Override
-		public void action() {
-
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.AGREE); //modificare il performative
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
-
-				String messageContenut=msg.getContent();
-				if (messageContenut!=null) {
-					Iterator <CurrentTemperatureInRoom> it = currentTemperatures.iterator();
-					while(it.hasNext()) {
-
-						CurrentTemperatureInRoom currentTemperatureInRoom = it.next();
-
-						//if (currentTemperatureInRoom.getroomAgent().getName().equals(msg.getSender().getName())) {
-						if (currentTemperatureInRoom.getroomAgent().getLocalName().equals("Gestore-Salone")) {	
-							currentTemperatureInRoom.setfanOn(Boolean.valueOf(messageContenut));
-							System.out.println("AgenteGestore-Temperatura (getFan)::::"+currentTemperatureInRoom.getfanOn());
-						}
-					}
-
-				}
-
-			}
-			else {
-				block();
-			}
-
-		}
-
-	}
 
 
 	private class CurrentTemperatureInRoom {
