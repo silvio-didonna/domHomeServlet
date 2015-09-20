@@ -1,6 +1,5 @@
 package temperature;
 
-import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -43,7 +42,7 @@ public class ThermometerAgent extends Agent {
 		}
 		addBehaviour(new RequestCurrentTemperature(this, 3000));
 		addBehaviour(new GetCurrentTemperature());
-		addBehaviour(new TempServiceFIPA());
+		addBehaviour(new TempService());
 	}
 
 	protected void takeDown() {
@@ -56,8 +55,8 @@ public class ThermometerAgent extends Agent {
 		}
 		System.out.println("ThermometerAgent "+getAID().getName()+" terminating.");
 	}
-	
-	private class TempServiceFIPA extends OneShotBehaviour {
+
+	private class TempService extends OneShotBehaviour {
 
 
 		/**
@@ -67,7 +66,7 @@ public class ThermometerAgent extends Agent {
 
 		@Override
 		public void action() {
-			
+
 			MessageTemplate template = MessageTemplate.and(
 					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
@@ -103,38 +102,6 @@ public class ThermometerAgent extends Agent {
 
 				}
 			} );
-
-		}
-
-	}
-
-	private class TempService extends CyclicBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -6607101087483781538L;
-
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			//System.out.println("Server behaviour 1 wait a message.");
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
-
-				if(currentTemperature!=null) {
-					String messageContenut=msg.getContent();
-					//System.out.println("AgenteTermometro::::"+messageContenut);
-					ACLMessage reply = msg.createReply();
-					reply.setPerformative(ACLMessage.INFORM);
-					reply.setContent(currentTemperature.toString());
-					myAgent.send(reply);
-				}
-
-			}
-			else {
-				block();
-			}
 
 		}
 

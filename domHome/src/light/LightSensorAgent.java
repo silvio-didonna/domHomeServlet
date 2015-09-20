@@ -1,5 +1,4 @@
 package light;
-import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -42,10 +41,10 @@ public class LightSensorAgent extends Agent {
 		}
 		addBehaviour(new RequestCurrentLumen(this, 3000));
 		addBehaviour(new GetCurrentLumen());
-		addBehaviour(new LightSensorServiceFIPA());
+		addBehaviour(new LightSensorService());
 	}
-	
-	private class LightSensorServiceFIPA extends OneShotBehaviour {
+
+	private class LightSensorService extends OneShotBehaviour {
 
 
 		/**
@@ -55,12 +54,17 @@ public class LightSensorAgent extends Agent {
 
 		@Override
 		public void action() {
-			
+
 			MessageTemplate template = MessageTemplate.and(
 					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			addBehaviour(new AchieveREResponder(myAgent, template) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 5601819153323381998L;
 
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					if (request.getContent().equalsIgnoreCase("lumen") && currentLumen>=0) {
@@ -79,7 +83,7 @@ public class LightSensorAgent extends Agent {
 					ACLMessage inform = request.createReply();
 					inform.setPerformative(ACLMessage.INFORM);
 
-						inform.setContent(Integer.toString(currentLumen));
+					inform.setContent(Integer.toString(currentLumen));
 
 					return inform;
 
@@ -101,33 +105,6 @@ public class LightSensorAgent extends Agent {
 		System.out.println("LightSensorAgent "+getAID().getName()+" terminating.");
 	}
 
-	private class LightSensorService extends CyclicBehaviour {
-
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
-
-				if(currentLumen>=0) {
-					String messageContenut = msg.getContent();
-					ACLMessage reply = msg.createReply();
-					reply.setPerformative(ACLMessage.INFORM);
-					reply.setContent(Integer.toString(currentLumen));
-					myAgent.send(reply);
-
-					
-				}
-
-			}
-			else {
-				block();
-			}
-
-		}
-
-	}
-
 	private class RequestCurrentLumen extends TickerBehaviour {
 
 		/**
@@ -142,8 +119,6 @@ public class LightSensorAgent extends Agent {
 		@Override
 		public void onTick() {
 
-			String currLumen=null;
-
 			AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 
 			ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
@@ -157,6 +132,10 @@ public class LightSensorAgent extends Agent {
 	}
 
 	private class GetCurrentLumen extends CyclicBehaviour {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 774837946376158617L;
 
 		@Override
 		public void action() {
