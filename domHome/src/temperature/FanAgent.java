@@ -5,10 +5,15 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 
 
 public class FanAgent extends Agent {
@@ -35,10 +40,57 @@ public class FanAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new toggleFan());
+		addBehaviour(new toggleFanFIPA());
 		//addBehaviour(new checkFanStatus());
 		//addBehaviour(new fanService());
 
+	}
+
+	private class toggleFanFIPA extends OneShotBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7229800159797756192L;
+
+		public void action() {
+
+			MessageTemplate template = MessageTemplate.and(
+					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
+
+			addBehaviour(new AchieveREResponder(myAgent, template) {
+
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+
+					ACLMessage agree = request.createReply();
+					agree.setPerformative(ACLMessage.AGREE);
+
+					fromAgent = new AID(request.getSender().getLocalName(),AID.ISLOCALNAME);
+					AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
+					ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
+					serialAnswer.addReceiver(msgReceiver);
+					serialAnswer.setContent("fan1\n");
+					myAgent.send(serialAnswer);
+
+					addBehaviour(new checkFanStatus());
+
+
+					return agree;
+
+				}
+
+				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+
+					ACLMessage inform = request.createReply();
+					inform.setPerformative(ACLMessage.INFORM);
+					inform.setContent(fanStatus.toString());
+					return inform;
+
+				}
+			} );
+		}
 	}
 
 	private class toggleFan extends CyclicBehaviour {
@@ -122,37 +174,6 @@ public class FanAgent extends Agent {
 
 	}
 
-	private class fanService extends CyclicBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 7077823714595289649L;
-
-		@Override
-		public void action() {
-			/*
-		SequentialBehaviour sq =new SequentialBehaviour() { 
-			  public int onEnd() { 
-				    reset(); 
-				    myAgent.addBehaviour(this); 
-				    return super.onEnd(); 
-				  } 
-				}; 
-		sq.addSubBehaviour(new toggleFan());
-		sq.addSubBehaviour(new checkFanStatus());
-		sq.addSubBehaviour(new replyWithStatus());
-		addBehaviour(sq);
-			 */
-
-
-
-			//addBehaviour(fsm);
-
-		}
-
-
-	}
 
 	protected void takeDown() {
 		// Deregister from the yellow pages
