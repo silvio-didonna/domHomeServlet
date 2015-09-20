@@ -1,3 +1,7 @@
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Vector;
+
 import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
@@ -14,6 +18,7 @@ import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
 
@@ -48,19 +53,26 @@ public class RoomAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new AskCurrentTemperature(this,5000));
-		addBehaviour(new GetCurrentTemperature());
+		//addBehaviour(new AskCurrentTemperature(this,5000));
+		//addBehaviour(new GetCurrentTemperature());
+		addBehaviour(new GetCurrentTemperatureFIPA(this,5000));
 
-		addBehaviour(new AskCurrentLumen(this, 5000));
-		addBehaviour(new GetCurrentLumen());
+		//addBehaviour(new AskCurrentLumen(this, 5000));
+		//addBehaviour(new GetCurrentLumen());
+		addBehaviour(new GetCurrentLumenFIPA(this, 5000));
 
 		addBehaviour(new RoomService());
-		
+
 
 		addBehaviour(new sendToThingSpeak(this,16000));
 	}
 
 	public class RoomService extends OneShotBehaviour{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3522316552296891322L;
 
 		public void action() {
 			MessageTemplate template = MessageTemplate.and(
@@ -68,32 +80,28 @@ public class RoomAgent extends Agent {
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			addBehaviour(new AchieveREResponder(myAgent, template) {
+
+
 				/**
 				 * 
 				 */
-				private static final long serialVersionUID = 1L;
+				private static final long serialVersionUID = 288442867080805012L;
 
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 					//System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
 					if (request.getContent().equalsIgnoreCase("temperatura") || request.getContent().equalsIgnoreCase("lumen")) {
-						// We agree to perform the action. Note that in the FIPA-Request
-						// protocol the AGREE message is optional. Return null if you
-						// don't want to send it.
-						//System.out.println("Agent "+getLocalName()+": Agree");
+						// We agree to perform the action.
 						ACLMessage agree = request.createReply();
 						agree.setPerformative(ACLMessage.AGREE);
 						return agree;
 					}
 					else {
 						// We refuse to perform the action
-						//System.out.println("Agent "+getLocalName()+": Refuse");
 						throw new RefuseException("Message content not supported");
 					}
 				}
 
 				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-					//if (performAction()) {
-					//System.out.println("Agent "+getLocalName()+": Action successfully performed");
 					ACLMessage inform = request.createReply();
 					inform.setPerformative(ACLMessage.INFORM);
 
@@ -107,22 +115,139 @@ public class RoomAgent extends Agent {
 					}
 
 					return inform;
-					//}
-					//else {
-					//System.out.println("Agent "+getLocalName()+": Action failed");
-					//throw new FailureException("unexpected-error");
-					//}	
+
 				}
 			} );
 		}
 	}
 
+	private class GetCurrentTemperatureFIPA extends TickerBehaviour {
+
+		public GetCurrentTemperatureFIPA(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7843279741024063018L;
+
+		@Override
+		protected void onTick() {
+			ACLMessage requestTemperatureMessage = new ACLMessage(ACLMessage.REQUEST);
+
+			requestTemperatureMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			// We want to receive a reply in 10 secs
+			requestTemperatureMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+			requestTemperatureMessage.setContent("temperatura");
+			requestTemperatureMessage.addReceiver(new AID("Termometro",AID.ISLOCALNAME));
+
+			addBehaviour(new AchieveREInitiator(myAgent, requestTemperatureMessage) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 4875568271828534008L;
+				protected void handleInform(ACLMessage inform) {
+					String messageContenut=inform.getContent();
+					if (messageContenut!=null) {
+							temperature=new Float(messageContenut);
+							System.out.println("Room-Temp::::"+messageContenut);
+					}
+				}
+				protected void handleRefuse(ACLMessage refuse) {
+					System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
+				}
+				protected void handleFailure(ACLMessage failure) {
+					if (failure.getSender().equals(myAgent.getAMS())) {
+						// FAILURE notification from the JADE runtime: the receiver
+						// does not exist
+						System.out.println("Responder does not exist");
+					}
+					else {
+						System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
+					}
+				}
+				protected void handleAllResultNotifications(Vector notifications) {
+					//if (notifications.size() < nResponders) {
+					// Some responder didn't reply within the specified timeout
+					//System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
+					//}
+				}
+			} );
+
+
+		}
+
+	}
+
+	private class GetCurrentLumenFIPA extends TickerBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5306499643103460629L;
+
+
+		public GetCurrentLumenFIPA(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
+
+
+		@Override
+		protected void onTick() {
+			ACLMessage requestTemperatureMessage = new ACLMessage(ACLMessage.REQUEST);
+
+			requestTemperatureMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			// We want to receive a reply in 10 secs
+			requestTemperatureMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+			requestTemperatureMessage.setContent("lumen");
+			requestTemperatureMessage.addReceiver(new AID("Sensore-Luci",AID.ISLOCALNAME));
+
+			addBehaviour(new AchieveREInitiator(myAgent, requestTemperatureMessage) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 4875568271828534008L;
+				protected void handleInform(ACLMessage inform) {
+					String messageContenut=inform.getContent();
+					//System.out.println("AgenteGestore-Salone::::"+messageContenut);
+					if (messageContenut!=null) {
+							lumens = Integer.parseInt(messageContenut);
+							System.out.println("Room-Lumen::::"+messageContenut);
+					}
+				}
+				protected void handleRefuse(ACLMessage refuse) {
+					System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
+				}
+				protected void handleFailure(ACLMessage failure) {
+					if (failure.getSender().equals(myAgent.getAMS())) {
+						// FAILURE notification from the JADE runtime: the receiver
+						// does not exist
+						System.out.println("Responder does not exist");
+					}
+					else {
+						System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
+					}
+				}
+				protected void handleAllResultNotifications(Vector notifications) {
+					//if (notifications.size() < nResponders) {
+					// Some responder didn't reply within the specified timeout
+					//System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
+					//}
+				}
+			} );
+
+
+		}
+
+	}
 
 	private class AskCurrentTemperature extends TickerBehaviour {
 
 		public AskCurrentTemperature(Agent a, long period) {
 			super(a, period);
-			// TODO Auto-generated constructor stub
 		}
 		/**
 		 * 
