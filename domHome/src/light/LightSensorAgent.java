@@ -3,13 +3,19 @@ import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 
 public class LightSensorAgent extends Agent {
 	private int currentLumen;
@@ -36,7 +42,52 @@ public class LightSensorAgent extends Agent {
 		}
 		addBehaviour(new RequestCurrentLumen(this, 3000));
 		addBehaviour(new GetCurrentLumen());
-		addBehaviour(new LightSensorService());
+		addBehaviour(new LightSensorServiceFIPA());
+	}
+	
+	private class LightSensorServiceFIPA extends OneShotBehaviour {
+
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6894891571072136375L;
+
+		@Override
+		public void action() {
+			
+			MessageTemplate template = MessageTemplate.and(
+					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
+
+			addBehaviour(new AchieveREResponder(myAgent, template) {
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+					if (request.getContent().equalsIgnoreCase("lumen") && currentLumen>=0) {
+						// We agree to perform the action.
+						ACLMessage agree = request.createReply();
+						agree.setPerformative(ACLMessage.AGREE);
+						return agree;
+					}
+					else {
+						// We refuse to perform the action
+						throw new RefuseException("Message content not supported or corrupted value");
+					}
+				}
+
+				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+					ACLMessage inform = request.createReply();
+					inform.setPerformative(ACLMessage.INFORM);
+
+						inform.setContent(Integer.toString(currentLumen));
+
+					return inform;
+
+				}
+			} );
+
+		}
+
 	}
 
 	protected void takeDown() {

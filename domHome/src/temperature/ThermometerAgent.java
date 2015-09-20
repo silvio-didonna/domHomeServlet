@@ -4,13 +4,19 @@ import internet.ThingSpeak;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 
 public class ThermometerAgent extends Agent {
 	private Float currentTemperature;
@@ -37,7 +43,7 @@ public class ThermometerAgent extends Agent {
 		}
 		addBehaviour(new RequestCurrentTemperature(this, 3000));
 		addBehaviour(new GetCurrentTemperature());
-		addBehaviour(new TempService());
+		addBehaviour(new TempServiceFIPA());
 	}
 
 	protected void takeDown() {
@@ -49,6 +55,57 @@ public class ThermometerAgent extends Agent {
 			fe.printStackTrace();
 		}
 		System.out.println("ThermometerAgent "+getAID().getName()+" terminating.");
+	}
+	
+	private class TempServiceFIPA extends OneShotBehaviour {
+
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6894891571072136375L;
+
+		@Override
+		public void action() {
+			
+			MessageTemplate template = MessageTemplate.and(
+					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
+
+			addBehaviour(new AchieveREResponder(myAgent, template) {
+
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -694158247143718355L;
+
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+					if (request.getContent().equalsIgnoreCase("temperatura")) {
+						// We agree to perform the action.
+						ACLMessage agree = request.createReply();
+						agree.setPerformative(ACLMessage.AGREE);
+						return agree;
+					}
+					else {
+						// We refuse to perform the action
+						throw new RefuseException("Message content not supported");
+					}
+				}
+
+				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+					ACLMessage inform = request.createReply();
+					inform.setPerformative(ACLMessage.INFORM);
+
+					inform.setContent(currentTemperature.toString());
+
+					return inform;
+
+				}
+			} );
+
+		}
+
 	}
 
 	private class TempService extends CyclicBehaviour {
