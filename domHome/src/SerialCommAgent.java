@@ -3,7 +3,6 @@ import java.io.IOException;
 import com.fazecast.jSerialComm.SerialPort;
 
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -72,6 +71,11 @@ public class SerialCommAgent extends Agent {
 
 	private class SendSerialServiceBehaviourFIPA extends OneShotBehaviour {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8837634265096484413L;
+
 		@Override
 		public void action() {
 
@@ -80,6 +84,10 @@ public class SerialCommAgent extends Agent {
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			addBehaviour(new AchieveREResponder(myAgent, template) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -3503422695676488699L;
 				String msgRecv="";
 
 
@@ -110,131 +118,44 @@ public class SerialCommAgent extends Agent {
 				}
 			} );
 
-	} // fine action
+		} // fine action
 
-	String sendRecSerial(String msgContent) {
-		try {
-			//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
-			serialPort.getOutputStream().write((msgContent).getBytes());
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		String msgRecv="";
-
-		byte[] readBuffer=null;
-		try {
-			while (serialPort.bytesAvailable() == 0)
-				Thread.sleep(20);
-
-			Thread.sleep(50);
-			readBuffer = new byte[serialPort.bytesAvailable()];
-			serialPort.getInputStream().read(readBuffer);
-			msgRecv = new String(readBuffer);
-		} catch (Exception e) { e.printStackTrace(); }
-
-		return msgRecv;
-	}
-
-}
-
-private class SendSerialServiceBehaviour extends CyclicBehaviour {
-
-	@Override
-	public void action() {
-		MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-		ACLMessage msg = myAgent.receive();
-		if (msg!=null) {
-			String msgSender = msg.getSender().getLocalName();
-			String msgContent = msg.getContent();
-			if (!msgContent.isEmpty()) {
-				try {
-					//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
-					serialPort.getOutputStream().write((msgContent).getBytes());
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				String msgArd;
-
-				byte[] readBuffer=null;
-				try {
-					while (serialPort.bytesAvailable() == 0)
-						Thread.sleep(20);
-
-					Thread.sleep(50);
-					readBuffer = new byte[serialPort.bytesAvailable()];
-					serialPort.getInputStream().read(readBuffer);
-					msgArd = new String(readBuffer);
-					//System.out.println("Messaggio: " + msgArd);
-
-					ACLMessage reply = msg.createReply();
-					reply.setPerformative(ACLMessage.INFORM);
-
-					reply.setContent(msgArd);
-
-					myAgent.send(reply);
-
-				} catch (Exception e) { e.printStackTrace(); }
-
+		String sendRecSerial(String msgContent) {
+			try {
+				//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
+				serialPort.getOutputStream().write((msgContent).getBytes());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
+
+			String msgRecv="";
+
+			byte[] readBuffer=null;
+			try {
+				while (serialPort.bytesAvailable() == 0)
+					Thread.sleep(20);
+
+				Thread.sleep(50);
+				readBuffer = new byte[serialPort.bytesAvailable()];
+				serialPort.getInputStream().read(readBuffer);
+				msgRecv = new String(readBuffer);
+			} catch (Exception e) { e.printStackTrace(); }
+
+			return msgRecv;
 		}
-		else {
-			block();
+
+	}
+
+	protected void takeDown() {
+		// Deregister from the yellow pages
+		try {
+			DFService.deregister(this);
 		}
-
-
-
+		catch (FIPAException fe) {
+			fe.printStackTrace();
+		}
+		serialPort.closePort();
+		System.out.println("SerialCommAgent "+getAID().getName()+" terminating.");
 	}
-
-}
-
-private class ReceiveSerialServiceBehaviour extends CyclicBehaviour {
-
-	@Override
-	public void action() {
-
-		//MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-		//System.out.println("Server behaviour 1 wait a message.");
-		// Send the cfp to all sellers
-
-
-
-		/*
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
-				String msgSender = msg.getSender().getLocalName();
-				String msgContent = msg.getContent();
-				if (!msgContent.isEmpty()) {
-					try {
-						arduino.send(msgSender + "#" + msgContent);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			else {
-				block();
-		 */
-
-
-
-	}
-
-}
-
-protected void takeDown() {
-	// Deregister from the yellow pages
-	try {
-		DFService.deregister(this);
-	}
-	catch (FIPAException fe) {
-		fe.printStackTrace();
-	}
-	serialPort.closePort();
-	System.out.println("SerialCommAgent "+getAID().getName()+" terminating.");
-}
 }
