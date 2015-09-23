@@ -1,4 +1,7 @@
 package temperature;
+import java.util.Date;
+import java.util.Vector;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -13,12 +16,14 @@ import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
 
 public class FanAgent extends Agent {
 	Boolean fanStatus=true; // per non far spegnere il ventilatore dopo il primo ciclo
-	AID fromAgent;
+	Boolean waitFanStatus=false;
+	//AID fromAgent;
 
 	/**
 	 * 
@@ -67,7 +72,8 @@ public class FanAgent extends Agent {
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
 
-					fromAgent = new AID(request.getSender().getLocalName(),AID.ISLOCALNAME);
+					//fromAgent = new AID(request.getSender().getLocalName(),AID.ISLOCALNAME);
+					/*
 					AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
 					ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
 					serialAnswer.addReceiver(msgReceiver);
@@ -75,7 +81,10 @@ public class FanAgent extends Agent {
 					myAgent.send(serialAnswer);
 
 					addBehaviour(new checkFanStatus());
-
+					 */
+					ChangeFanStatus changeFanStatus = new ChangeFanStatus();
+					addBehaviour(changeFanStatus);
+					waitFanStatus=true;
 
 					return agree;
 
@@ -93,37 +102,60 @@ public class FanAgent extends Agent {
 		}
 	}
 
-	private class toggleFan extends CyclicBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 9072626078728707911L;
+	private class ChangeFanStatus extends OneShotBehaviour {
 
 		@Override
 		public void action() {
 
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			//System.out.println("Server behaviour 1 wait a message.");
-			ACLMessage msg = myAgent.receive(mt);
+			ACLMessage requestLumenMessage = new ACLMessage(ACLMessage.REQUEST);
 
-			if (msg!=null) {
-				fromAgent = new AID(msg.getSender().getLocalName(),AID.ISLOCALNAME);
-				AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
-				ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
-				serialAnswer.addReceiver(msgReceiver);
-				serialAnswer.setContent("fan1\n");
-				myAgent.send(serialAnswer);
+			requestLumenMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			// We want to receive a reply in 10 secs
+			requestLumenMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+			requestLumenMessage.setContent("fan1\n");
+			requestLumenMessage.addReceiver(new AID("Gestore-Seriale",AID.ISLOCALNAME));
 
-				addBehaviour(new checkFanStatus());
-				addBehaviour(new replyWithStatus());
+			addBehaviour(new AchieveREInitiator(myAgent, requestLumenMessage) {
 
-
-			}
-			else
-				block();
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -188445726707114874L;
+				protected void handleInform(ACLMessage inform) {
+					String messageContenut=inform.getContent();
+					if (messageContenut!=null) {
+						messageContenut=messageContenut.trim();
+						//System.out.println("AgenteVentilatore::::"+messageContenut);
+						if (messageContenut!=null) {
+							fanStatus = Boolean.valueOf(messageContenut);
+							waitFanStatus=false;
+							System.out.println("AgenteVentilatore::::"+fanStatus);
+						}
+					}
+				}
+				protected void handleRefuse(ACLMessage refuse) {
+					System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
+				}
+				protected void handleFailure(ACLMessage failure) {
+					if (failure.getSender().equals(myAgent.getAMS())) {
+						// FAILURE notification from the JADE runtime: the receiver
+						// does not exist
+						System.out.println("Responder does not exist");
+					}
+					else {
+						System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
+					}
+				}
+				protected void handleAllResultNotifications(Vector notifications) {
+					//if (notifications.size() < nResponders) {
+					// Some responder didn't reply within the specified timeout
+					//System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
+					//}
+				}
+			} );
 
 		}
+
 	}
 
 	private class checkFanStatus extends OneShotBehaviour {
@@ -153,26 +185,6 @@ public class FanAgent extends Agent {
 
 	}
 
-
-	private class replyWithStatus extends OneShotBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -7851399022936675519L;
-
-		@Override
-		public void action() {
-
-			//ACLMessage reply = msg.createReply();
-			ACLMessage reply = new ACLMessage(ACLMessage.AGREE);
-			reply.addReceiver(fromAgent);
-			//reply.setPerformative(ACLMessage.AGREE);
-			reply.setContent(fanStatus.toString());
-			myAgent.send(reply);
-		}
-
-	}
 
 
 	protected void takeDown() {
