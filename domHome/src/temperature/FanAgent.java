@@ -5,6 +5,7 @@ import java.util.Vector;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.DataStore;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -22,8 +23,6 @@ import jade.proto.AchieveREResponder;
 
 public class FanAgent extends Agent {
 	Boolean fanStatus=true; // per non far spegnere il ventilatore dopo il primo ciclo
-	Boolean waitFanStatus=false;
-	//AID fromAgent;
 
 	/**
 	 * 
@@ -46,8 +45,6 @@ public class FanAgent extends Agent {
 			fe.printStackTrace();
 		}
 		addBehaviour(new toggleFanFIPA());
-		//addBehaviour(new checkFanStatus());
-		//addBehaviour(new fanService());
 
 	}
 
@@ -64,128 +61,102 @@ public class FanAgent extends Agent {
 					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
-			addBehaviour(new AchieveREResponder(myAgent, template) {
-
+			AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
 
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
 
-					//fromAgent = new AID(request.getSender().getLocalName(),AID.ISLOCALNAME);
-					/*
-					AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
-					ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
-					serialAnswer.addReceiver(msgReceiver);
-					serialAnswer.setContent("fan1\n");
-					myAgent.send(serialAnswer);
-
-					addBehaviour(new checkFanStatus());
-					 */
-					ChangeFanStatus changeFanStatus = new ChangeFanStatus();
-					addBehaviour(changeFanStatus);
-					waitFanStatus=true;
-
 					return agree;
 
 				}
 
-				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-
-					ACLMessage inform = request.createReply();
-					inform.setPerformative(ACLMessage.INFORM);
-					inform.setContent(fanStatus.toString());
-					return inform;
-
-				}
-			} );
+			};
+			
+			arer.registerPrepareResultNotification(new SendToSerialAgent(myAgent, null));
+			addBehaviour(arer);
 		}
 	}
 
-	private class ChangeFanStatus extends OneShotBehaviour {
+	private class SendToSerialAgent extends AchieveREInitiator {
 
-		@Override
-		public void action() {
-
-			ACLMessage requestLumenMessage = new ACLMessage(ACLMessage.REQUEST);
-
-			requestLumenMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-			// We want to receive a reply in 10 secs
-			requestLumenMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-			requestLumenMessage.setContent("fan1\n");
-			requestLumenMessage.addReceiver(new AID("Gestore-Seriale",AID.ISLOCALNAME));
-
-			addBehaviour(new AchieveREInitiator(myAgent, requestLumenMessage) {
-
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = -188445726707114874L;
-				protected void handleInform(ACLMessage inform) {
-					String messageContenut=inform.getContent();
-					if (messageContenut!=null) {
-						messageContenut=messageContenut.trim();
-						//System.out.println("AgenteVentilatore::::"+messageContenut);
-						if (messageContenut!=null) {
-							fanStatus = Boolean.valueOf(messageContenut);
-							waitFanStatus=false;
-							System.out.println("AgenteVentilatore::::"+fanStatus);
-						}
-					}
-				}
-				protected void handleRefuse(ACLMessage refuse) {
-					System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
-				}
-				protected void handleFailure(ACLMessage failure) {
-					if (failure.getSender().equals(myAgent.getAMS())) {
-						// FAILURE notification from the JADE runtime: the receiver
-						// does not exist
-						System.out.println("Responder does not exist");
-					}
-					else {
-						System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
-					}
-				}
-				protected void handleAllResultNotifications(Vector notifications) {
-					//if (notifications.size() < nResponders) {
-					// Some responder didn't reply within the specified timeout
-					//System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
-					//}
-				}
-			} );
-
+		public SendToSerialAgent(Agent a, ACLMessage msg) {
+			super(a, msg);
+			// TODO Auto-generated constructor stub
 		}
 
-	}
+		public SendToSerialAgent(Agent a, ACLMessage msg, DataStore store) {
+			super(a, msg, store);
+			// TODO Auto-generated constructor stub
+		}
 
-	private class checkFanStatus extends OneShotBehaviour {
+		// Since we don't know what message to send to the responder
+		// when we construct this AchieveREInitiator, we redefine this 
+		// method to build the request on the fly
+		protected Vector prepareRequests(ACLMessage request) {
+			// Retrieve the incoming request from the DataStore
+			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
+			ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
+			// Prepare the request to forward to the responder
+			//System.out.println("Agent "+getLocalName()+": Forward the request to "+responder.getName());
+			ACLMessage outgoingRequest = new ACLMessage(ACLMessage.REQUEST);
+			outgoingRequest.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			outgoingRequest.setContent("fan1\n");
+			outgoingRequest.addReceiver(new AID("Gestore-Seriale",AID.ISLOCALNAME));
+			outgoingRequest.setReplyByDate(incomingRequest.getReplyByDate());
+			Vector v = new Vector(1);
+			v.addElement(outgoingRequest);
+			return v;
+		}
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -2794051229003161225L;
+		protected void handleInform(ACLMessage inform) {
+			String messageContenut=inform.getContent();
+			messageContenut=messageContenut.trim();
+			fanStatus = Boolean.valueOf(messageContenut);
+			System.out.println("AgenteVentilatore::::"+fanStatus);
+			storeNotification(ACLMessage.INFORM,fanStatus.toString());
+			
+		}
 
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-			ACLMessage msgFromSerial = myAgent.blockingReceive(mt); // ATTENZIONE, è una BLOCKING
-			if (msgFromSerial!=null) {
+		protected void handleRefuse(ACLMessage refuse) {
+			storeNotification(ACLMessage.FAILURE, null);
+		}
 
-				String messageContenut=msgFromSerial.getContent();
-				messageContenut=messageContenut.trim();
-				//System.out.println("AgenteVentilatore::::"+messageContenut);
-				if (messageContenut!=null)
-					fanStatus = Boolean.valueOf(messageContenut);
-				System.out.println("AgenteVentilatore::::"+fanStatus);
+		protected void handleNotUnderstood(ACLMessage notUnderstood) {
+			storeNotification(ACLMessage.FAILURE, null);
+		}
+
+		protected void handleFailure(ACLMessage failure) {
+			storeNotification(ACLMessage.FAILURE, null);
+		}
+
+		protected void handleAllResultNotifications(Vector notifications) {
+			if (notifications.size() == 0) {
+				// Timeout
+				storeNotification(ACLMessage.FAILURE, null);
 			}
-			//else
-			//block();
-
 		}
 
+		private void storeNotification(int performative, String message) {
+			if (performative == ACLMessage.INFORM) {
+				System.out.println("Agent "+getLocalName()+": brokerage successful");
+			}
+			else {
+				System.out.println("Agent "+getLocalName()+": brokerage failed");
+			}
+
+			// Retrieve the incoming request from the DataStore
+			String incomingRequestkey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
+			ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestkey);
+			// Prepare the notification to the request originator and store it in the DataStore
+			ACLMessage notification = incomingRequest.createReply();
+			notification.setPerformative(performative);
+			notification.setContent(message);
+			String notificationkey = (String) ((AchieveREResponder) parent).RESULT_NOTIFICATION_KEY;
+			getDataStore().put(notificationkey, notification);
+		}
 	}
-
-
 
 	protected void takeDown() {
 		// Deregister from the yellow pages
