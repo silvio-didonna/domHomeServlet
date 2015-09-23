@@ -1,7 +1,10 @@
 package light;
+import java.util.Vector;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.DataStore;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -13,6 +16,7 @@ import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
 
@@ -40,92 +44,131 @@ public class LightAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		//addBehaviour(new toggleFan());
-		//addBehaviour(new checkFanStatus());
-		//addBehaviour(new fanService());
-
-		MessageTemplate template = MessageTemplate.and(
-				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
-				MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
-
-		addBehaviour(new AchieveREResponder(this, template) {
-			protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-				//System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
-
-				//System.out.println("Agent "+getLocalName()+": Agree");
-				ACLMessage agree = request.createReply();
-				agree.setPerformative(ACLMessage.AGREE);
+		addBehaviour(new toggleLightFIPA());
 
 
-				// We refuse to perform the action
-				//System.out.println("Agent "+getLocalName()+": Refuse");
-				//throw new RefuseException("check-failed");
-
-				fromAgent = new AID(request.getSender().getLocalName(),AID.ISLOCALNAME);
-				AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
-				ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
-				serialAnswer.addReceiver(msgReceiver);
-				serialAnswer.setContent("light1\n");
-				myAgent.send(serialAnswer);
-
-				addBehaviour(new checkLightStatus());
-
-
-				return agree;
-
-			}
-
-			protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-
-				//System.out.println("Agent "+getLocalName()+": Action successfully performed");
-				ACLMessage inform = request.createReply();
-				inform.setPerformative(ACLMessage.INFORM);
-				inform.setContent(lightStatus.toString());
-				return inform;
-
-
-				//System.out.println("Agent "+getLocalName()+": Action failed");
-				//throw new FailureException("unexpected-error");
-
-			}
-		} );
 	}
 
+	private class toggleLightFIPA extends OneShotBehaviour {
 
 
-	private class toggleLight extends CyclicBehaviour {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 9072626078728707911L;
+		private static final long serialVersionUID = 5309579301085867342L;
 
-		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate.and(
-					MessageTemplate.not(MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST)),
-					MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
-			//System.out.println("Server behaviour 1 wait a message.");
-			ACLMessage msg = myAgent.receive(mt);
 
-			if (msg!=null) {
-				fromAgent = new AID(msg.getSender().getLocalName(),AID.ISLOCALNAME);
-				AID msgReceiver= new AID("Gestore-Seriale",AID.ISLOCALNAME);
-				ACLMessage serialAnswer = new ACLMessage(ACLMessage.REQUEST);
-				serialAnswer.addReceiver(msgReceiver);
-				serialAnswer.setContent("light1\n");
-				myAgent.send(serialAnswer);
+			MessageTemplate template = MessageTemplate.and(
+					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
-				addBehaviour(new checkLightStatus());
-				addBehaviour(new replyWithStatus());
+			AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+					ACLMessage agree = request.createReply();
+					agree.setPerformative(ACLMessage.AGREE);
 
+					return agree;
 
-			}
-			else
-				block();
+				}
 
+				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+
+					ACLMessage inform = request.createReply();
+					inform.setPerformative(ACLMessage.INFORM);
+					inform.setContent(lightStatus.toString());
+					return inform;
+
+				}
+			};
+			arer.registerPrepareResultNotification(new SendToSerialAgent(myAgent, null));
+			addBehaviour(arer);
 		}
 	}
+
+
+	private class SendToSerialAgent extends AchieveREInitiator {
+
+		public SendToSerialAgent(Agent a, ACLMessage msg) {
+			super(a, msg);
+			// TODO Auto-generated constructor stub
+		}
+
+		public SendToSerialAgent(Agent a, ACLMessage msg, DataStore store) {
+			super(a, msg, store);
+			// TODO Auto-generated constructor stub
+		}
+
+		// Since we don't know what message to send to the responder
+		// when we construct this AchieveREInitiator, we redefine this 
+		// method to build the request on the fly
+		protected Vector prepareRequests(ACLMessage request) {
+			// Retrieve the incoming request from the DataStore
+			String incomingRequestKey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
+			ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestKey);
+			// Prepare the request to forward to the responder
+			//System.out.println("Agent "+getLocalName()+": Forward the request to "+responder.getName());
+			ACLMessage outgoingRequest = new ACLMessage(ACLMessage.REQUEST);
+			outgoingRequest.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			outgoingRequest.setContent("light1\n");
+			outgoingRequest.addReceiver(new AID("Gestore-Seriale",AID.ISLOCALNAME));
+			outgoingRequest.setReplyByDate(incomingRequest.getReplyByDate());
+			Vector v = new Vector(1);
+			v.addElement(outgoingRequest);
+			return v;
+		}
+
+		protected void handleInform(ACLMessage inform) {
+			String messageContenut=inform.getContent();
+			messageContenut=messageContenut.trim();
+			if (messageContenut!=null)
+				lightStatus = Boolean.valueOf(messageContenut);
+			System.out.println("AgenteLuce::::"+lightStatus);
+			storeNotification(ACLMessage.INFORM,lightStatus.toString());
+
+		}
+
+		protected void handleRefuse(ACLMessage refuse) {
+			storeNotification(ACLMessage.FAILURE, null);
+		}
+
+		protected void handleNotUnderstood(ACLMessage notUnderstood) {
+			storeNotification(ACLMessage.FAILURE, null);
+		}
+
+		protected void handleFailure(ACLMessage failure) {
+			storeNotification(ACLMessage.FAILURE, null);
+		}
+
+		protected void handleAllResultNotifications(Vector notifications) {
+			if (notifications.size() == 0) {
+				// Timeout
+				storeNotification(ACLMessage.FAILURE, null);
+			}
+		}
+
+		private void storeNotification(int performative, String message) {
+			if (performative == ACLMessage.INFORM) {
+				System.out.println("Agent "+getLocalName()+": brokerage successful");
+			}
+			else {
+				System.out.println("Agent "+getLocalName()+": brokerage failed");
+			}
+
+			// Retrieve the incoming request from the DataStore
+			String incomingRequestkey = (String) ((AchieveREResponder) parent).REQUEST_KEY;
+			ACLMessage incomingRequest = (ACLMessage) getDataStore().get(incomingRequestkey);
+			// Prepare the notification to the request originator and store it in the DataStore
+			ACLMessage notification = incomingRequest.createReply();
+			notification.setPerformative(performative);
+			notification.setContent(message);
+			String notificationkey = (String) ((AchieveREResponder) parent).RESULT_NOTIFICATION_KEY;
+			getDataStore().put(notificationkey, notification);
+		}
+	}
+
+
 
 	private class checkLightStatus extends OneShotBehaviour {
 
@@ -150,27 +193,6 @@ public class LightAgent extends Agent {
 			//else
 			//block();
 
-		}
-
-	}
-
-
-	private class replyWithStatus extends OneShotBehaviour {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -7851399022936675519L;
-
-		@Override
-		public void action() {
-
-			//ACLMessage reply = msg.createReply();
-			ACLMessage reply = new ACLMessage(ACLMessage.AGREE);
-			reply.addReceiver(fromAgent);
-			//reply.setPerformative(ACLMessage.AGREE);
-			reply.setContent(lightStatus.toString());
-			myAgent.send(reply);
 		}
 
 	}
