@@ -1,13 +1,20 @@
 import java.io.IOException;
+
 import com.fazecast.jSerialComm.SerialPort;
+
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 
 public class SerialCommAgent extends Agent {
 	//SerialComm arduino;
@@ -23,7 +30,7 @@ public class SerialCommAgent extends Agent {
 	protected void setup() {
 		//port="/dev/ttyUSB1";
 		port="COM7";
-		baud=9600;
+		baud=115200;
 
 		//Object[] argList=this.getArguments(); //ottiene la porta seriale
 		//arduino = (SerialComm) argList[0];
@@ -57,93 +64,85 @@ public class SerialCommAgent extends Agent {
 			e.printStackTrace();
 		}
 
-		addBehaviour(new SendSerialServiceBehaviour());
+		addBehaviour(new SendSerialServiceBehaviourFIPA());
 		//addBehaviour(new ReceiveSerialServiceBehaviour());
 	}
 
-	private class SendSerialServiceBehaviour extends CyclicBehaviour {
 
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			ACLMessage msg = myAgent.receive();
-			if (msg!=null) {
-				String msgSender = msg.getSender().getLocalName();
-				String msgContent = msg.getContent();
-				if (!msgContent.isEmpty()) {
-					try {
-						//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
-						serialPort.getOutputStream().write((msgContent).getBytes());
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+	private class SendSerialServiceBehaviourFIPA extends OneShotBehaviour {
 
-					String msgArd;
-
-					byte[] readBuffer=null;
-					try {
-						while (serialPort.bytesAvailable() == 0)
-							Thread.sleep(20);
-
-						Thread.sleep(50);
-						readBuffer = new byte[serialPort.bytesAvailable()];
-						serialPort.getInputStream().read(readBuffer);
-						msgArd = new String(readBuffer);
-						//System.out.println("Messaggio: " + msgArd);
-
-						ACLMessage reply = msg.createReply();
-						reply.setPerformative(ACLMessage.INFORM);
-
-						reply.setContent(msgArd);
-
-						myAgent.send(reply);
-
-					} catch (Exception e) { e.printStackTrace(); }
-
-				}
-			}
-			else {
-				block();
-			}
-
-
-
-		}
-
-	}
-
-	private class ReceiveSerialServiceBehaviour extends CyclicBehaviour {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8837634265096484413L;
 
 		@Override
 		public void action() {
 
-			//MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			//System.out.println("Server behaviour 1 wait a message.");
-			// Send the cfp to all sellers
+			MessageTemplate template = MessageTemplate.and(
+					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
+
+			addBehaviour(new AchieveREResponder(myAgent, template) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -3503422695676488699L;
+				String msgRecv="";
 
 
+				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+					//System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
+					if (!request.getContent().isEmpty()) {
+						// We agree to perform the action.
+						ACLMessage agree = request.createReply();
+						agree.setPerformative(ACLMessage.AGREE);
 
-			/*
-			ACLMessage msg = myAgent.receive(mt);
-			if (msg!=null) {
-				String msgSender = msg.getSender().getLocalName();
-				String msgContent = msg.getContent();
-				if (!msgContent.isEmpty()) {
-					try {
-						arduino.send(msgSender + "#" + msgContent);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						msgRecv=sendRecSerial(request.getContent()); //richiesta ad arduino
+
+						return agree;
+					}
+					else {
+						// We refuse to perform the action
+						throw new RefuseException("Message content void");
 					}
 				}
+
+				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+					ACLMessage inform = request.createReply();
+					inform.setPerformative(ACLMessage.INFORM);
+					inform.setContent(msgRecv);
+
+					return inform;
+
+				}
+			} );
+
+		} // fine action
+
+		String sendRecSerial(String msgContent) {
+			try {
+				//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
+				serialPort.getOutputStream().write((msgContent).getBytes());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-			else {
-				block();
-			 */
 
+			String msgRecv="";
 
+			byte[] readBuffer=null;
+			try {
+				while (serialPort.bytesAvailable() == 0)
+					Thread.sleep(20);
 
+				Thread.sleep(50);
+				readBuffer = new byte[serialPort.bytesAvailable()];
+				serialPort.getInputStream().read(readBuffer);
+				msgRecv = new String(readBuffer);
+			} catch (Exception e) { e.printStackTrace(); }
+
+			return msgRecv;
 		}
 
 	}
