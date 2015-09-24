@@ -1,5 +1,4 @@
-package temperature;
-import java.util.Date;
+package light;
 import java.util.Vector;
 
 import jade.core.AID;
@@ -21,8 +20,9 @@ import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
 
-public class FanAgent extends Agent {
-	Boolean fanStatus=true; // per non far spegnere il ventilatore dopo il primo ciclo
+public class LightAgent extends Agent {
+	Boolean lightStatus=false;
+	AID fromAgent;
 
 	/**
 	 * 
@@ -35,8 +35,8 @@ public class FanAgent extends Agent {
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
-		sd.setType("fan-manager");
-		sd.setName("JADE-fan");
+		sd.setType("light-manager");
+		sd.setName("JADE-light");
 		dfd.addServices(sd);
 		try {
 			DFService.register(this, dfd);
@@ -44,16 +44,19 @@ public class FanAgent extends Agent {
 		catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
-		addBehaviour(new toggleFanFIPA());
+		addBehaviour(new toggleLightFIPA());
+
 
 	}
 
-	private class toggleFanFIPA extends OneShotBehaviour {
+	private class toggleLightFIPA extends OneShotBehaviour {
+
+
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -7229800159797756192L;
+		private static final long serialVersionUID = 5309579301085867342L;
 
 		public void action() {
 
@@ -62,9 +65,7 @@ public class FanAgent extends Agent {
 					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 			AchieveREResponder arer = new AchieveREResponder(myAgent, template) {
-
 				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-
 					ACLMessage agree = request.createReply();
 					agree.setPerformative(ACLMessage.AGREE);
 
@@ -72,12 +73,20 @@ public class FanAgent extends Agent {
 
 				}
 
+				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+
+					ACLMessage inform = request.createReply();
+					inform.setPerformative(ACLMessage.INFORM);
+					inform.setContent(lightStatus.toString());
+					return inform;
+
+				}
 			};
-			
 			arer.registerPrepareResultNotification(new SendToSerialAgent(myAgent, null));
 			addBehaviour(arer);
 		}
 	}
+
 
 	private class SendToSerialAgent extends AchieveREInitiator {
 
@@ -102,7 +111,7 @@ public class FanAgent extends Agent {
 			//System.out.println("Agent "+getLocalName()+": Forward the request to "+responder.getName());
 			ACLMessage outgoingRequest = new ACLMessage(ACLMessage.REQUEST);
 			outgoingRequest.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-			outgoingRequest.setContent("fan1\n");
+			outgoingRequest.setContent("light1\n");
 			outgoingRequest.addReceiver(new AID("Gestore-Seriale",AID.ISLOCALNAME));
 			outgoingRequest.setReplyByDate(incomingRequest.getReplyByDate());
 			Vector v = new Vector(1);
@@ -113,10 +122,11 @@ public class FanAgent extends Agent {
 		protected void handleInform(ACLMessage inform) {
 			String messageContenut=inform.getContent();
 			messageContenut=messageContenut.trim();
-			fanStatus = Boolean.valueOf(messageContenut);
-			System.out.println("AgenteVentilatore::::"+fanStatus);
-			storeNotification(ACLMessage.INFORM,fanStatus.toString());
-			
+			if (messageContenut!=null)
+				lightStatus = Boolean.valueOf(messageContenut);
+			System.out.println("AgenteLuce::::"+lightStatus);
+			storeNotification(ACLMessage.INFORM,lightStatus.toString());
+
 		}
 
 		protected void handleRefuse(ACLMessage refuse) {
@@ -156,6 +166,35 @@ public class FanAgent extends Agent {
 			String notificationkey = (String) ((AchieveREResponder) parent).RESULT_NOTIFICATION_KEY;
 			getDataStore().put(notificationkey, notification);
 		}
+	}
+
+
+
+	private class checkLightStatus extends OneShotBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2794051229003161225L;
+
+		@Override
+		public void action() {
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			ACLMessage msgFromSerial = myAgent.blockingReceive(mt); // ATTENZIONE, è una BLOCKING
+			if (msgFromSerial!=null) {
+
+				String messageContenut=msgFromSerial.getContent();
+				messageContenut=messageContenut.trim();
+				//System.out.println("AgenteVentilatore::::"+messageContenut);
+				if (messageContenut!=null)
+					lightStatus = Boolean.valueOf(messageContenut);
+				System.out.println("AgenteLuce::::"+lightStatus);
+			}
+			//else
+			//block();
+
+		}
+
 	}
 
 	protected void takeDown() {
