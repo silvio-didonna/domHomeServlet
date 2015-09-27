@@ -1,5 +1,6 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <Servo.h>
 
 
 //#include <SoftwareSerial.h>
@@ -12,6 +13,7 @@
 
 
 //Temperatura
+#define SERVO_WINDOW_PIN 9
 //ONEWIRE----------------------------------------------------------------------START
 // Data wire is plugged into port 10 on the Arduino
 #define ONE_WIRE_BUS 10
@@ -24,7 +26,9 @@ unsigned long lastTempRequest = 0;
 int  delayInMillis = 0;
 float temperature = 0.0;
 //ONEWIRE----------------------------------------------------------------------STOP
-
+Servo window;
+bool windowOpen;
+int posServoWindow = 90;    // variable to store the servo position
 int fanPin = 2;
 bool fanOn;
 
@@ -45,13 +49,17 @@ String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 
 void setup(void) {
-  pinMode(lightPin,OUTPUT);
+  pinMode(lightPin, OUTPUT);
   digitalWrite(lightPin, LOW);
   lightOn = false;
 
   pinMode(fanPin, OUTPUT);
   digitalWrite(fanPin, LOW);
   fanOn = false;
+
+  window.attach(SERVO_WINDOW_PIN);
+  window.write(posServoWindow);
+  windowOpen = false;
 
   Serial.begin(115200);
   //mySerial.begin(9600);
@@ -81,9 +89,13 @@ void loop(void) {
       setLight();
       Serial.println(lightOn ? "true" : "false");
     }
+    else if (inputString.equals("window1\n")) {
+      setWindow();
+      Serial.println(windowOpen ? "true" : "false");
+    }
     else
       Serial.println("errore\n");
-      // clear the string:
+    // clear the string:
     inputString = "";
     stringComplete = false;
   }
@@ -114,24 +126,36 @@ void serialEvent() {
 
 void setFan () {
   if (fanOn == false) { //se è spenta l'accende
-        digitalWrite(fanPin, HIGH);
-        fanOn = true;
-      }
-      else {// se è accesa la spegne
-        digitalWrite(fanPin, LOW);
-        fanOn = false;
-      }
+    digitalWrite(fanPin, HIGH);
+    fanOn = true;
+  }
+  else {// se è accesa la spegne
+    digitalWrite(fanPin, LOW);
+    fanOn = false;
+  }
 }
 
 void setLight () {
   if (lightOn == false) { //se è spenta l'accende
-        digitalWrite(lightPin, HIGH);
-        lightOn = true;
-      }
-      else {// se è accesa la spegne
-        digitalWrite(lightPin, LOW);
-        lightOn = false;
-      }
+    digitalWrite(lightPin, HIGH);
+    lightOn = true;
+  }
+  else {// se è accesa la spegne
+    digitalWrite(lightPin, LOW);
+    lightOn = false;
+  }
+}
+
+void setWindow () {
+  if (windowOpen == false) { //se è chiusa la apre
+    posServoWindow = 175;
+    windowOpen = true;
+  }
+  else {// se è aperta la chiude
+    posServoWindow = 90;
+    windowOpen = false;
+  }
+  window.write(posServoWindow);
 }
 
 void initThermometer() {
@@ -150,9 +174,9 @@ void updateTemperature() {
   {
     temperature = sensors.getTempCByIndex(0);
 
-    sensors.requestTemperatures(); 
+    sensors.requestTemperatures();
     delayInMillis = 750 / (1 << (12 - resolution));
-    lastTempRequest = millis(); 
+    lastTempRequest = millis();
   }
 }
 
