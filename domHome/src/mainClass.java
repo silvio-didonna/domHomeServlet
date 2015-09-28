@@ -15,6 +15,7 @@ public class mainClass {
 	static String lightSensorName = "Sensore-Luci";
 	static String lightningName = "Gestore-Luci";
 	static String lightName = "Luce";
+	static String windowName = "Finestra";
 
 	public static void main (String args[]) throws Exception {
 
@@ -64,6 +65,7 @@ public class mainClass {
 		AgentController temperatureAgent = cont.createNewAgent (temperatureName, "temperature.TemperatureAgent", null);	
 		AgentController lightningAgent = cont.createNewAgent (lightningName, "light.LightningAgent", null);
 		AgentController lightAgent = cont.createNewAgent (lightName, "light.LightAgent", null);
+		AgentController windowAgent = cont.createNewAgent (windowName, "temperature.WindowAgent", null);
 		
 		/*
 		try {
@@ -78,6 +80,7 @@ public class mainClass {
 		
 		//Agenti base per temperatura
 		fanAgent.start();
+		windowAgent.start();
 		thermometerAgent.start();
 		
 		//Agenti base per l'illuminazione
