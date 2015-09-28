@@ -67,6 +67,7 @@ public class TemperatureAgent extends Agent {
 
 		addBehaviour(new RequestCurrentTemperature(this,5000));
 		addBehaviour(new SetFan(this,6000));
+		addBehaviour(new SetWindow(this,6000));
 
 	}
 	
@@ -179,6 +180,92 @@ public class TemperatureAgent extends Agent {
 				ACLMessage requestLightToggle = new ACLMessage(ACLMessage.REQUEST);
 				requestLightToggle.addReceiver(msgReceiver);
 				System.out.println("setFan:::: " +currentTemperatureInRoom.getCurrentTemperature());
+				requestLightToggle.setContent(""); // per far funzionare l'IF dopo
+				if (!currentTemperatureInRoom.getfanOn()) {
+					if ((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
+
+
+						requestLightToggle.setContent("true"); //accendi
+
+					}
+				}
+				else if((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) < 0))) {
+
+					requestLightToggle.setContent("false"); //spegni
+				}
+
+				if(requestLightToggle.getContent().equalsIgnoreCase("true") || requestLightToggle.getContent().equalsIgnoreCase("false")) {
+
+					requestLightToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+					// We want to receive a reply in 10 secs
+					requestLightToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+					//requestLightToggle.setContent("dummy-action");
+
+					addBehaviour(new AchieveREInitiator(myAgent, requestLightToggle) {
+
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = 1457890379172110455L;
+						protected void handleInform(ACLMessage inform) {
+							System.out.println("Agent "+inform.getSender().getName()+" send"+inform.getContent());
+							currentTemperatureInRoom.setfanOn(Boolean.valueOf(inform.getContent()));
+						}
+
+						protected void handleAgree(ACLMessage agree) {
+							System.out.println("Agent "+agree.getSender().getName()+" agreed");
+						}
+						protected void handleRefuse(ACLMessage refuse) {
+							System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
+							nResponders--;
+						}
+						protected void handleFailure(ACLMessage failure) {
+							if (failure.getSender().equals(myAgent.getAMS())) {
+								// FAILURE notification from the JADE runtime: the receiver
+								// does not exist
+								System.out.println("Responder does not exist");
+							}
+							else {
+								System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
+							}
+						}
+						protected void handleAllResultNotifications(Vector notifications) {
+							if (notifications.size() < nResponders) {
+								// Some responder didn't reply within the specified timeout
+								System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
+							}
+						}
+					} );
+				}
+			}
+		}
+	}
+	
+	
+	
+	private class SetWindow extends TickerBehaviour {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2793118778911471269L;
+		private int nResponders;
+
+		public SetWindow(Agent a, long period) {
+			super(a, period);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		protected void onTick() {
+
+
+			Float tempMaxValue = new Float(30);
+			for(CurrentTemperatureInRoom currentTemperatureInRoom:currentTemperatures) { // per ogni stanza
+				AID msgReceiver= new AID("Finestra",AID.ISLOCALNAME);
+				ACLMessage requestLightToggle = new ACLMessage(ACLMessage.REQUEST);
+				requestLightToggle.addReceiver(msgReceiver);
+				System.out.println("setWindow:::: " +currentTemperatureInRoom.getCurrentTemperature());
 				requestLightToggle.setContent(""); // per far funzionare l'IF dopo
 				if (!currentTemperatureInRoom.getfanOn()) {
 					if ((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
