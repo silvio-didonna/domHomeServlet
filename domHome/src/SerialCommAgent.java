@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 
 import com.fazecast.jSerialComm.SerialPort;
@@ -17,145 +18,145 @@ import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
 
 public class SerialCommAgent extends Agent {
-	//SerialComm arduino;
-	SerialPort serialPort;
-	String port;
-	int baud;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 138736042772986486L;
+    SerialPort serialPort;
+    String port;
+    int baud;
 
-	protected void setup() {
-		//port="/dev/ttyUSB1";
-		port="COM7";
-		baud=115200;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 138736042772986486L;
 
-		//Object[] argList=this.getArguments(); //ottiene la porta seriale
-		//arduino = (SerialComm) argList[0];
+    protected void setup() {
+        //port="/dev/ttyACM0";
+        //port="/dev/ttyUSB1";
+        //port="COM3";
+        //baud=115200;
 
-		DFAgentDescription dfd = new DFAgentDescription();
-		dfd.setName(getAID());
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType("serialcomm-manager");
-		sd.setName("JADE-serialcomm");
-		dfd.addServices(sd);
-		try {
-			DFService.register(this, dfd);
-		}
-		catch(FIPAException fe) {
-			fe.printStackTrace();
-		}
+        Object[] portAndBaud = this.getArguments(); //ottiene la porta seriale
+        port = portAndBaud[0].toString();
+        baud = Integer.parseInt(portAndBaud[1].toString());
 
-		serialPort = SerialPort.getCommPort(port);
-		serialPort.setComPortParameters(this.baud, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+        DFAgentDescription dfd = new DFAgentDescription();
+        dfd.setName(getAID());
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("serialcomm-manager");
+        sd.setName("JADE-serialcomm");
+        dfd.addServices(sd);
+        try {
+            DFService.register(this, dfd);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
 
-		System.out.println("Porta: " + serialPort.getDescriptivePortName() + " baud: " + baud);
+        serialPort = SerialPort.getCommPort(port);
+        serialPort.setComPortParameters(this.baud, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
 
-		// Apre porta seriale
-		serialPort.openPort();
+        System.out.println("Porta: " + serialPort.getDescriptivePortName() + " baud: " + baud);
 
-		// Questa istruzione è necessaria perchè Arduino si riavvia dopo aver aperto la seriale
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        // Apre porta seriale
+        serialPort.openPort();
 
-		addBehaviour(new SendSerialServiceBehaviourFIPA());
-		//addBehaviour(new ReceiveSerialServiceBehaviour());
-	}
+        // Questa istruzione è necessaria perchè Arduino si riavvia dopo aver aperto la seriale
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
+        addBehaviour(new SendSerialServiceBehaviourFIPA());
+        //addBehaviour(new ReceiveSerialServiceBehaviour());
+    }
 
-	private class SendSerialServiceBehaviourFIPA extends OneShotBehaviour {
+    private class SendSerialServiceBehaviourFIPA extends OneShotBehaviour {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 8837634265096484413L;
+        /**
+         *
+         */
+        private static final long serialVersionUID = 8837634265096484413L;
 
-		@Override
-		public void action() {
+        @Override
+        public void action() {
 
-			MessageTemplate template = MessageTemplate.and(
-					MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
-					MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
+            MessageTemplate template = MessageTemplate.and(
+                    MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+                    MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
 
-			addBehaviour(new AchieveREResponder(myAgent, template) {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = -3503422695676488699L;
-				String msgRecv="";
+            addBehaviour(new AchieveREResponder(myAgent, template) {
+                /**
+                 *
+                 */
+                private static final long serialVersionUID = -3503422695676488699L;
+                String msgRecv = "";
 
+                protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+                    //System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
+                    if (!request.getContent().isEmpty()) {
+                        // We agree to perform the action.
+                        ACLMessage agree = request.createReply();
+                        agree.setPerformative(ACLMessage.AGREE);
 
-				protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-					//System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
-					if (!request.getContent().isEmpty()) {
-						// We agree to perform the action.
-						ACLMessage agree = request.createReply();
-						agree.setPerformative(ACLMessage.AGREE);
+                        msgRecv = sendRecSerial(request.getContent()); //richiesta ad arduino
 
-						msgRecv=sendRecSerial(request.getContent()); //richiesta ad arduino
+                        return agree;
+                    } else {
+                        // We refuse to perform the action
+                        throw new RefuseException("Message content void");
+                    }
+                }
 
-						return agree;
-					}
-					else {
-						// We refuse to perform the action
-						throw new RefuseException("Message content void");
-					}
-				}
+                protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+                    ACLMessage inform = request.createReply();
+                    inform.setPerformative(ACLMessage.INFORM);
+                    inform.setContent(msgRecv);
 
-				protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-					ACLMessage inform = request.createReply();
-					inform.setPerformative(ACLMessage.INFORM);
-					inform.setContent(msgRecv);
+                    return inform;
 
-					return inform;
+                }
+            });
 
-				}
-			} );
+        } // fine action
 
-		} // fine action
+        String sendRecSerial(String msgContent) {
+            try {
+                //serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
+                serialPort.getOutputStream().write((msgContent).getBytes());
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
 
-		String sendRecSerial(String msgContent) {
-			try {
-				//serialPort.getOutputStream().write((msgSender + '#' + msgContent).getBytes());
-				serialPort.getOutputStream().write((msgContent).getBytes());
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+            String msgRecv = "";
 
-			String msgRecv="";
+            byte[] readBuffer = null;
+            try {
+                while (serialPort.bytesAvailable() == 0) {
+                    Thread.sleep(20);
+                }
 
-			byte[] readBuffer=null;
-			try {
-				while (serialPort.bytesAvailable() == 0)
-					Thread.sleep(20);
+                Thread.sleep(50);
+                readBuffer = new byte[serialPort.bytesAvailable()];
+                serialPort.getInputStream().read(readBuffer);
+                msgRecv = new String(readBuffer);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-				Thread.sleep(50);
-				readBuffer = new byte[serialPort.bytesAvailable()];
-				serialPort.getInputStream().read(readBuffer);
-				msgRecv = new String(readBuffer);
-			} catch (Exception e) { e.printStackTrace(); }
+            return msgRecv;
+        }
 
-			return msgRecv;
-		}
+    }
 
-	}
-
-	protected void takeDown() {
-		// Deregister from the yellow pages
-		try {
-			DFService.deregister(this);
-		}
-		catch (FIPAException fe) {
-			fe.printStackTrace();
-		}
-		serialPort.closePort();
-		System.out.println("SerialCommAgent "+getAID().getName()+" terminating.");
-	}
+    protected void takeDown() {
+        // Deregister from the yellow pages
+        try {
+            DFService.deregister(this);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
+        serialPort.closePort();
+        System.out.println("SerialCommAgent " + getAID().getName() + " terminating.");
+    }
 }
