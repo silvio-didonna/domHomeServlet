@@ -50,23 +50,24 @@ public class mainClass {
         AgentController rma = mainContainer.createNewAgent("rma", "jade.tools.rma.rma", new Object[0]);
         rma.start();
 		//---------------------********************************************-----------------------------------
-
-		// Agent creation on local container
-        //List<Object> argList = new ArrayList<Object>();
-        //argList.add(arduino);
+	
         Object[] portAndBaud = new Object[2];
         portAndBaud[0]=args[0];
         portAndBaud[1]=args[1];
-        //argList[0]=arduino;
-        AgentController fanAgent = cont.createNewAgent(fanName, "temperature.FanAgent", null);
-        AgentController thermometerAgent = cont.createNewAgent(thermometerName, "temperature.ThermometerAgent", null);
+        
+        Object[] inRoom = new Object[1];
+        inRoom[0]=roomName; // imposto la stanza nella quale sono presenti i sensori e gli attuatori considerati
+        
+        // Agent creation on local container
+        AgentController fanAgent = cont.createNewAgent(fanName, "temperature.FanAgent", inRoom);
+        AgentController thermometerAgent = cont.createNewAgent(thermometerName, "temperature.ThermometerAgent", inRoom);
         AgentController serialCommAgent = cont.createNewAgent(serialCommName, "SerialCommAgent", portAndBaud);
-        AgentController lightSensorAgent = cont.createNewAgent(lightSensorName, "light.LightSensorAgent", null);
+        AgentController lightSensorAgent = cont.createNewAgent(lightSensorName, "light.LightSensorAgent", inRoom);
         AgentController roomAgent = cont.createNewAgent(roomName, "RoomAgent", null);
         AgentController temperatureAgent = cont.createNewAgent(temperatureName, "temperature.TemperatureAgent", null);
         AgentController lightningAgent = cont.createNewAgent(lightningName, "light.LightningAgent", null);
-        AgentController lightAgent = cont.createNewAgent(lightName, "light.LightAgent", null);
-        AgentController windowAgent = cont.createNewAgent(windowName, "temperature.WindowAgent", null);
+        AgentController lightAgent = cont.createNewAgent(lightName, "light.LightAgent", inRoom);
+        AgentController windowAgent = cont.createNewAgent(windowName, "temperature.WindowAgent", inRoom);
 
         /*
          try {
