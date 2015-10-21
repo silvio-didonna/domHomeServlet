@@ -52,6 +52,7 @@ public class RoomAgent extends Agent {
         }
         addBehaviour(new GetCurrentTemperature(this, 5000));
         addBehaviour(new GetCurrentLumen(this, 5000));
+        addBehaviour(new GetCurrentFireStatus(this, 5000));
 
         addBehaviour(new RoomService());
 
@@ -79,7 +80,7 @@ public class RoomAgent extends Agent {
 
                 protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
                     //System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
-                    if (request.getContent().equalsIgnoreCase("temperatura") || request.getContent().equalsIgnoreCase("lumen")) {
+                    if (request.getContent().equalsIgnoreCase("temperatura") || request.getContent().equalsIgnoreCase("lumen") || request.getContent().equalsIgnoreCase("fuoco")) {
                         // We agree to perform the action.
                         ACLMessage agree = request.createReply();
                         agree.setPerformative(ACLMessage.AGREE);
@@ -100,6 +101,9 @@ public class RoomAgent extends Agent {
                             break;
                         case ("lumen"):
                             inform.setContent(String.valueOf(lumens));
+                            break;
+                        case ("fuoco"):
+                            inform.setContent(String.valueOf(flame));
                             break;
                     }
 
@@ -134,11 +138,11 @@ public class RoomAgent extends Agent {
             AID[] thermometerAgents = null; // da modificare----------------------null
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
-                System.out.println("Found the following thermometer agents:");
+                //System.out.println("Found the following thermometer agents:");
                 thermometerAgents = new AID[result.length];
                 for (int i = 0; i < result.length; ++i) {
                     thermometerAgents[i] = result[i].getName();
-                    System.out.println(thermometerAgents[i].getName());
+                    //System.out.println(thermometerAgents[i].getName());
 
                 }
             } catch (FIPAException fe) {
@@ -174,7 +178,7 @@ public class RoomAgent extends Agent {
 
                 protected void handleFailure(ACLMessage failure) {
                     if (failure.getSender().equals(myAgent.getAMS())) {
-						// FAILURE notification from the JADE runtime: the receiver
+                        // FAILURE notification from the JADE runtime: the receiver
                         // does not exist
                         System.out.println("Responder does not exist");
                     } else {
@@ -183,7 +187,7 @@ public class RoomAgent extends Agent {
                 }
 
                 protected void handleAllResultNotifications(Vector notifications) {
-					//if (notifications.size() < nResponders) {
+                    //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
                     //}
@@ -218,11 +222,11 @@ public class RoomAgent extends Agent {
             AID[] lightSensorAgents = null; // da modificare----------------------null
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
-                System.out.println("Found the following light sensor agents:");
+                //System.out.println("Found the following light sensor agents:");
                 lightSensorAgents = new AID[result.length];
                 for (int i = 0; i < result.length; ++i) {
                     lightSensorAgents[i] = result[i].getName();
-                    System.out.println(lightSensorAgents[i].getName());
+                    //System.out.println(lightSensorAgents[i].getName());
 
                 }
             } catch (FIPAException fe) {
@@ -259,7 +263,7 @@ public class RoomAgent extends Agent {
 
                 protected void handleFailure(ACLMessage failure) {
                     if (failure.getSender().equals(myAgent.getAMS())) {
-						// FAILURE notification from the JADE runtime: the receiver
+                        // FAILURE notification from the JADE runtime: the receiver
                         // does not exist
                         System.out.println("Responder does not exist");
                     } else {
@@ -268,7 +272,82 @@ public class RoomAgent extends Agent {
                 }
 
                 protected void handleAllResultNotifications(Vector notifications) {
-					//if (notifications.size() < nResponders) {
+                    //if (notifications.size() < nResponders) {
+                    // Some responder didn't reply within the specified timeout
+                    //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
+                    //}
+                }
+            });
+
+        }
+
+    }
+
+    private class GetCurrentFireStatus extends TickerBehaviour {
+
+        public GetCurrentFireStatus(Agent a, long period) {
+            super(a, period);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        protected void onTick() {
+
+            //ricerca agenti termometro
+            String roomName = myAgent.getLocalName(); // nome agente stanza
+            DFAgentDescription template = new DFAgentDescription();
+            ServiceDescription sdRoom = new ServiceDescription();
+            sdRoom.setName(roomName + "-flame"); // ad es: salone-flame
+            template.addServices(sdRoom);
+            AID[] fireSensorAgents = null; // da modificare----------------------null
+            try {
+                DFAgentDescription[] result = DFService.search(myAgent, template);
+                //System.out.println("Found the following fire sensor agents:");
+                fireSensorAgents = new AID[result.length];
+                for (int i = 0; i < result.length; ++i) {
+                    fireSensorAgents[i] = result[i].getName();
+                    //System.out.println(fireSensorAgents[i].getName());
+
+                }
+            } catch (FIPAException fe) {
+                fe.printStackTrace();
+            }
+
+            ACLMessage requestFireStatusMessage = new ACLMessage(ACLMessage.REQUEST);
+
+            requestFireStatusMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+            // We want to receive a reply in 10 secs
+            requestFireStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+            requestFireStatusMessage.setContent("fuoco");
+            //requestTemperatureMessage.addReceiver(new AID("Termometro",AID.ISLOCALNAME));
+            requestFireStatusMessage.addReceiver(fireSensorAgents[0]);
+
+            addBehaviour(new AchieveREInitiator(myAgent, requestFireStatusMessage) {
+
+                protected void handleInform(ACLMessage inform) {
+                    String messageContenut = inform.getContent();
+                    if (messageContenut != null) {
+                        flame = Boolean.valueOf(inform.getContent());
+                        System.out.println("Room-Flame::::" + messageContenut);
+                    }
+                }
+
+                protected void handleRefuse(ACLMessage refuse) {
+                    System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+                }
+
+                protected void handleFailure(ACLMessage failure) {
+                    if (failure.getSender().equals(myAgent.getAMS())) {
+                        // FAILURE notification from the JADE runtime: the receiver
+                        // does not exist
+                        System.out.println("Responder does not exist");
+                    } else {
+                        System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+                    }
+                }
+
+                protected void handleAllResultNotifications(Vector notifications) {
+                    //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
                     //}
