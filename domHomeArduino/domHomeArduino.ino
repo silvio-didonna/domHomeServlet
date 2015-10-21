@@ -2,21 +2,11 @@
 #include <DallasTemperature.h>
 #include <Servo.h>
 
-
-//#include <SoftwareSerial.h>
-// OneWire DS18S20, DS18B20, DS1822 Temperature Example
-//
-// http://www.pjrc.com/teensy/td_libs_OneWire.html
-//
-// The DallasTemperature library can do all this work for you!
-// http://milesburton.com/Dallas_Temperature_Control_Library
-
-
 //Temperatura
 #define SERVO_WINDOW_PIN 9
 //ONEWIRE----------------------------------------------------------------------START
-// Data wire is plugged into port 10 on the Arduino
-#define ONE_WIRE_BUS 10
+// Data wire is plugged into port 8 on the Arduino
+#define ONE_WIRE_BUS 8
 OneWire oneWire(ONE_WIRE_BUS);
 // Pass our oneWire reference to Dallas Temperature.
 DallasTemperature sensors(&oneWire);
@@ -40,15 +30,26 @@ int photocell2Reading;     // the second analog reading from the sensor divider
 bool lightOn;
 int lightPin = 13;
 
-//unsigned long time;
-//int led = 13;
 //SoftwareSerial mySerial(2, 3); // RX, TX
+
+//Sicurezza
+const int pirPin = 4;    //the digital pin connected to the PIR sensor's output
+unsigned long pirStartCalibrationTime;
+const int pirCalibrationTime = 30; //come da datasheet (up to 60 secs)
+boolean pirCalibrated; //se true si può leggere il valore restituito dal sensore
+const int flameSensorPin = 2; //the analog pin connected to the flame sensor's output
 
 //Gestione stringa in input
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 
 void setup(void) {
+
+  pirCalibrated = false;
+  pirStartCalibrationTime = millis();
+  pinMode(pirPin, INPUT);
+  //digitalWrite(pirPin, LOW);
+
   pinMode(lightPin, OUTPUT);
   digitalWrite(lightPin, LOW);
   lightOn = false;
@@ -66,6 +67,7 @@ void setup(void) {
   // reserve 100 bytes for the inputString:
   inputString.reserve(100);
   initThermometer();
+
 }
 
 void loop(void) {
@@ -81,6 +83,24 @@ void loop(void) {
       photocell1Reading = analogRead(photocell1Pin);
       Serial.println(photocell1Reading);     // valore raw.
     }
+    else if (inputString.equals("pir1\n")) {
+      if (!pirCalibrated) {
+        if ((millis() - pirStartCalibrationTime) / 1000 >= pirCalibrationTime) {
+          pirCalibrated = true;
+          Serial.println((digitalRead(pirPin) == HIGH) ? "true" : "false"); //se è appena scaduto il tempo per la calibrazione (eseguito solo una volta)
+        }
+        else {
+          Serial.println("false"); //solo nella fase di calibrazione
+        }
+      }
+      else {
+        Serial.println((digitalRead(pirPin) == HIGH) ? "true" : "false"); // il sensore mantiene il valore HIGH per circa 5sec se rileva un movimento
+      }
+    }
+    else if (inputString.equals("flame1\n")) {
+      bool fire = checkFlameSensor();
+      Serial.println(fire ? "true" : "false");
+    }
     else if (inputString.equals("fan1\n")) {
       setFan();
       Serial.println(fanOn ? "true" : "false");
@@ -94,7 +114,7 @@ void loop(void) {
       Serial.println(windowOpen ? "true" : "false");
     }
     else
-      Serial.println("errore\n");
+      Serial.println("errore");
     // clear the string:
     inputString = "";
     stringComplete = false;
@@ -122,6 +142,18 @@ void serialEvent() {
       stringComplete = true;
     }
   }
+}
+
+bool checkFlameSensor() {
+  analogRead(flameSensorPin); //pulizia lettura
+  int sensorReading = analogRead(flameSensorPin);
+  // map the sensor range:
+  // ex: 'long int map(long int, long int, long int, long int, long int)'
+  // 0: A fire closer than 1.5 feet away.
+  // 1: A fire between 1-3 feet away.
+  // 2: No fire detected.
+  int range = map(sensorReading, 0, 1024, 0, 3);
+  return((range < 2) ? true : false);
 }
 
 void setFan () {
