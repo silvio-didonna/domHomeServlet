@@ -48,11 +48,11 @@ public class LightningAgent extends Agent {
         template.addServices(sdRoom);
         try {
             DFAgentDescription[] result = DFService.search(this, template);
-            System.out.println("Found the following server agents:");
+            //System.out.println("Found the following server agents:");
             serverAgents = new AID[result.length];
             for (int i = 0; i < result.length; ++i) {
                 serverAgents[i] = result[i].getName();
-                System.out.println(serverAgents[i].getName());
+                //System.out.println(serverAgents[i].getName());
                 CurrentLumenInRoom currentLumenInRoom = new CurrentLumenInRoom(serverAgents[i]);
                 currentLumens.add(currentLumenInRoom);
 
@@ -179,11 +179,11 @@ public class LightningAgent extends Agent {
                 AID[] lightAgents=null; // da modificare----------------------null
                 try {
                     DFAgentDescription[] result = DFService.search(myAgent, template);
-                    System.out.println("Found the following light agents:");
+                    //System.out.println("Found the following light agents:");
                     lightAgents = new AID[result.length];
                     for (int i = 0; i < result.length; ++i) {
                         lightAgents[i] = result[i].getName();
-                        System.out.println(lightAgents[i].getName());
+                        //System.out.println(lightAgents[i].getName());
 
                     }
                 } catch (FIPAException fe) {

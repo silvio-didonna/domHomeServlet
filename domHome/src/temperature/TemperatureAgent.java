@@ -48,11 +48,11 @@ public class TemperatureAgent extends Agent {
         template.addServices(sdRoom);
         try {
             DFAgentDescription[] result = DFService.search(this, template);
-            System.out.println("Found the following seller agents:");
+            //System.out.println("Found the following seller agents:");
             serverAgents = new AID[result.length];
             for (int i = 0; i < result.length; ++i) {
                 serverAgents[i] = result[i].getName();
-                System.out.println(serverAgents[i].getName());
+                //System.out.println(serverAgents[i].getName());
                 CurrentTemperatureInRoom currentTemperatureInRoom = new CurrentTemperatureInRoom(serverAgents[i]);
                 currentTemperatures.add(currentTemperatureInRoom);
 
@@ -181,11 +181,11 @@ public class TemperatureAgent extends Agent {
                 AID[] fanAgents = null; // da modificare----------------------null
                 try {
                     DFAgentDescription[] result = DFService.search(myAgent, template);
-                    System.out.println("Found the following fan agents:");
+                    //System.out.println("Found the following fan agents:");
                     fanAgents = new AID[result.length];
                     for (int i = 0; i < result.length; ++i) {
                         fanAgents[i] = result[i].getName();
-                        System.out.println(fanAgents[i].getName());
+                        //System.out.println(fanAgents[i].getName());
 
                     }
                 } catch (FIPAException fe) {
@@ -288,11 +288,11 @@ public class TemperatureAgent extends Agent {
                 AID[] windowAgents = null; // da modificare----------------------null
                 try {
                     DFAgentDescription[] result = DFService.search(myAgent, template);
-                    System.out.println("Found the following window agents:");
+                    //System.out.println("Found the following window agents:");
                     windowAgents = new AID[result.length];
                     for (int i = 0; i < result.length; ++i) {
                         windowAgents[i] = result[i].getName();
-                        System.out.println(windowAgents[i].getName());
+                        //System.out.println(windowAgents[i].getName());
 
                     }
                 } catch (FIPAException fe) {
@@ -333,7 +333,7 @@ public class TemperatureAgent extends Agent {
 
                         protected void handleInform(ACLMessage inform) {
                             System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
-                            currentTemperatureInRoom.setfanOn(Boolean.valueOf(inform.getContent()));
+                            currentTemperatureInRoom.setfanOn(Boolean.valueOf(inform.getContent())); //DA MODIFICARE
                         }
 
                         protected void handleAgree(ACLMessage agree) {
