@@ -24,8 +24,6 @@ import jade.proto.AchieveREResponder;
 public class ThermometerAgent extends Agent {
 
     private Float currentTemperature;
-    String temperatureReplyWith = "temperature";
-
     /**
      *
      */
@@ -46,8 +44,7 @@ public class ThermometerAgent extends Agent {
         } catch (FIPAException fe) {
             fe.printStackTrace();
         }
-		//addBehaviour(new RequestCurrentTemperature(this, 3000));
-        //addBehaviour(new GetCurrentTemperature());
+
         addBehaviour(new GetCurrentTemperatureFIPA(this, 3000));
         addBehaviour(new TempService());
     }
@@ -176,37 +173,4 @@ public class ThermometerAgent extends Agent {
         }
     }
 
-    private class GetCurrentTemperature extends CyclicBehaviour {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = -2794051229003161225L;
-
-        @Override
-        public void action() {
-            MessageTemplate mt1 = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-            MessageTemplate mt2 = MessageTemplate.MatchInReplyTo(temperatureReplyWith);
-            MessageTemplate mt = MessageTemplate.and(mt1, mt2);
-            //System.out.println("Server behaviour 1 wait a message.");
-            ACLMessage msg = myAgent.receive(mt);
-            if (msg != null) {
-
-                String messageContenut = msg.getContent();
-                //System.out.println("AgenteTermometro::::"+messageContenut);
-                if (messageContenut != null) {
-                    try {
-                        currentTemperature = Float.parseFloat(messageContenut);
-                    } catch (NumberFormatException e) {
-                        System.out.println("AgenteTermometro::::errore");
-                    }
-                }
-
-            } else {
-                block();
-            }
-
-        }
-
-    }
 }
