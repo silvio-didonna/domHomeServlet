@@ -15,6 +15,10 @@ public class mainClass {
     static String lightningName = "Gestore-Luci";
     static String lightName = "Luce";
     static String windowName = "Finestra";
+    static String flameSensorName = "Sensore-Fiamme";
+    static String fireSystemName = "Antincendio";
+
+    
 
     public static void main(String args[]) throws Exception {
         if (args.length < 2) {
@@ -68,6 +72,8 @@ public class mainClass {
         AgentController lightningAgent = cont.createNewAgent(lightningName, "light.LightningAgent", null);
         AgentController lightAgent = cont.createNewAgent(lightName, "light.LightAgent", inRoom);
         AgentController windowAgent = cont.createNewAgent(windowName, "temperature.WindowAgent", inRoom);
+        AgentController flameSensorAgent = cont.createNewAgent(flameSensorName, "security.FlameSensorAgent", inRoom);
+        AgentController fireSystemAgent = cont.createNewAgent(fireSystemName, "security.FireSystemAgent", null);
 
         /*
          try {
@@ -88,6 +94,9 @@ public class mainClass {
         //Agenti base per l'illuminazione
         lightAgent.start();
         lightSensorAgent.start();
+        
+        //Agenti base per la sicurezza
+        flameSensorAgent.start();
 
         //Gestore ambiente
         roomAgent.start();
@@ -95,6 +104,7 @@ public class mainClass {
         //Gestori generali
         temperatureAgent.start();
         lightningAgent.start();
+        fireSystemAgent.start();
 
     }
 }
