@@ -17,7 +17,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
 
-public class FireSystemAgent extends Agent{
+public class FireSystemAgent extends Agent {
 
     private AID[] serverAgents;
     //private static Map<AID, Float> currentTemperatures = new HashMap<>();
@@ -43,11 +43,11 @@ public class FireSystemAgent extends Agent{
         template.addServices(sdRoom);
         try {
             DFAgentDescription[] result = DFService.search(this, template);
-            System.out.println("Found the following seller agents:");
+            //System.out.println("Found the following seller agents:");
             serverAgents = new AID[result.length];
             for (int i = 0; i < result.length; ++i) {
                 serverAgents[i] = result[i].getName();
-                System.out.println(serverAgents[i].getName());
+                //System.out.println(serverAgents[i].getName());
                 CurrentFireStatusInRoom currentFireStatusInRoom = new CurrentFireStatusInRoom(serverAgents[i]);
                 currentFireStatuses.add(currentFireStatusInRoom);
 
@@ -58,9 +58,8 @@ public class FireSystemAgent extends Agent{
 
         addBehaviour(new RequestCurrentFireStatuses(this, 5000));
     }
-    
-    private class RequestCurrentFireStatuses extends TickerBehaviour {
 
+    private class RequestCurrentFireStatuses extends TickerBehaviour {
 
         private int nResponders;
 
@@ -93,7 +92,7 @@ public class FireSystemAgent extends Agent{
                         try {
 
                             Boolean fireStatus = Boolean.valueOf(inform.getContent());
-			System.out.println("Agente Gestore-Fuoco-Bool::::"+fireStatus);
+                            //System.out.println("Agente Gestore-Fuoco-Bool::::"+fireStatus);
 
                             Iterator<CurrentFireStatusInRoom> it = currentFireStatuses.iterator();
                             while (it.hasNext()) {
@@ -118,7 +117,7 @@ public class FireSystemAgent extends Agent{
 
                 protected void handleFailure(ACLMessage failure) {
                     if (failure.getSender().equals(myAgent.getAMS())) {
-						// FAILURE notification from the JADE runtime: the receiver
+                        // FAILURE notification from the JADE runtime: the receiver
                         // does not exist
                         System.out.println("Responder does not exist");
                     } else {
@@ -136,8 +135,7 @@ public class FireSystemAgent extends Agent{
 
         }
     }
-    
-    
+
     private class CurrentFireStatusInRoom {
 
         private Boolean currentFireStatus;
@@ -176,7 +174,7 @@ public class FireSystemAgent extends Agent{
         public void setRoomAgent(AID roomAgent) {
             this.roomAgent = roomAgent;
         }
-        
+
     }
 
     protected void takeDown() {

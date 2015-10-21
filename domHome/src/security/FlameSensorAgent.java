@@ -1,6 +1,5 @@
 package security;
 
-
 import java.util.Date;
 import java.util.Vector;
 
@@ -23,10 +22,11 @@ import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
 public class FlameSensorAgent extends Agent {
+
     Boolean fireStatus;
 
     protected void setup() {
-        fireStatus=false;
+        fireStatus = false;
         Object[] inRoom = this.getArguments();
         String roomName = inRoom[0].toString();
 
@@ -114,12 +114,11 @@ public class FlameSensorAgent extends Agent {
 
             addBehaviour(new AchieveREInitiator(myAgent, requestFireMessage) {
 
-
                 protected void handleInform(ACLMessage inform) {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
-			messageContenut=messageContenut.trim();
-                            fireStatus = Boolean.valueOf(messageContenut); // controllare eccezione
+                        messageContenut = messageContenut.trim();
+                        fireStatus = Boolean.valueOf(messageContenut); // controllare eccezione
                     }
                 }
 
@@ -129,7 +128,7 @@ public class FlameSensorAgent extends Agent {
 
                 protected void handleFailure(ACLMessage failure) {
                     if (failure.getSender().equals(myAgent.getAMS())) {
-						// FAILURE notification from the JADE runtime: the receiver
+                        // FAILURE notification from the JADE runtime: the receiver
                         // does not exist
                         System.out.println("Responder does not exist");
                     } else {
@@ -138,7 +137,7 @@ public class FlameSensorAgent extends Agent {
                 }
 
                 protected void handleAllResultNotifications(Vector notifications) {
-					//if (notifications.size() < nResponders) {
+                    //if (notifications.size() < nResponders) {
                     // Some responder didn't reply within the specified timeout
                     //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
                     //}
