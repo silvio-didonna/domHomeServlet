@@ -17,6 +17,8 @@ public class mainClass {
     static String windowName = "Finestra";
     static String flameSensorName = "Sensore-Fiamme";
     static String fireSystemName = "Antincendio";
+    static String motionSensorName = "Sensore-Movimento";
+    static String antitheftName = "Antifurto";
 
     
 
@@ -74,6 +76,8 @@ public class mainClass {
         AgentController windowAgent = cont.createNewAgent(windowName, "temperature.WindowAgent", inRoom);
         AgentController flameSensorAgent = cont.createNewAgent(flameSensorName, "security.FlameSensorAgent", inRoom);
         AgentController fireSystemAgent = cont.createNewAgent(fireSystemName, "security.FireSystemAgent", null);
+        AgentController motionSensorAgent = cont.createNewAgent(motionSensorName, "security.MotionSensorAgent", inRoom);
+        AgentController antitheftAgent = cont.createNewAgent(antitheftName, "security.AntitheftAgent", null);
 
         /*
          try {
@@ -97,6 +101,7 @@ public class mainClass {
         
         //Agenti base per la sicurezza
         flameSensorAgent.start();
+        motionSensorAgent.start();
 
         //Gestore ambiente
         roomAgent.start();
@@ -105,6 +110,7 @@ public class mainClass {
         temperatureAgent.start();
         lightningAgent.start();
         fireSystemAgent.start();
+        antitheftAgent.start();
 
     }
 }
