@@ -53,6 +53,7 @@ public class RoomAgent extends Agent {
         addBehaviour(new GetCurrentTemperature(this, 5000));
         addBehaviour(new GetCurrentLumen(this, 5000));
         addBehaviour(new GetCurrentFireStatus(this, 5000));
+        addBehaviour(new GetCurrentMotionStatus(this, 5000));
 
         addBehaviour(new RoomService());
 
@@ -80,7 +81,7 @@ public class RoomAgent extends Agent {
 
                 protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
                     //System.out.println("Agent "+getLocalName()+": REQUEST received from "+request.getSender().getName()+". Action is "+request.getContent());
-                    if (request.getContent().equalsIgnoreCase("temperatura") || request.getContent().equalsIgnoreCase("lumen") || request.getContent().equalsIgnoreCase("fuoco")) {
+                    if (request.getContent().equalsIgnoreCase("temperatura") || request.getContent().equalsIgnoreCase("lumen") || request.getContent().equalsIgnoreCase("fuoco") || request.getContent().equalsIgnoreCase("movimento")) {
                         // We agree to perform the action.
                         ACLMessage agree = request.createReply();
                         agree.setPerformative(ACLMessage.AGREE);
@@ -104,6 +105,9 @@ public class RoomAgent extends Agent {
                             break;
                         case ("fuoco"):
                             inform.setContent(String.valueOf(flame));
+                            break;
+                        case ("movimento"):
+                            inform.setContent(String.valueOf(motion));
                             break;
                     }
 
@@ -357,6 +361,83 @@ public class RoomAgent extends Agent {
         }
 
     }
+    
+    
+    private class GetCurrentMotionStatus extends TickerBehaviour {
+
+        public GetCurrentMotionStatus(Agent a, long period) {
+            super(a, period);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        protected void onTick() {
+
+            //ricerca agenti termometro
+            String roomName = myAgent.getLocalName(); // nome agente stanza
+            DFAgentDescription template = new DFAgentDescription();
+            ServiceDescription sdRoom = new ServiceDescription();
+            sdRoom.setName(roomName + "-motion"); // ad es: salone-motion
+            template.addServices(sdRoom);
+            AID[] motionSensorAgents = null; // da modificare----------------------null
+            try {
+                DFAgentDescription[] result = DFService.search(myAgent, template);
+                //System.out.println("Found the following fire sensor agents:");
+                motionSensorAgents = new AID[result.length];
+                for (int i = 0; i < result.length; ++i) {
+                    motionSensorAgents[i] = result[i].getName();
+                    //System.out.println(fireSensorAgents[i].getName());
+
+                }
+            } catch (FIPAException fe) {
+                fe.printStackTrace();
+            }
+
+            ACLMessage requestMotionStatusMessage = new ACLMessage(ACLMessage.REQUEST);
+
+            requestMotionStatusMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+            // We want to receive a reply in 10 secs
+            requestMotionStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+            requestMotionStatusMessage.setContent("movimento");
+            //requestTemperatureMessage.addReceiver(new AID("Termometro",AID.ISLOCALNAME));
+            requestMotionStatusMessage.addReceiver(motionSensorAgents[0]);
+
+            addBehaviour(new AchieveREInitiator(myAgent, requestMotionStatusMessage) {
+
+                protected void handleInform(ACLMessage inform) {
+                    String messageContenut = inform.getContent();
+                    if (messageContenut != null) {
+                        motion = Boolean.valueOf(inform.getContent());
+                        System.out.println("Room-Motion::::" + messageContenut);
+                    }
+                }
+
+                protected void handleRefuse(ACLMessage refuse) {
+                    System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+                }
+
+                protected void handleFailure(ACLMessage failure) {
+                    if (failure.getSender().equals(myAgent.getAMS())) {
+                        // FAILURE notification from the JADE runtime: the receiver
+                        // does not exist
+                        System.out.println("Responder does not exist");
+                    } else {
+                        System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+                    }
+                }
+
+                protected void handleAllResultNotifications(Vector notifications) {
+                    //if (notifications.size() < nResponders) {
+                    // Some responder didn't reply within the specified timeout
+                    //System.out.println("Timeout expired: missing "+(nResponders - notifications.size())+" responses");
+                    //}
+                }
+            });
+
+        }
+
+    }
+    
 
     private class sendToThingSpeak extends TickerBehaviour {
 
