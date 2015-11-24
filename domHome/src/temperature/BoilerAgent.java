@@ -24,14 +24,14 @@ public class BoilerAgent extends Agent {
 
     protected void setup() {
 
-        Object[] inRoom = this.getArguments();
-        String roomName = inRoom[0].toString();
+        //Object[] inRoom = this.getArguments();
+        //String roomName = inRoom[0].toString();
 
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
         ServiceDescription sd = new ServiceDescription();
         sd.setType("boiler-manager");
-        sd.setName(roomName + "-boiler"); // ad es: salone-boiler
+        sd.setName("boiler");
         dfd.addServices(sd);
         try {
             DFService.register(this, dfd);
