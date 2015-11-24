@@ -63,6 +63,7 @@ public class LightningAgent extends Agent {
 
         addBehaviour(new RequestCurrentLumen(this, 5000));
         addBehaviour(new SetLight(this, 6000));
+        addBehaviour(new SetShutter(this, 6000));
     }
 
     private class RequestCurrentLumen extends TickerBehaviour {
@@ -256,6 +257,104 @@ public class LightningAgent extends Agent {
             }
         }
     }
+    
+    private class SetShutter extends TickerBehaviour {
+
+        private int nResponders;
+
+        public SetShutter(Agent a, long period) {
+            super(a, period);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        protected void onTick() {
+
+            int lumenMinValue = 200;
+            for (CurrentLumenInRoom currentLumenInRoom : currentLumens) { // per ogni stanza
+
+                //ricerca agenti luce
+                String roomName = currentLumenInRoom.getroomAgent().getLocalName(); // nome agente stanza
+                DFAgentDescription template = new DFAgentDescription();
+                ServiceDescription sdRoom = new ServiceDescription();
+                sdRoom.setName(roomName + "-shutter"); // ad es: salone-light
+                template.addServices(sdRoom);
+                AID[] shutterAgents=null; // da modificare----------------------null
+                try {
+                    DFAgentDescription[] result = DFService.search(myAgent, template);
+                    //System.out.println("Found the following light agents:");
+                    shutterAgents = new AID[result.length];
+                    for (int i = 0; i < result.length; ++i) {
+                        shutterAgents[i] = result[i].getName();
+                        //System.out.println(shutterAgents[i].getName());
+
+                    }
+                } catch (FIPAException fe) {
+                    fe.printStackTrace();
+                }
+
+                //AID msgReceiver = new AID("Luce", AID.ISLOCALNAME);
+                ACLMessage requestShutterToggle = new ACLMessage(ACLMessage.REQUEST);
+                //requestLightToggle.addReceiver(msgReceiver);
+                requestShutterToggle.addReceiver(shutterAgents[0]); // da modificare----------------------
+                System.out.println("setShutter:::: " + currentLumenInRoom.getCurrentLumen());
+                requestShutterToggle.setContent(""); // per far funzionare l'IF dopo
+                if (!currentLumenInRoom.getShutterOpen()) {
+                    if ((currentLumenInRoom.getCurrentLumen() < lumenMinValue)) { // DA MODIFICARE!!!!
+
+                        requestShutterToggle.setContent("true");
+
+                    }
+                } else if ((currentLumenInRoom.getCurrentLumen() > lumenMinValue)) { // DA MODIFICARE!!!!
+
+                    requestShutterToggle.setContent("false");
+                }
+
+                if (requestShutterToggle.getContent().equalsIgnoreCase("true") || requestShutterToggle.getContent().equalsIgnoreCase("false")) {
+
+                    requestShutterToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                    // We want to receive a reply in 10 secs
+                    requestShutterToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+                    //requestLightToggle.setContent("dummy-action");
+
+                    addBehaviour(new AchieveREInitiator(myAgent, requestShutterToggle) {
+
+
+                        protected void handleInform(ACLMessage inform) {
+                            System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
+                            currentLumenInRoom.setShutterOpen(Boolean.valueOf(inform.getContent()));
+                        }
+
+                        protected void handleAgree(ACLMessage agree) {
+                            System.out.println("Agent " + agree.getSender().getName() + " agreed");
+                        }
+
+                        protected void handleRefuse(ACLMessage refuse) {
+                            System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+                            nResponders--;
+                        }
+
+                        protected void handleFailure(ACLMessage failure) {
+                            if (failure.getSender().equals(myAgent.getAMS())) {
+								// FAILURE notification from the JADE runtime: the receiver
+                                // does not exist
+                                System.out.println("Responder does not exist");
+                            } else {
+                                System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+                            }
+                        }
+
+                        protected void handleAllResultNotifications(Vector notifications) {
+                            if (notifications.size() < nResponders) {
+                                // Some responder didn't reply within the specified timeout
+                                System.out.println("Timeout expired: missing " + (nResponders - notifications.size()) + " responses");
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
 
     protected void takeDown() {
         // Deregister from the yellow pages
@@ -272,23 +371,27 @@ public class LightningAgent extends Agent {
         private int currentLumen;
         private AID roomAgent;
         private Boolean lightOn;
+        private Boolean shutterOpen;
 
         public CurrentLumenInRoom() {
             currentLumen = 0;
             roomAgent = null;
             lightOn = false;
+            shutterOpen = false;
         }
 
         public CurrentLumenInRoom(AID roomAgent) {
             setCurrentLumen(0);
             setroomAgent(roomAgent);
             lightOn = false;
+            shutterOpen = false;
         }
 
         public CurrentLumenInRoom(AID roomAgent, int currentLumen) {
             setCurrentLumen(currentLumen);
             setroomAgent(roomAgent);
             lightOn = false;
+            shutterOpen = false;
         }
 
         public int getCurrentLumen() {
@@ -313,6 +416,14 @@ public class LightningAgent extends Agent {
 
         public void setlightOn(Boolean lightOn) {
             this.lightOn = lightOn;
+        }
+        
+        public Boolean getShutterOpen() {
+            return shutterOpen;
+        }
+
+        public void setShutterOpen(Boolean shutterOpen) {
+            this.shutterOpen = shutterOpen;
         }
     }
 }
