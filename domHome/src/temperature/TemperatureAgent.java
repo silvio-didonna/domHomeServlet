@@ -26,6 +26,7 @@ public class TemperatureAgent extends Agent {
     private AID[] serverAgents;
     //private static Map<AID, Float> currentTemperatures = new HashMap<>();
     List<CurrentTemperatureInRoom> currentTemperatures = new LinkedList<CurrentTemperatureInRoom>();
+    Boolean boilerOn = false;
 
     protected void setup() {
 
@@ -367,11 +368,113 @@ public class TemperatureAgent extends Agent {
         }
     }
 
+    private class SetBoiler extends TickerBehaviour {
+
+        private int nResponders;
+
+        public SetBoiler(Agent a, long period) {
+            super(a, period);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        protected void onTick() {
+
+            Float tempMinValue = new Float(23);
+            Float averageTemp = new Float(0);
+            for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
+                averageTemp += currentTemperatureInRoom.getCurrentTemperature();
+            }
+            averageTemp = averageTemp/currentTemperatures.size();
+                
+                //ricerca agenti finestra
+                //String roomName = currentTemperatureInRoom.getroomAgent().getLocalName(); // nome agente stanza
+                DFAgentDescription template = new DFAgentDescription();
+                ServiceDescription sdRoom = new ServiceDescription();
+                sdRoom.setName("boiler"); 
+                template.addServices(sdRoom);
+                AID[] boilerAgents = null; // da modificare----------------------null
+                try {
+                    DFAgentDescription[] result = DFService.search(myAgent, template);
+                    //System.out.println("Found the following window agents:");
+                    boilerAgents = new AID[result.length];
+                    for (int i = 0; i < result.length; ++i) {
+                        boilerAgents[i] = result[i].getName();
+                        //System.out.println(windowAgents[i].getName());
+
+                    }
+                } catch (FIPAException fe) {
+                    fe.printStackTrace();
+                }
+
+                //AID msgReceiver = new AID("Finestra", AID.ISLOCALNAME);
+                ACLMessage requestBoilerToggle = new ACLMessage(ACLMessage.REQUEST);
+                //requestWindowToggle.addReceiver(msgReceiver);
+                requestBoilerToggle.addReceiver(boilerAgents[0]); // da modificare----------------------
+                
+                //System.out.println("setWindow:::: " + currentTemperatureInRoom.getCurrentTemperature());
+                requestBoilerToggle.setContent(""); // per far funzionare l'IF dopo
+                if (boilerOn) {
+                    if (averageTemp.compareTo(tempMinValue) < 0) {
+
+                        requestBoilerToggle.setContent("true"); //accendi
+
+                    }
+                } else if (averageTemp.compareTo(tempMinValue) > 0) {
+
+                    requestBoilerToggle.setContent("false"); //spegni
+                }
+
+                if (requestBoilerToggle.getContent().equalsIgnoreCase("true") || requestBoilerToggle.getContent().equalsIgnoreCase("false")) {
+
+                    requestBoilerToggle.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                    // We want to receive a reply in 10 secs
+                    requestBoilerToggle.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+                    //requestWindowToggle.setContent("dummy-action");
+
+                    addBehaviour(new AchieveREInitiator(myAgent, requestBoilerToggle) {
+
+
+                        protected void handleInform(ACLMessage inform) {
+                            System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
+                            boilerOn=Boolean.valueOf(inform.getContent()); //DA MODIFICARE
+                        }
+
+                        protected void handleAgree(ACLMessage agree) {
+                            System.out.println("Agent " + agree.getSender().getName() + " agreed");
+                        }
+
+                        protected void handleRefuse(ACLMessage refuse) {
+                            System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+                            nResponders--;
+                        }
+
+                        protected void handleFailure(ACLMessage failure) {
+                            if (failure.getSender().equals(myAgent.getAMS())) {
+								// FAILURE notification from the JADE runtime: the receiver
+                                // does not exist
+                                System.out.println("Responder does not exist");
+                            } else {
+                                System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+                            }
+                        }
+
+                        protected void handleAllResultNotifications(Vector notifications) {
+                            if (notifications.size() < nResponders) {
+                                // Some responder didn't reply within the specified timeout
+                                System.out.println("Timeout expired: missing " + (nResponders - notifications.size()) + " responses");
+                            }
+                        }
+                    });
+                }
+        }
+    }
+    
     private class CurrentTemperatureInRoom {
 
         private Float currentTemperature;
         private AID roomAgent;
-        private Boolean fanOn;
+        private Boolean fanOn; // manca window
 
         public CurrentTemperatureInRoom() {
             currentTemperature = null;
