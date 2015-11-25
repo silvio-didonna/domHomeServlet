@@ -65,6 +65,7 @@ public class TemperatureAgent extends Agent {
         addBehaviour(new RequestCurrentTemperature(this, 5000));
         addBehaviour(new SetFan(this, 6000));
         addBehaviour(new SetWindow(this, 6000));
+        addBehaviour(new SetBoiler(this, 6000));
 
     }
 
@@ -380,14 +381,15 @@ public class TemperatureAgent extends Agent {
         @Override
         protected void onTick() {
 
-            Float tempMinValue = new Float(23);
+            Float tempMinValue = new Float(26);
             Float averageTemp = new Float(0);
             for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
                 averageTemp += currentTemperatureInRoom.getCurrentTemperature();
             }
             averageTemp = averageTemp/currentTemperatures.size();
+                System.out.println("setBoiler:::: " + averageTemp + " "+currentTemperatures.size());
                 
-                //ricerca agenti finestra
+                //ricerca agenti boiler
                 //String roomName = currentTemperatureInRoom.getroomAgent().getLocalName(); // nome agente stanza
                 DFAgentDescription template = new DFAgentDescription();
                 ServiceDescription sdRoom = new ServiceDescription();
@@ -414,7 +416,7 @@ public class TemperatureAgent extends Agent {
                 
                 //System.out.println("setWindow:::: " + currentTemperatureInRoom.getCurrentTemperature());
                 requestBoilerToggle.setContent(""); // per far funzionare l'IF dopo
-                if (boilerOn) {
+                if (!boilerOn) {
                     if (averageTemp.compareTo(tempMinValue) < 0) {
 
                         requestBoilerToggle.setContent("true"); //accendi
