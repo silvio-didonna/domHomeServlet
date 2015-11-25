@@ -31,6 +31,10 @@ int photocell1Reading;     // the first analog reading from the sensor divider
 int photocell2Reading;     // the second analog reading from the sensor divider
 bool lightOn;
 int lightPin = 13;
+Servo shutter;
+int shutterPin = 6;
+int posServoShutter = 90;    // variable to store the servo position
+int shutterOpen;
 
 //SoftwareSerial mySerial(2, 3); // RX, TX
 
@@ -55,6 +59,10 @@ void setup(void) {
   pinMode(lightPin, OUTPUT);
   digitalWrite(lightPin, LOW);
   lightOn = false;
+  
+  shutter.attach(shutterPin);
+  shutter.write(posServoShutter);
+  shutterOpen = false;
 
   pinMode(boilerPin, OUTPUT);
   digitalWrite(boilerPin, LOW);
@@ -118,6 +126,10 @@ void loop(void) {
     else if (inputString.equals("light1\n")) {
       setLight();
       Serial.println(lightOn ? "true" : "false");
+    }
+    else if (inputString.equals("shutter1\n")) {
+      setShutter();
+      Serial.println(shutterOpen ? "true" : "false");
     }
     else if (inputString.equals("window1\n")) {
       setWindow();
@@ -197,6 +209,18 @@ void setLight () {
     digitalWrite(lightPin, LOW);
     lightOn = false;
   }
+}
+
+void setShutter () {
+  if (shutterOpen == false) { //se è chiusa la apre
+    posServoShutter = 175;
+    shutterOpen = true;
+  }
+  else {// se è aperta la chiude
+    posServoShutter = 90;
+    shutterOpen = false;
+  }
+  shutter.write(posServoShutter);
 }
 
 void setWindow () {
