@@ -21,6 +21,8 @@ bool windowOpen;
 int posServoWindow = 90;    // variable to store the servo position
 int fanPin = 2;
 bool fanOn;
+int boilerPin = 5;
+bool boilerOn;
 
 //Luce
 int photocell1Pin = 0;     // the first cell and 10K pulldown are connected to a0
@@ -53,6 +55,10 @@ void setup(void) {
   pinMode(lightPin, OUTPUT);
   digitalWrite(lightPin, LOW);
   lightOn = false;
+
+  pinMode(boilerPin, OUTPUT);
+  digitalWrite(boilerPin, LOW);
+  boilerOn = false;
 
   pinMode(fanPin, OUTPUT);
   digitalWrite(fanPin, LOW);
@@ -105,6 +111,10 @@ void loop(void) {
       setFan();
       Serial.println(fanOn ? "true" : "false");
     }
+    else if (inputString.equals("boiler1\n")) {
+      setBoiler();
+      Serial.println(boilerOn ? "true" : "false");
+    }
     else if (inputString.equals("light1\n")) {
       setLight();
       Serial.println(lightOn ? "true" : "false");
@@ -154,6 +164,17 @@ bool checkFlameSensor() {
   // 2: No fire detected.
   int range = map(sensorReading, 0, 1024, 0, 3);
   return((range < 2) ? true : false);
+}
+
+void setBoiler () {
+  if (boilerOn == false) { //se è spento l'accende
+    digitalWrite(boilerPin, HIGH);
+    boilerOn = true;
+  }
+  else {// se è acceso lo spegne
+    digitalWrite(boilerPin, LOW);
+    boilerOn = false;
+  }
 }
 
 void setFan () {
