@@ -19,6 +19,7 @@ float temperature = 0.0;
 Servo window;
 bool windowOpen;
 int posServoWindow = 90;    // variable to store the servo position
+unsigned long lastWindowServoCommand = 0;
 int fanPin = 2;
 bool fanOn;
 int boilerPin = 5;
@@ -35,6 +36,7 @@ Servo shutter;
 int shutterPin = 6;
 int posServoShutter = 90;    // variable to store the servo position
 int shutterOpen;
+unsigned long lastShutterServoCommand = 0;
 
 //SoftwareSerial mySerial(2, 3); // RX, TX
 
@@ -62,6 +64,7 @@ void setup(void) {
   
   shutter.attach(shutterPin);
   shutter.write(posServoShutter);
+  lastShutterServoCommand = millis();
   shutterOpen = false;
 
   pinMode(boilerPin, OUTPUT);
@@ -74,6 +77,7 @@ void setup(void) {
 
   window.attach(SERVO_WINDOW_PIN);
   window.write(posServoWindow);
+  lastWindowServoCommand = millis();
   windowOpen = false;
 
   Serial.begin(115200);
@@ -86,6 +90,15 @@ void setup(void) {
 
 void loop(void) {
   updateTemperature(); // ad ogni ciclo controlla se è pronto il termometro e nel caso aggiorna il valore della temperatura.
+
+  if(millis() - lastShutterServoCommand > 500) { // se passano 500ms disattiva il servo per evitare il "buzz"
+    shutter.detach();
+  }
+
+  if(millis() - lastWindowServoCommand > 500) { // se passano 500ms disattiva il servo per evitare il "buzz"
+    window.detach();
+  }
+  
 
   if (stringComplete) {
 
@@ -128,11 +141,15 @@ void loop(void) {
       Serial.println(lightOn ? "true" : "false");
     }
     else if (inputString.equals("shutter1\n")) {
+      shutter.attach(shutterPin);
       setShutter();
+      lastShutterServoCommand = millis();
       Serial.println(shutterOpen ? "true" : "false");
     }
     else if (inputString.equals("window1\n")) {
+      window.attach(SERVO_WINDOW_PIN);
       setWindow();
+      lastWindowServoCommand = millis();
       Serial.println(windowOpen ? "true" : "false");
     }
     else
