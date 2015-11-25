@@ -19,6 +19,8 @@ public class mainClass {
     static String fireSystemName = "Antincendio";
     static String motionSensorName = "Sensore-Movimento";
     static String antitheftName = "Antifurto";
+    static String boilerName = "Boiler";
+    static String shutterName = "Persiana";
 
     
 
@@ -78,6 +80,8 @@ public class mainClass {
         AgentController fireSystemAgent = cont.createNewAgent(fireSystemName, "security.FireSystemAgent", null);
         AgentController motionSensorAgent = cont.createNewAgent(motionSensorName, "security.MotionSensorAgent", inRoom);
         AgentController antitheftAgent = cont.createNewAgent(antitheftName, "security.AntitheftAgent", null);
+        AgentController boilerAgent = cont.createNewAgent(boilerName, "temperature.BoilerAgent", null);
+        AgentController shutterAgent = cont.createNewAgent(shutterName, "light.ShutterAgent", inRoom);
 
         /*
          try {
@@ -94,10 +98,12 @@ public class mainClass {
         fanAgent.start();
         windowAgent.start();
         thermometerAgent.start();
+        boilerAgent.start();
 
         //Agenti base per l'illuminazione
         lightAgent.start();
         lightSensorAgent.start();
+        shutterAgent.start();
         
         //Agenti base per la sicurezza
         flameSensorAgent.start();
