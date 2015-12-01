@@ -18,7 +18,9 @@ float temperature = 0.0;
 //ONEWIRE----------------------------------------------------------------------STOP
 Servo window;
 bool windowOpen;
-int posServoWindow = 90;    // variable to store the servo position
+int posServoWindowOpened = 150;
+int posServoWindowClosed = 60;
+int posServoWindow = posServoWindowClosed;    // variable to store the servo position
 unsigned long lastWindowServoCommand = 0;
 int fanPin = 2;
 bool fanOn;
@@ -34,7 +36,10 @@ bool lightOn;
 int lightPin = 13;
 Servo shutter;
 int shutterPin = 6;
-int posServoShutter = 90;    // variable to store the servo position
+int posServoShutterOpened = 60;
+int posServoShutterClosed = 150;
+int posServoShutter = posServoShutterClosed;    // variable to store the servo position
+
 int shutterOpen;
 unsigned long lastShutterServoCommand = 0;
 
@@ -235,11 +240,11 @@ void setLight () {
 
 void setShutter () {
   if (shutterOpen == false) { //se è chiusa la apre
-    posServoShutter = 175;
+    posServoShutter = posServoShutterOpened;
     shutterOpen = true;
   }
   else {// se è aperta la chiude
-    posServoShutter = 90;
+    posServoShutter = posServoShutterClosed;
     shutterOpen = false;
   }
   shutter.write(posServoShutter);
@@ -247,11 +252,11 @@ void setShutter () {
 
 void setWindow () {
   if (windowOpen == false) { //se è chiusa la apre
-    posServoWindow = 175;
+    posServoWindow = posServoWindowOpened;
     windowOpen = true;
   }
   else {// se è aperta la chiude
-    posServoWindow = 90;
+    posServoWindow = posServoWindowClosed;
     windowOpen = false;
   }
   window.write(posServoWindow);
