@@ -4,7 +4,7 @@ import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.wrapper.AgentController;
 
-public class mainClass {
+public class domHome {
 
     static String thermometerName = "Termometro";
     static String fanName = "Ventilatore";
