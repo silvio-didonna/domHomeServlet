@@ -24,6 +24,7 @@ import jade.proto.AchieveREResponder;
 public class LaserSensorAgent extends Agent {
 
     Boolean laserStatus;
+    int currentLumen;
 
     protected void setup() {
         laserStatus = false;
@@ -118,7 +119,15 @@ public class LaserSensorAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         messageContenut = messageContenut.trim();
-                        laserStatus = Boolean.valueOf(messageContenut); // controllare eccezione
+                        try {
+                            currentLumen = Integer.parseInt(messageContenut);
+                            if (currentLumen < 800)
+                                laserStatus = true;
+                            else
+                                laserStatus = false;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Agente LaserSensor::::errore");
+                        }
                     }
                 }
 
