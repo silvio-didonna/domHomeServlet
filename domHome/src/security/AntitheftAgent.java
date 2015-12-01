@@ -88,7 +88,7 @@ public class AntitheftAgent extends Agent {
                 protected void handleInform(ACLMessage inform) {
                     //System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
                     String messageContenut = inform.getContent();
-                    System.out.println("Agente Gestore-Antifurto::::" + messageContenut);
+                    System.out.println("Agente Gestore-AntifurtoMotion::::" + messageContenut);
                     if (messageContenut != null) {
                         try {
 
@@ -158,14 +158,14 @@ public class AntitheftAgent extends Agent {
             requestLaserStatusMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
             // We want to receive a reply in 10 secs
             requestLaserStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-            requestLaserStatusMessage.setContent("movimento");
+            requestLaserStatusMessage.setContent("laser");
 
             addBehaviour(new AchieveREInitiator(myAgent, requestLaserStatusMessage) {
 
                 protected void handleInform(ACLMessage inform) {
                     //System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
                     String messageContenut = inform.getContent();
-                    System.out.println("Agente Gestore-Antifurto::::" + messageContenut);
+                    System.out.println("Agente Gestore-AntifurtoLaser::::" + messageContenut);
                     if (messageContenut != null) {
                         try {
 
