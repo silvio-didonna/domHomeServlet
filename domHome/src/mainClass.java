@@ -21,7 +21,7 @@ public class mainClass {
     static String antitheftName = "Antifurto";
     static String boilerName = "Boiler";
     static String shutterName = "Persiana";
-
+    static String laserSensorName = "Laser";
     
 
     public static void main(String args[]) throws Exception {
@@ -79,6 +79,7 @@ public class mainClass {
         AgentController flameSensorAgent = cont.createNewAgent(flameSensorName, "security.FlameSensorAgent", inRoom);
         AgentController fireSystemAgent = cont.createNewAgent(fireSystemName, "security.FireSystemAgent", null);
         AgentController motionSensorAgent = cont.createNewAgent(motionSensorName, "security.MotionSensorAgent", inRoom);
+        AgentController laserSensorAgent = cont.createNewAgent(laserSensorName, "security.LaserSensorAgent", inRoom);
         AgentController antitheftAgent = cont.createNewAgent(antitheftName, "security.AntitheftAgent", null);
         AgentController boilerAgent = cont.createNewAgent(boilerName, "temperature.BoilerAgent", null);
         AgentController shutterAgent = cont.createNewAgent(shutterName, "light.ShutterAgent", inRoom);
@@ -108,6 +109,7 @@ public class mainClass {
         //Agenti base per la sicurezza
         flameSensorAgent.start();
         motionSensorAgent.start();
+        laserSensorAgent.start();
 
         //Gestore ambiente
         roomAgent.start();
