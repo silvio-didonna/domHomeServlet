@@ -27,9 +27,9 @@ bool boilerOn;
 
 //Luce
 int photocell1Pin = 0;     // the first cell and 10K pulldown are connected to a0
-int photocell2Pin = 1;     // the second cell and 10K pulldown are connected to a1
+int laserphotocell1Pin = 1;     // the second cell and 10K pulldown are connected to a1 (laser)
 int photocell1Reading;     // the first analog reading from the sensor divider
-int photocell2Reading;     // the second analog reading from the sensor divider
+int laserphotocell1Reading;     // the second analog reading from the sensor divider
 bool lightOn;
 int lightPin = 13;
 Servo shutter;
@@ -109,6 +109,11 @@ void loop(void) {
       analogRead(photocell1Pin); //Pulisce la lettura
       photocell1Reading = analogRead(photocell1Pin);
       Serial.println(photocell1Reading);     // valore raw.
+    }
+    else if (inputString.equals("laser1\n")) {
+      analogRead(laserphotocell1Pin); //Pulisce la lettura
+      laserphotocell1Reading = analogRead(laserphotocell1Pin);
+      Serial.println(laserphotocell1Reading);     // valore raw.
     }
     else if (inputString.equals("pir1\n")) {
       if (!pirCalibrated) {
