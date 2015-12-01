@@ -57,6 +57,7 @@ public class AntitheftAgent extends Agent {
         }
 
         addBehaviour(new RequestCurrentMotionStatuses(this, 5000));
+        addBehaviour(new RequestCurrentLaserStatuses(this, 5000));
     }
 
     private class RequestCurrentMotionStatuses extends TickerBehaviour {
@@ -135,14 +136,93 @@ public class AntitheftAgent extends Agent {
 
         }
     }
+    
+        private class RequestCurrentLaserStatuses extends TickerBehaviour {
+
+        private int nResponders;
+
+        public RequestCurrentLaserStatuses(Agent a, long period) {
+            super(a, period);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        protected void onTick() {
+
+            ACLMessage requestLaserStatusMessage = new ACLMessage(ACLMessage.REQUEST);
+
+            for (int i = 0; i < serverAgents.length; ++i) {
+                requestLaserStatusMessage.addReceiver(serverAgents[i]);
+            }
+
+            requestLaserStatusMessage.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+            // We want to receive a reply in 10 secs
+            requestLaserStatusMessage.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+            requestLaserStatusMessage.setContent("movimento");
+
+            addBehaviour(new AchieveREInitiator(myAgent, requestLaserStatusMessage) {
+
+                protected void handleInform(ACLMessage inform) {
+                    //System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
+                    String messageContenut = inform.getContent();
+                    System.out.println("Agente Gestore-Antifurto::::" + messageContenut);
+                    if (messageContenut != null) {
+                        try {
+
+                            Boolean laserStatus = Boolean.valueOf(inform.getContent());
+                            //System.out.println("Agente Gestore-Fuoco-Bool::::"+fireStatus);
+
+                            Iterator<CurrentStatusInRoom> it = currentStatuses.iterator();
+                            while (it.hasNext()) {
+
+                                CurrentStatusInRoom currentStatusInRoom = it.next();
+                                //System.out.println(currentTemperatureInRoom.getroomAgent().getName() + " " + msg.getSender().getName());
+                                if (currentStatusInRoom.getRoomAgent().getName().equals(inform.getSender().getName())) {
+                                    currentStatusInRoom.setCurrentLaserStatus(laserStatus);
+                                }
+                            }
+
+                        } catch (NumberFormatException e) {
+                            System.out.println("Agente Gestore-Antifurto::::errore");
+                        }
+                    }
+                }
+
+                protected void handleRefuse(ACLMessage refuse) {
+                    System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+                    nResponders--;
+                }
+
+                protected void handleFailure(ACLMessage failure) {
+                    if (failure.getSender().equals(myAgent.getAMS())) {
+                        // FAILURE notification from the JADE runtime: the receiver
+                        // does not exist
+                        System.out.println("Responder does not exist");
+                    } else {
+                        System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+                    }
+                }
+
+                protected void handleAllResultNotifications(Vector notifications) {
+                    if (notifications.size() < nResponders) {
+                        // Some responder didn't reply within the specified timeout
+                        System.out.println("Timeout expired: missing " + (nResponders - notifications.size()) + " responses");
+                    }
+                }
+            });
+
+        }
+    }
 
     private class CurrentStatusInRoom {
 
         private Boolean currentMotionStatus;
+        private Boolean currentLaserStatus;
         private AID roomAgent;
 
         public CurrentStatusInRoom() {
             currentMotionStatus = null;
+            currentLaserStatus = null;
             roomAgent = null;
             //fanOn = false;
         }
@@ -165,6 +245,14 @@ public class AntitheftAgent extends Agent {
 
         public void setCurrentMotionStatus(Boolean currentMotionStatus) {
             this.currentMotionStatus = currentMotionStatus;
+        }
+        
+        public Boolean getCurrentLaserStatus() {
+            return currentLaserStatus;
+        }
+
+        public void setCurrentLaserStatus(Boolean currentLaserStatus) {
+            this.currentLaserStatus = currentLaserStatus;
         }
 
         public AID getRoomAgent() {
