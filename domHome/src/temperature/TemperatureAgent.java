@@ -171,7 +171,7 @@ public class TemperatureAgent extends Agent {
         @Override
         protected void onTick() {
 
-            Float tempMaxValue = new Float(30);
+            Float tempMaxValue = new Float(25);
             for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
 
                 //ricerca agenti ventilatore
@@ -278,7 +278,7 @@ public class TemperatureAgent extends Agent {
         @Override
         protected void onTick() {
 
-            Float tempMaxValue = new Float(30);
+            Float tempMaxValue = new Float(25);
             for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
                 
                 //ricerca agenti finestra
@@ -381,7 +381,7 @@ public class TemperatureAgent extends Agent {
         @Override
         protected void onTick() {
 
-            Float tempMinValue = new Float(26);
+            Float tempMinValue = new Float(24);
             Float averageTemp = new Float(0);
             for (CurrentTemperatureInRoom currentTemperatureInRoom : currentTemperatures) { // per ogni stanza
                 averageTemp += currentTemperatureInRoom.getCurrentTemperature();
