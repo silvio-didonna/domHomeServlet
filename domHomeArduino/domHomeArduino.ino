@@ -21,7 +21,7 @@ float temperature = 0.0;
 Servo window;
 bool windowOpen;
 int posServoWindowOpened = 170;
-int posServoWindowClosed = 90;
+int posServoWindowClosed = 88;
 int posServoWindow = posServoWindowClosed;    // variable to store the servo position
 unsigned long lastWindowServoCommand = 0;
 int fanPin = 2;
@@ -39,7 +39,7 @@ int lightPin = 12;
 Servo shutter;
 int shutterPin = 6;
 int posServoShutterOpened = 60;
-int posServoShutterClosed = 150;
+int posServoShutterClosed = 160;
 int posServoShutter = posServoShutterClosed;    // variable to store the servo position
 
 int shutterOpen;
@@ -57,6 +57,16 @@ const int flameSensorPin = 2; //the analog pin connected to the flame sensor's o
 //Gestione stringa in input
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
+
+//Garage
+Servo garage;
+int garagePin = 10;
+int posServoGarageOpened = 110;
+int posServoGarageClosed = 20;
+int posServoGarage = posServoGarageClosed;    // variable to store the servo position
+
+int garageOpen;
+unsigned long lastGarageServoCommand = 0;
 
 U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NO_ACK);  // Display which does not send AC
 
@@ -107,6 +117,11 @@ void setup(void) {
   lastWindowServoCommand = millis();
   windowOpen = false;
 
+  garage.attach(garagePin);
+  garage.write(posServoGarage);
+  lastGarageServoCommand = millis();
+  garageOpen = false;
+
   Serial.begin(115200);
   //mySerial.begin(9600);
   // reserve 100 bytes for the inputString:
@@ -143,6 +158,11 @@ void loop(void) {
 
   if(millis() - lastWindowServoCommand > 500) { // se passano 500ms disattiva il servo per evitare il "buzz"
     window.detach();
+  }
+
+    if(millis() - lastGarageServoCommand > 100) { // se passano 100ms aggiorna il valore della posizione della porta del garage
+    setGarage();
+    lastGarageServoCommand = millis();
   }
   
 
@@ -202,6 +222,11 @@ void loop(void) {
       setWindow();
       lastWindowServoCommand = millis();
       Serial.println(windowOpen ? "true" : "false");
+    }
+    else if (inputString.equals("garage1\n")) {
+      garage.attach(garagePin);
+      garageOpen=garageOpen ? false : true;
+      Serial.println(garageOpen ? "true" : "false");
     }
     else
       Serial.println("errore");
@@ -301,6 +326,22 @@ void setWindow () {
     windowOpen = false;
   }
   window.write(posServoWindow);
+}
+
+void setGarage () {
+  if (garageOpen == true) { //se è chiusa e la si imposta aperta la apre
+    if(posServoGarage < posServoGarageOpened)
+      posServoGarage += 1;
+      else
+      garage.detach();
+  }
+  else {// se è aperta la si imposta chiusa la chiude
+    if(posServoGarage > posServoGarageClosed)
+      posServoGarage -= 1;
+      else
+      garage.detach();
+  }
+  garage.write(posServoGarage);
 }
 
 void initThermometer() {
