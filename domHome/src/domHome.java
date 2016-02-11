@@ -119,6 +119,10 @@ public class domHome {
         lightningAgent.start();
         fireSystemAgent.start();
         antitheftAgent.start();
+        
+        //test
+        AgentController Pong = cont.createNewAgent("PingJani", "internet.PongAgent", null);
+        Pong.start();
 
     }
 }
