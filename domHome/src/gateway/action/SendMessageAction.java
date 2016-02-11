@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import solarforce.action.Action;
-import solarforce.bean.BlackBoardBean;
+import gateway.action.Action;
+import gateway.bean.BlackBoardBean;
 
 public class SendMessageAction implements Action {
 

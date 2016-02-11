@@ -6,7 +6,7 @@ and its content will be sent to the proper agent
 
 *****************************************************************/
 
-import solarforce.bean.BlackBoardBean;
+import gateway.bean.BlackBoardBean;
 
 import jade.core.AID;
 import jade.core.behaviours.OneShotBehaviour;

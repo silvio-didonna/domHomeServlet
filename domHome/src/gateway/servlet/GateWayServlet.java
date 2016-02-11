@@ -24,8 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import gateway.action.SendMessageAction;
-import solarforce.action.*;
-import solarforce.bean.BlackBoardBean;
+import gateway.action.*;
+import gateway.bean.BlackBoardBean;
 
 import java.util.*;
 
