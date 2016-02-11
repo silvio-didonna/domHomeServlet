@@ -195,7 +195,7 @@ public class LightningAgent extends Agent {
                 ACLMessage requestLightToggle = new ACLMessage(ACLMessage.REQUEST);
                 //requestLightToggle.addReceiver(msgReceiver);
                 requestLightToggle.addReceiver(lightAgents[0]); // da modificare----------------------
-                System.out.println("setLight:::: " + currentLumenInRoom.getCurrentLumen());
+                //System.out.println("setLight:::: " + currentLumenInRoom.getCurrentLumen());
                 requestLightToggle.setContent(""); // per far funzionare l'IF dopo
                 if (!currentLumenInRoom.getlightOn()) {
                     if ((currentLumenInRoom.getCurrentLumen() < lumenMinValue)) {
@@ -297,7 +297,7 @@ public class LightningAgent extends Agent {
                 ACLMessage requestShutterToggle = new ACLMessage(ACLMessage.REQUEST);
                 //requestLightToggle.addReceiver(msgReceiver);
                 requestShutterToggle.addReceiver(shutterAgents[0]); // da modificare----------------------
-                System.out.println("setShutter:::: " + currentLumenInRoom.getCurrentLumen());
+                //System.out.println("setShutter:::: " + currentLumenInRoom.getCurrentLumen());
                 requestShutterToggle.setContent(""); // per far funzionare l'IF dopo
                 if (!currentLumenInRoom.getShutterOpen()) {
                     if ((currentLumenInRoom.getCurrentLumen() < lumenMinValue)) { // DA MODIFICARE!!!!

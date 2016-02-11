@@ -177,7 +177,7 @@ public class RoomAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         temperature = new Float(messageContenut);
-                        System.out.println("Room-Temp::::" + messageContenut);
+                        //System.out.println("Room-Temp::::" + messageContenut);
                     }
                 }
 
@@ -262,7 +262,7 @@ public class RoomAgent extends Agent {
                     //System.out.println("AgenteGestore-Salone::::"+messageContenut);
                     if (messageContenut != null) {
                         lumens = Integer.parseInt(messageContenut);
-                        System.out.println("Room-Lumen::::" + messageContenut);
+                        //System.out.println("Room-Lumen::::" + messageContenut);
                     }
                 }
 
@@ -337,7 +337,7 @@ public class RoomAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         flame = Boolean.valueOf(inform.getContent());
-                        System.out.println("Room-Flame::::" + messageContenut);
+                        //System.out.println("Room-Flame::::" + messageContenut);
                     }
                 }
 
@@ -413,7 +413,7 @@ public class RoomAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         motion = Boolean.valueOf(inform.getContent());
-                        System.out.println("Room-Motion::::" + messageContenut);
+                        //System.out.println("Room-Motion::::" + messageContenut);
                     }
                 }
 
@@ -488,7 +488,7 @@ public class RoomAgent extends Agent {
                     String messageContenut = inform.getContent();
                     if (messageContenut != null) {
                         laser = Boolean.valueOf(inform.getContent());
-                        System.out.println("Room-Laser::::" + messageContenut);
+                        //System.out.println("Room-Laser::::" + messageContenut);
                     }
                 }
 
