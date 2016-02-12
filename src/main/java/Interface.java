@@ -2,17 +2,19 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class Interface extends HttpServlet 
 {
-	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7764740926466198393L;
 	
 	boolean sicurezza = false;
 	boolean boxAuto = false;
@@ -72,7 +74,7 @@ public class Interface extends HttpServlet
 		boolean finestraCucina = false;*/
 		String message;
 		String richiesta = request.getRequestURI();
-		richiesta = richiesta.replace("/ServletDomotic_2.0/", "");
+		richiesta = richiesta.replace("/domHome/", "");
 		System.out.println("richiesta = " + richiesta);
 		if (richiesta.equals("set-sicurezza") == true)
 		{
