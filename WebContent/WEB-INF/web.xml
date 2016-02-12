@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-	 <display-name>domHome</display-name>
+	 <display-name>ServletDomotic_2.0</display-name>
 	 <welcome-file-list>
 	   	<welcome-file>index.html</welcome-file>
 	   	<welcome-file>index.htm</welcome-file>
@@ -20,7 +20,7 @@
 		<url-pattern>/get-sicurezza</url-pattern>
 		<url-pattern>/set-box-auto</url-pattern>
 		<url-pattern>/get-box-auto</url-pattern>
-		<url-pattern>/set-temperatura-off</url-pattern>
+		<url-pattern>/set-temperatura-on-off</url-pattern>
 		<url-pattern>/get-temperatura</url-pattern>
 		<url-pattern>/get-temp-corr</url-pattern>
 		<url-pattern>/set-temperatura-10</url-pattern>
@@ -62,13 +62,13 @@
 		<url-pattern>/get-tapparella-bagno</url-pattern>
 		<url-pattern>/set-tapparella-cucina</url-pattern>
 		<url-pattern>/get-tapparella-cucina</url-pattern>
-		<url-pattern>/set-luce-auto-salone-off</url-pattern>
+		<url-pattern>/set-luce-auto-salone-on-off</url-pattern>
 		<url-pattern>/get-luce-auto-salone</url-pattern>
-		<url-pattern>/set-luce-auto-camera-off</url-pattern>
+		<url-pattern>/set-luce-auto-camera-on-off</url-pattern>
 		<url-pattern>/get-luce-auto-camera</url-pattern>
-		<url-pattern>/set-luce-auto-bagno-off</url-pattern>
+		<url-pattern>/set-luce-auto-bagno-on-off</url-pattern>
 		<url-pattern>/get-luce-auto-bagno</url-pattern>
-		<url-pattern>/set-luce-auto-cucina-off</url-pattern>
+		<url-pattern>/set-luce-auto-cucina-on-off</url-pattern>
 		<url-pattern>/get-luce-auto-cucina</url-pattern>
 		<url-pattern>/set-luce-auto-salone-1</url-pattern>
 		<url-pattern>/set-luce-auto-salone-2</url-pattern>

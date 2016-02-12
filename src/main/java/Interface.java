@@ -1,23 +1,24 @@
+
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
+
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class Interface extends HttpServlet 
 {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7764740926466198393L;
+	private static final long serialVersionUID = 1L;
 	
 	boolean sicurezza = false;
 	boolean boxAuto = false;
 	boolean tempAuto = true;
 	int tempVal = 18;
-	double currentTemp = 15.5;
+	double currentTemp = 20;
 	boolean antiIncendio = false;
 	boolean luceSalone = false;
 	boolean luceCamera = true;
@@ -43,10 +44,35 @@ public class Interface extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException 
 	{
-		
+		/*boolean sicurezza = false;
+		boolean boxAuto = false;
+		boolean tempAuto = true;
+		int tempVal = 18;
+		double currentTemp = 20;
+		boolean antiIncendio = false;
+		boolean luceSalone = false;
+		boolean luceCamera = true;
+		boolean luceBagno = true;
+		boolean luceCucina = false;
+		boolean tapparellaSalone = false;
+		boolean tapparellaCamera = true;
+		boolean tapparellaBagno = false;
+		boolean tapparellaCucina = true;
+		boolean luceAutoSalone = true;
+		int valLuceAutoSalone = 10;
+		boolean luceAutoCamera = false;
+		int valLuceAutoCamera = 4;
+		boolean luceAutoBagno = false;
+		int valLuceAutoBagno = 6;
+		boolean luceAutoCucina = false;
+		int valLuceAutoCucina = 8;
+		boolean finestraSalone = false;
+		boolean finestraCamera = false;
+		boolean finestraBagno = false;
+		boolean finestraCucina = false;*/
 		String message;
 		String richiesta = request.getRequestURI();
-		richiesta = richiesta.replace("/domHome/", "");
+		richiesta = richiesta.replace("/ServletDomotic_2.0/", "");
 		System.out.println("richiesta = " + richiesta);
 		if (richiesta.equals("set-sicurezza") == true)
 		{
@@ -92,9 +118,12 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("set-temperatura-off") == true)
+		if (richiesta.equals("set-temperatura-on-off") == true)
 		{
-			tempAuto = false;
+			if (tempAuto)
+				tempAuto = false;
+			else
+				tempAuto = true;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -125,7 +154,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-10") == true)
 		{
-			tempAuto = true;
+			tempVal = 10;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -135,7 +164,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-11") == true)
 		{
-			tempAuto = true;
+			tempVal = 11;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -145,7 +174,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-12") == true)
 		{
-			tempAuto = true;
+			tempVal = 12;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -155,7 +184,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-13") == true)
 		{
-			tempAuto = true;
+			tempVal = 13;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -165,7 +194,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-14") == true)
 		{
-			tempAuto = true;
+			tempVal = 14;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -175,7 +204,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-15") == true)
 		{
-			tempAuto = true;
+			tempVal = 15;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -185,7 +214,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-16") == true)
 		{
-			tempAuto = true;
+			tempVal = 16;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -195,7 +224,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-17") == true)
 		{
-			tempAuto = true;
+			tempVal = 17;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -205,7 +234,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-18") == true)
 		{
-			tempAuto = true;
+			tempVal = 18;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -215,7 +244,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-19") == true)
 		{
-			tempAuto = true;
+			tempVal = 19;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -225,7 +254,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-20") == true)
 		{
-			tempAuto = true;
+			tempVal = 20;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -235,7 +264,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-21") == true)
 		{
-			tempAuto = true;
+			tempVal = 21;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -245,7 +274,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-22") == true)
 		{
-			tempAuto = true;
+			tempVal = 22;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -255,7 +284,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-23") == true)
 		{
-			tempAuto = true;
+			tempVal = 23;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -265,7 +294,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-24") == true)
 		{
-			tempAuto = true;
+			tempVal = 24;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -275,7 +304,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-25") == true)
 		{
-			tempAuto = true;
+			tempVal = 25;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -285,7 +314,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-26") == true)
 		{
-			tempAuto = true;
+			tempVal = 26;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -295,7 +324,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-27") == true)
 		{
-			tempAuto = true;
+			tempVal = 27;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -305,7 +334,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-28") == true)
 		{
-			tempAuto = true;
+			tempVal = 28;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -315,7 +344,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-29") == true)
 		{
-			tempAuto = true;
+			tempVal = 29;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -325,7 +354,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-temperatura-30") == true)
 		{
-			tempAuto = true;
+			tempVal = 30;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -531,9 +560,12 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("set-luce-auto-salone-off") == true)
+		if (richiesta.equals("set-luce-auto-salone-on-off") == true)
 		{
-			luceAutoSalone = false;
+			if (luceAutoSalone)
+				luceAutoSalone = false;
+			else
+				luceAutoSalone = true;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -541,9 +573,12 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("set-luce-auto-camera-off") == true)
+		if (richiesta.equals("set-luce-auto-camera-on-off") == true)
 		{
-			luceAutoCamera = false;
+			if (luceAutoCamera)
+				luceAutoCamera = false;
+			else
+				luceAutoCamera = true;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -551,9 +586,12 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("set-luce-auto-bagno-off") == true)
+		if (richiesta.equals("set-luce-auto-bagno-on-off") == true)
 		{
-			luceAutoBagno = false;
+			if (luceAutoBagno)
+				luceAutoBagno = false;
+			else
+				luceAutoBagno = true;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -561,9 +599,12 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("set-luce-auto-cucina-off") == true)
+		if (richiesta.equals("set-luce-auto-cucina-on-off") == true)
 		{
-			luceAutoCucina = false;
+			if (luceAutoCucina)
+				luceAutoCucina = false;
+			else
+				luceAutoCucina = true;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -573,7 +614,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-1") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 1;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -583,7 +624,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-2") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 2;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -593,7 +634,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-3") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 3;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -603,7 +644,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-4") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 4;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -613,7 +654,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-5") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 5;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -623,7 +664,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-6") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 6;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -633,7 +674,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-7") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 7;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -643,7 +684,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-8") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 8;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -653,7 +694,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-9") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 9;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -663,7 +704,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-salone-10") == true)
 		{
-			luceAutoSalone = true;
+			valLuceAutoSalone = 10;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -673,7 +714,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-1") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 1;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -683,7 +724,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-2") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 2;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -693,7 +734,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-3") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 3;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -703,7 +744,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-4") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 4;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -713,7 +754,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-5") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 5;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -723,7 +764,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-6") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 6;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -733,7 +774,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-7") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 7;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -743,7 +784,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-8") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 8;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -753,7 +794,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-9") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 9;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -763,7 +804,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-camera-10") == true)
 		{
-			luceAutoCamera = true;
+			valLuceAutoCamera = 10;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -773,7 +814,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-1") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 1;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -783,7 +824,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-2") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 2;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -793,7 +834,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-3") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 3;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -803,7 +844,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-4") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 4;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -813,7 +854,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-5") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 5;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -823,7 +864,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-6") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 6;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -833,7 +874,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-7") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 7;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -843,7 +884,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-8") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 8;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -853,7 +894,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-9") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 9;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -863,7 +904,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-bagno-10") == true)
 		{
-			luceAutoBagno = true;
+			valLuceAutoBagno = 10;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -873,7 +914,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-1") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 1;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -883,7 +924,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-2") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 2;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -893,7 +934,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-3") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 3;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -903,7 +944,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-4") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 4;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -913,7 +954,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-5") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 5;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -923,7 +964,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-6") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 6;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -933,7 +974,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-7") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 7;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -943,7 +984,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-8") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 8;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -953,7 +994,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-9") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 9;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
@@ -963,7 +1004,7 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-luce-auto-cucina-10") == true)
 		{
-			luceAutoCucina = true;
+			valLuceAutoCucina = 10;
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();

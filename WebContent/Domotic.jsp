@@ -519,8 +519,9 @@ function AbilitaTemperatura()
 	{
 		ApriFinestre();
 		document.getElementById("Valore-Temperatura").disabled = true;
-		ajaxSyncRequest("set-temperatura-off");
+		//ajaxSyncRequest("set-temperatura-off");
 	}
+	ajaxSyncRequest("set-temperatura-on-off");
 }
 
 function ChiudiLuceTapparellaSalone()
@@ -582,8 +583,8 @@ function AbilitaLuceSalone()
 	{
 		ApriLuceTapparellaSalone();
 		document.getElementById("Valore-LuceSalone").disabled = true;
-		ajaxSyncRequest("set-luce-auto-salone-off");
 	}
+	ajaxSyncRequest("set-luce-auto-salone-on-off");
 }
 
 function AbilitaLuceCamera()
@@ -597,8 +598,8 @@ function AbilitaLuceCamera()
 	{	
 		ApriLuceTapparellaCamera();
 		document.getElementById("Valore-LuceCamera").disabled = true;
-		ajaxSyncRequest("set-luce-auto-camera-off");
 	}
+	ajaxSyncRequest("set-luce-auto-camera-on-off");
 }
 
 function AbilitaLuceBagno()
@@ -612,8 +613,8 @@ function AbilitaLuceBagno()
 	{
 		ApriLuceTapparellaBagno();
 		document.getElementById("Valore-LuceBagno").disabled = true;
-		ajaxSyncRequest("set-luce-auto-bagno-off");
 	}
+	ajaxSyncRequest("set-luce-auto-bagno-on-off");
 }
 
 function AbilitaLuceCucina()
@@ -627,8 +628,8 @@ function AbilitaLuceCucina()
 	{
 		ApriLuceTapparellaCucina();
 		document.getElementById("Valore-LuceCucina").disabled = true;
-		ajaxSyncRequest("set-luce-auto-salone-off");
 	}
+	ajaxSyncRequest("set-luce-auto-cucina-on-off");
 }
 
 function ajaxSyncRequest(reqURL)
