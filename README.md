@@ -1,5 +1,5 @@
 # domHome #
-## Progetto esame Sistemi ad Agenti. (Prof. Berardina Nadja De Carolis) ##
+## Progetto esame Sistemi ad Agenti. ##
 
 Gestione di una casa domotica tramite un sistema ad agenti sviluppato con Jade.
 
