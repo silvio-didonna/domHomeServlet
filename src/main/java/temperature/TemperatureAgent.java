@@ -199,7 +199,7 @@ public class TemperatureAgent extends Agent {
                 //requestFanToggle.addReceiver(msgReceiver);
                 requestFanToggle.addReceiver(fanAgents[0]); // da modificare----------------------
 
-                System.out.println("setFan:::: " + currentTemperatureInRoom.getCurrentTemperature());
+                //System.out.println("setFan:::: " + currentTemperatureInRoom.getCurrentTemperature());
                 requestFanToggle.setContent(""); // per far funzionare l'IF dopo
                 if (!currentTemperatureInRoom.getfanOn()) {
                     if ((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
@@ -306,7 +306,7 @@ public class TemperatureAgent extends Agent {
                 //requestWindowToggle.addReceiver(msgReceiver);
                 requestWindowToggle.addReceiver(windowAgents[0]); // da modificare----------------------
                 
-                System.out.println("setWindow:::: " + currentTemperatureInRoom.getCurrentTemperature());
+                //System.out.println("setWindow:::: " + currentTemperatureInRoom.getCurrentTemperature());
                 requestWindowToggle.setContent(""); // per far funzionare l'IF dopo
                 if (!currentTemperatureInRoom.getfanOn()) {
                     if ((currentTemperatureInRoom.getCurrentTemperature() != null) && ((currentTemperatureInRoom.getCurrentTemperature().compareTo(tempMaxValue) > 0))) {
@@ -387,7 +387,7 @@ public class TemperatureAgent extends Agent {
                 averageTemp += currentTemperatureInRoom.getCurrentTemperature();
             }
             averageTemp = averageTemp/currentTemperatures.size();
-                System.out.println("setBoiler:::: " + averageTemp + " "+currentTemperatures.size());
+                //System.out.println("setBoiler:::: " + averageTemp + " "+currentTemperatures.size());
                 
                 //ricerca agenti boiler
                 //String roomName = currentTemperatureInRoom.getroomAgent().getLocalName(); // nome agente stanza

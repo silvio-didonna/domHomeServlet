@@ -182,7 +182,7 @@ public class LightAgent extends Agent {
 		@Override
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-			ACLMessage msgFromSerial = myAgent.blockingReceive(mt); // ATTENZIONE, è una BLOCKING
+			ACLMessage msgFromSerial = myAgent.blockingReceive(mt); // ATTENZIONE, e' una BLOCKING
 			if (msgFromSerial!=null) {
 
 				String messageContenut=msgFromSerial.getContent();
