@@ -1,0 +1,9 @@
+libs/MTPs-Main-Container.txt
+libs/APDescription.txt
+gradle/wrapper/gradle-wrapper.properties
+gradle/wrapper/gradle-wrapper.jar
+build/
+WebContent/WEB-INF/classes/
+.gradle/
+APDescription.txt
+MTPs-Main-Container.txt
