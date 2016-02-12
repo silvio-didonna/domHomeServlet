@@ -58,7 +58,7 @@ public class SerialCommAgent extends Agent {
         // Apre porta seriale
         serialPort.openPort();
 
-        // Questa istruzione è necessaria perchè Arduino si riavvia dopo aver aperto la seriale
+        // Questa istruzione e' necessaria perche' Arduino si riavvia dopo aver aperto la seriale
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
