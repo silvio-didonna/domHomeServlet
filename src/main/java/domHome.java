@@ -22,6 +22,7 @@ public class domHome {
     static String boilerName = "Boiler";
     static String shutterName = "Persiana";
     static String laserSensorName = "Laser";
+    static String garageDoorName = "Garage";
     
 
     public static void main(String args[]) throws Exception {
@@ -83,6 +84,7 @@ public class domHome {
         AgentController antitheftAgent = cont.createNewAgent(antitheftName, "security.AntitheftAgent", null);
         AgentController boilerAgent = cont.createNewAgent(boilerName, "temperature.BoilerAgent", null);
         AgentController shutterAgent = cont.createNewAgent(shutterName, "light.ShutterAgent", inRoom);
+        AgentController garageDoorAgent = cont.createNewAgent(garageDoorName, "security.GarageDoorAgent", null);
 
         /*
          try {
@@ -110,6 +112,7 @@ public class domHome {
         flameSensorAgent.start();
         motionSensorAgent.start();
         laserSensorAgent.start();
+        garageDoorAgent.start();
 
         //Gestore ambiente
         roomAgent.start();
