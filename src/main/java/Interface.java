@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import gateway.bean.BlackBoardBean;
 import jade.core.Profile;
 import jade.util.leap.Properties;
 import jade.wrapper.ControllerException;
@@ -107,19 +108,27 @@ public class Interface extends HttpServlet
 		
 		if (richiesta.equals("set-box-auto") == true)
 		{
+			/*
 			if (boxAuto)
 				boxAuto = false;
 			else
 				boxAuto = true;
+			*/
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
-			System.out.println("set-box-auto--------------------------------");
 			out.print(message);
 			String messageToAgent = "garage";
-			sendMessage(messageToAgent);
-			System.out.println(messageToAgent);
+			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			try {
+				JadeGateway.execute(board);
+			} catch (ControllerException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			boxAuto = Boolean.valueOf(board.getMessage());
+			System.out.println("risposta gateway : " + boxAuto + "-----------");
 		}
 		
 		if (richiesta.equals("get-box-auto") == true)
@@ -1161,7 +1170,7 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 	}
-	
+	/*
 	public void sendMessage(String message) {
 		try {
 			JadeGateway.execute(message);
@@ -1170,7 +1179,7 @@ public class Interface extends HttpServlet
 			e.printStackTrace();
 		}
 	}
-	
+	*/
 	public void init(ServletConfig config) throws ServletException {
 	    super.init(config);
 		
