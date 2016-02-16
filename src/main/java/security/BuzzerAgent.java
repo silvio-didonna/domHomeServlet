@@ -34,7 +34,7 @@ public class BuzzerAgent extends Agent {
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("buzzer-manager");
-		sd.setName(roomName + "-buzzer"); // ad es: salone-light
+		sd.setName(roomName + "-buzzer"); // ad es: salone-buzzer
 		dfd.addServices(sd);
 		try {
 			DFService.register(this, dfd);

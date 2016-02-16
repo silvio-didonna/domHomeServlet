@@ -23,7 +23,7 @@ public class domHome {
     static String shutterName = "Persiana";
     static String laserSensorName = "Laser";
     static String garageDoorName = "Garage";
-    
+    static String buzzerName = "Buzzer";
 
     public static void main(String args[]) throws Exception {
         if (args.length < 2) {
@@ -85,7 +85,7 @@ public class domHome {
         AgentController boilerAgent = cont.createNewAgent(boilerName, "temperature.BoilerAgent", null);
         AgentController shutterAgent = cont.createNewAgent(shutterName, "light.ShutterAgent", inRoom);
         AgentController garageDoorAgent = cont.createNewAgent(garageDoorName, "security.GarageDoorAgent", null);
-
+        AgentController buzzerAgent = cont.createNewAgent(buzzerName, "security.BuzzerAgent", null);
         /*
          try {
          Thread.sleep(8000);
