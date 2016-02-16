@@ -6,31 +6,82 @@ and its content will be sent to the proper agent
 
 *****************************************************************/
 
-import gateway.bean.BlackBoardBean;
+import java.util.Date;
+import java.util.Vector;
 
 import jade.core.AID;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.domain.AMSService;
-import jade.domain.FIPAAgentManagement.AMSAgentDescription;
-import jade.domain.FIPAAgentManagement.SearchConstraints;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.proto.AchieveREInitiator;
 import jade.wrapper.gateway.*;
 
 public class MyGateWayAgent extends GatewayAgent {
 	
-	BlackBoardBean board = null;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1390471131466493985L;
+	String messageContent = null;
+	String messageReceiver = "Garage";
 		
 	protected void processCommand(java.lang.Object obj) {
 			
-		if (obj instanceof BlackBoardBean)	{
+		if (obj instanceof String)	{
 		
-			board = (BlackBoardBean)obj;
-			
+			messageContent = (String)obj;
+			/*
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			msg.addReceiver(new AID( board.getReceiver(), AID.ISLOCALNAME) );
-			msg.setContent(board.getMessage());			    
+			msg.addReceiver(new AID( messageReceiver, AID.ISLOCALNAME) );
+			msg.setContent(messageContent);			    
 			send(msg);
+			*/
+			
+            ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+			msg.addReceiver(new AID( messageReceiver, AID.ISLOCALNAME) );
+			msg.setContent(messageContent);			    
+
+
+			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                // We want to receive a reply in 10 secs
+			msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+                //requestLightToggle.setContent("dummy-action");
+
+                addBehaviour(new AchieveREInitiator(this, msg) {
+
+
+                    protected void handleInform(ACLMessage inform) {
+                        System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
+                        messageContent = inform.getContent();
+                    }
+
+                    protected void handleAgree(ACLMessage agree) {
+                        System.out.println("Agent " + agree.getSender().getName() + " agreed");
+                    }
+
+                    protected void handleRefuse(ACLMessage refuse) {
+                        System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+                        //nResponders--;
+                    }
+
+                    protected void handleFailure(ACLMessage failure) {
+                        if (failure.getSender().equals(myAgent.getAMS())) {
+							// FAILURE notification from the JADE runtime: the receiver
+                            // does not exist
+                            System.out.println("Responder does not exist");
+                        } else {
+                            System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+                        }
+                    }
+
+                    protected void handleAllResultNotifications(Vector notifications) {
+                        //if (notifications.size() < nResponders) {
+                            // Some responder didn't reply within the specified timeout
+                        //    System.out.println("Timeout expired: missing  responses");
+                        //}
+                    }
+                });			
+			
 		}
 		
 	}
@@ -40,13 +91,19 @@ public class MyGateWayAgent extends GatewayAgent {
 		// Waiting for the answer
 		addBehaviour(new CyclicBehaviour(this) 
 		{
-			 public void action() {
+			 /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1599048356876043814L;
+
+			public void action() {
 
 				ACLMessage msg = receive();
 				
-				if ((msg!=null)&&(board!=null))	{				
-					board.setMessage(msg.getContent());
-					releaseCommand(board);				
+				//if ((msg!=null)&&(messageContent!=null))	{
+				if ((msg!=null)&&(messageContent!=null))	{
+					messageContent = msg.getContent();
+					releaseCommand(messageContent);				
 				} else block();
 			 }
 		});	

@@ -2,11 +2,18 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Hashtable;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import jade.core.Profile;
+import jade.util.leap.Properties;
+import jade.wrapper.ControllerException;
+import jade.wrapper.gateway.JadeGateway;
 
 public class Interface extends HttpServlet 
 {
@@ -108,7 +115,11 @@ public class Interface extends HttpServlet
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
+			System.out.println("set-box-auto--------------------------------");
 			out.print(message);
+			String messageToAgent = "garage";
+			sendMessage(messageToAgent);
+			System.out.println(messageToAgent);
 		}
 		
 		if (richiesta.equals("get-box-auto") == true)
@@ -1149,6 +1160,25 @@ public class Interface extends HttpServlet
 			message = Boolean.toString(finestraCucina);
 			out.print(message);
 		}
+	}
+	
+	public void sendMessage(String message) {
+		try {
+			JadeGateway.execute(message);
+		} catch (ControllerException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void init(ServletConfig config) throws ServletException {
+	    super.init(config);
+		
+		Properties pp = new Properties();
+		pp.setProperty(Profile.MAIN_HOST, "localhost");
+		pp.setProperty(Profile.MAIN_PORT, "1200");
+		JadeGateway.init("gateway.agent.MyGateWayAgent", pp);		
+	
 	}
 
 }
