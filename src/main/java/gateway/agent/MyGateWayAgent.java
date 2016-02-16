@@ -9,10 +9,12 @@ and its content will be sent to the proper agent
 import java.util.Date;
 import java.util.Vector;
 
+import gateway.bean.BlackBoardBean;
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREInitiator;
 import jade.wrapper.gateway.*;
 
@@ -22,14 +24,16 @@ public class MyGateWayAgent extends GatewayAgent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1390471131466493985L;
+	BlackBoardBean board = null;
 	String messageContent = null;
 	String messageReceiver = "Garage";
 		
 	protected void processCommand(java.lang.Object obj) {
 			
-		if (obj instanceof String)	{
+		if (obj instanceof BlackBoardBean)	{
 		
-			messageContent = (String)obj;
+			board = (BlackBoardBean)obj;
+			messageContent = board.getMessage();
 			/*
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 			msg.addReceiver(new AID( messageReceiver, AID.ISLOCALNAME) );
@@ -46,13 +50,15 @@ public class MyGateWayAgent extends GatewayAgent {
                 // We want to receive a reply in 10 secs
 			msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
                 //requestLightToggle.setContent("dummy-action");
+//			send(msg);
 
                 addBehaviour(new AchieveREInitiator(this, msg) {
 
 
                     protected void handleInform(ACLMessage inform) {
-                        System.out.println("Agent " + inform.getSender().getName() + " send" + inform.getContent());
-                        messageContent = inform.getContent();
+                        System.out.println("Agent " + inform.getSender().getName() + " send " + inform.getContent());
+                        board.setMessage(inform.getContent());
+                        releaseCommand(board);	
                     }
 
                     protected void handleAgree(ACLMessage agree) {
@@ -80,35 +86,40 @@ public class MyGateWayAgent extends GatewayAgent {
                         //    System.out.println("Timeout expired: missing  responses");
                         //}
                     }
-                });			
+                    
+                });	
+                	
 			
 		}
 		
 	}
-
+/*
 	public void setup()
 	{
+		
 		// Waiting for the answer
 		addBehaviour(new CyclicBehaviour(this) 
 		{
-			 /**
-			 * 
-			 */
 			private static final long serialVersionUID = 1599048356876043814L;
 
 			public void action() {
-
-				ACLMessage msg = receive();
+				MessageTemplate template = MessageTemplate.and(
+						MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+						MessageTemplate.MatchPerformative(ACLMessage.INFORM) );
+				
+				ACLMessage msg = receive(template);
 				
 				//if ((msg!=null)&&(messageContent!=null))	{
 				if ((msg!=null)&&(messageContent!=null))	{
 					messageContent = msg.getContent();
-					releaseCommand(messageContent);				
+					System.out.println(messageContent);
+					releaseCommand(messageContentBackup);				
 				} else block();
 			 }
 		});	
 		
 		super.setup();
 	}
+*/
 		
 }
