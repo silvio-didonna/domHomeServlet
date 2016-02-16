@@ -83,6 +83,15 @@ public class SorterAgent extends Agent {
 			super(a, msg, store);
 			// TODO Auto-generated constructor stub
 		}
+		
+		String chooseMessage(String messageFromGateway) {
+			
+		}
+		
+		String chooseReceiver(String messageFromGateway) {
+			
+		}
+		
 
 		// Since we don't know what message to send to the responder
 		// when we construct this AchieveREInitiator, we redefine this 
