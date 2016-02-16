@@ -16,7 +16,6 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
-import security.GarageDoorAgent.SendToSerialAgent;
 
 public class SorterAgent extends Agent {
 
@@ -24,7 +23,7 @@ public class SorterAgent extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = -4019608168429702476L;
-	
+/*	
 	protected void setup() {
 		DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
@@ -171,5 +170,5 @@ public class SorterAgent extends Agent {
         }
         System.out.println("SorterAgent " + getAID().getName() + " terminating.");
     }
-
+*/
 }
