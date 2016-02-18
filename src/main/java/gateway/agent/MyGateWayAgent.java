@@ -26,7 +26,7 @@ public class MyGateWayAgent extends GatewayAgent {
 	private static final long serialVersionUID = 1390471131466493985L;
 	BlackBoardBean board = null;
 	String messageContent = null;
-	String messageReceiver = "Garage";
+	String messageReceiver = "Termometro";
 		
 	protected void processCommand(java.lang.Object obj) {
 			

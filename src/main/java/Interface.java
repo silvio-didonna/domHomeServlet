@@ -82,7 +82,7 @@ public class Interface extends HttpServlet
 		boolean finestraCucina = false;*/
 		String message;
 		String richiesta = request.getRequestURI();
-		richiesta = richiesta.replace("/domHome/", "");
+		richiesta = richiesta.replace("/domHomeServlet/", "");
 		System.out.println("richiesta = " + richiesta);
 		if (richiesta.equals("set-sicurezza") == true)
 		{
@@ -172,6 +172,15 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = String.valueOf(currentTemp);
 			out.print(message);
+			String messageToAgent = "temperatura";
+			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			try {
+				JadeGateway.execute(board);
+			} catch (ControllerException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentTemp = Double.valueOf(board.getMessage());
 		}
 		
 		if (richiesta.equals("set-temperatura-10") == true)
