@@ -29,17 +29,11 @@ public class MyGateWayAgent extends GatewayAgent {
 	String messageReceiver = "Termometro";
 		
 	protected void processCommand(java.lang.Object obj) {
-			
+
 		if (obj instanceof BlackBoardBean)	{
 		
 			board = (BlackBoardBean)obj;
 			messageContent = board.getMessage();
-			/*
-			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			msg.addReceiver(new AID( messageReceiver, AID.ISLOCALNAME) );
-			msg.setContent(messageContent);			    
-			send(msg);
-			*/
 			
             ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 			msg.addReceiver(new AID( messageReceiver, AID.ISLOCALNAME) );
