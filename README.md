@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/tnw513/domHome.svg?token=HfjjsxUxWbpxK7P9Cq3v&branch=master)](https://travis-ci.com/tnw513/domHome)
+[![Build Status](https://travis-ci.com/tnw513/domHomeServlet.svg?token=HfjjsxUxWbpxK7P9Cq3v&branch=master)](https://travis-ci.com/tnw513/domHomeServlet)
 
 # domHome #
 ## Progetto esame Sistemi ad Agenti. ##
