@@ -82,7 +82,7 @@ public class Interface extends HttpServlet
 		boolean finestraCucina = false;*/
 		String message;
 		String richiesta = request.getRequestURI();
-		richiesta = richiesta.replace("/domHome/", "");
+		richiesta = richiesta.replace("/domHomeServlet/", "");
 		System.out.println("richiesta = " + richiesta);
 		if (richiesta.equals("set-security-general-null") == true)
 		{
