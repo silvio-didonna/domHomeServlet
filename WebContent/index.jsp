@@ -246,7 +246,7 @@
 			
 			<br> <br>
 			
-			<table class="table1" style = "margin-top:-550px; margin-left:475px;">
+			<table class="table1" style = "margin-top:-580px; margin-left:475px;">
                 <thead>
                     <tr>
                         <th></th>
@@ -290,7 +290,7 @@
 						
 						
                         <td> <label class="switch switch-flat">
-						<input class="switch-input" type="checkbox" id="Tapparella-Camera" onclick = 'ajaxSyncRequest("set-shutter-room-null")'/>
+						<input class="switch-input" type="checkbox" id="Tapparella-Camera" onclick = 'ajaxSyncRequest("set-shutter-bedroom-null")'/>
 						<span class="switch-label" data-on="Open" data-off="Close"> </span> <span class="switch-handle"></span> </label> </td>
 						
 						
@@ -330,7 +330,7 @@
 						<input class="switch-input" type="checkbox" id="LuceCamera-Auto" onclick = "AbilitaLuceCamera()" />
 						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label>
 						
-						<select id = "Valore-LuceCamera" onclick = 'ajaxSyncRequest("set-lightning-room")' disabled> 
+						<select id = "Valore-LuceCamera" onclick = 'ajaxSyncRequest("set-lightning-bedroom")' disabled> 
 							<option value = "10"> livello 10 </option>
 							<option value = "9"> livello 9 </option>
 							<option value = "8"> livello 8 </option>
@@ -404,6 +404,31 @@
 						
 						<td> <img id = "Window-pic" src="images/window-close.png" width = "50" height = "50"> </td>
                     </tr>
+                    
+                    <tr>
+                        <th> VENTILATORE </th>
+                        <td> <label class="switch switch-flat">
+						<input class="switch-input" type="checkbox" id="Ventilatore-Salone" onclick = 'ajaxSyncRequest("set-fan-hall-null")' />
+						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label> </td>
+						
+						
+                        <td> <label class="switch switch-flat">
+						<input class="switch-input" type="checkbox" id="Ventilatore-Camera" onclick = 'ajaxSyncRequest("set-fan-bedroom-null")' />
+						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label> </td>
+						
+						
+                        <td> <label class="switch switch-flat">
+						<input class="switch-input" type="checkbox" id="Ventilatore-Bagno" onclick = 'ajaxSyncRequest("set-fan-bathroom-null")' />
+						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label> </td>
+						
+						
+                        <td> <label class="switch switch-flat">
+						<input class="switch-input" type="checkbox" id="Ventilatore-Cucina" onclick = 'ajaxSyncRequest("set-fan-kitchen-null")' />
+						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label> </td> 
+						
+						
+						<td> <img id = "Window-pic" src="images/fan.png" width = "80" height = "80"> </td>
+                    </tr>
                 </tbody>
             </table> 
 	<span id="message"></span>
@@ -437,7 +462,7 @@ function SetLuceSalone()
 function SetLuceCamera()
 {
 	CambiaLuce();
-	ajaxSyncRequest("set-light-room-null");
+	ajaxSyncRequest("set-light-bedroom-null");
 }
 
 function SetLuceBagno()
@@ -469,7 +494,7 @@ function SetFinestraSalone()
 function SetFinestraCamera()
 {
 	CambiaFinestra();
-	ajaxSyncRequest("set-window-room-null");
+	ajaxSyncRequest("set-window-bedroom-null");
 }
 
 function SetFinestraBagno()
@@ -500,6 +525,14 @@ function ChiudiFinestre()
 	document.getElementById("Finestra-Cucina").disabled = true;
 }
 
+function DisattivaVentilatori()
+{
+	document.getElementById("Ventilatore-Salone").disabled = true;
+	document.getElementById("Ventilatore-Camera").disabled = true;
+	document.getElementById("Ventilatore-Bagno").disabled = true;
+	document.getElementById("Ventilatore-Cucina").disabled = true;
+}
+
 function ApriFinestre()
 {
 	document.getElementById("Finestra-Salone").disabled = false;
@@ -508,16 +541,26 @@ function ApriFinestre()
 	document.getElementById("Finestra-Cucina").disabled = false;
 }
 
+function AttivaVentilatori()
+{
+	document.getElementById("Ventilatore-Salone").disabled = false;
+	document.getElementById("Ventilatore-Camera").disabled = false;
+	document.getElementById("Ventilatore-Bagno").disabled = false;
+	document.getElementById("Ventilatore-Cucina").disabled = false;
+}
+
 function AbilitaTemperatura()
 {
 	if(document.getElementById("Temperatura").checked == true)
 	{
 		ChiudiFinestre();
+		DisattivaVentilatori();
 		document.getElementById("Valore-Temperatura").disabled = false;
 	}
 	else
 	{
 		ApriFinestre();
+		AttivaVentilatori();
 		document.getElementById("Valore-Temperatura").disabled = true;
 	}
 	ajaxSyncRequest("set-autoTemp-general-null");
@@ -598,7 +641,7 @@ function AbilitaLuceCamera()
 		ApriLuceTapparellaCamera();
 		document.getElementById("Valore-LuceCamera").disabled = true;
 	}
-	ajaxSyncRequest("set-autoLightning-room-null");
+	ajaxSyncRequest("set-autoLightning-bedroom-null");
 }
 
 function AbilitaLuceBagno()
@@ -647,7 +690,7 @@ function ajaxSyncRequest(reqURL)
 		if (reqURL == "set-lightning-hall")
 			reqURL = reqURL + "-" + document.getElementById("Valore-LuceSalone").value;
 		
-		if (reqURL == "set-lightning-room")
+		if (reqURL == "set-lightning-bedroom")
 			reqURL = reqURL + "-" + document.getElementById("Valore-LuceCamera").value;
 		
 		if (reqURL == "set-lightning-bathroom")
@@ -699,6 +742,7 @@ function ajaxSyncRequest(reqURL)
 							document.getElementById("Valore-Temperatura").disabled = false;
 							document.getElementById("Valore-Temperatura").value = parseInt(xmlhttp.responseText);
 							ChiudiFinestre();
+							DisattivaVentilatori();
 						}
 				}
 				
@@ -729,7 +773,7 @@ function ajaxSyncRequest(reqURL)
 					CambiaLuce();
 				}
 				
-				if (reqURL == "get-light-room")
+				if (reqURL == "get-light-bedroom")
 				{
 					if (xmlhttp.responseText == "false")
 						document.getElementById("Luce-Camera").checked = false;
@@ -767,7 +811,7 @@ function ajaxSyncRequest(reqURL)
 						document.getElementById("Tapparella-Salone").checked = true;
 				}
 				
-				if (reqURL == "get-shutter-room")
+				if (reqURL == "get-shutter-bedroom")
 				{
 					if (xmlhttp.responseText == "false")
 						document.getElementById("Tapparella-Camera").checked = false;
@@ -805,7 +849,7 @@ function ajaxSyncRequest(reqURL)
 						}
 				}
 				
-				if (reqURL == "get-autoLightning-room")
+				if (reqURL == "get-autoLightning-bedroom")
 				{
 					if (xmlhttp.responseText == "false")
 						document.getElementById("LuceCamera-Auto").checked = false;
@@ -857,7 +901,7 @@ function ajaxSyncRequest(reqURL)
 					CambiaFinestra();
 				}
 				
-				if (reqURL == "get-window-room")
+				if (reqURL == "get-window-bedroom")
 				{
 					if (xmlhttp.responseText == "false")
 						document.getElementById("Finestra-Camera").checked = false;
@@ -886,6 +930,38 @@ function ajaxSyncRequest(reqURL)
 					
 					CambiaFinestra();
 				}
+				
+				if (reqURL == "get-fan-hall")
+				{
+					if (xmlhttp.responseText == "false")
+						document.getElementById("Ventilatore-Salone").checked = false;
+					else
+						document.getElementById("Ventilatore-Salone").checked = true;
+				}
+				
+				if (reqURL == "get-fan-bedroom")
+				{
+					if (xmlhttp.responseText == "false")
+						document.getElementById("Ventilatore-Camera").checked = false;
+					else
+						document.getElementById("Ventilatore-Camera").checked = true;
+				}
+				
+				if (reqURL == "get-fan-bathroom")
+				{
+					if (xmlhttp.responseText == "false")
+						document.getElementById("Ventilatore-Bagno").checked = false;
+					else
+						document.getElementById("Ventilatore-Bagno").checked = true;
+				}
+				
+				if (reqURL == "get-fan-kitchen")
+				{
+					if (xmlhttp.responseText == "false")
+						document.getElementById("Ventilatore-Cucina").checked = false;
+					else
+						document.getElementById("Ventilatore-Cucina").checked = true;
+				}
 			}
 			
 			else
@@ -903,22 +979,25 @@ function codeAddress()
 	ajaxSyncRequest("get-autoTemp");
 	ajaxSyncRequest("get-fireSystem");
 	ajaxSyncRequest("get-light-hall");
-	ajaxSyncRequest("get-light-room");
+	ajaxSyncRequest("get-light-bedroom");
 	ajaxSyncRequest("get-light-bathroom");
 	ajaxSyncRequest("get-light-kitchen");
 	ajaxSyncRequest("get-shutter-hall");
-	ajaxSyncRequest("get-shutter-room");
+	ajaxSyncRequest("get-shutter-bedroom");
 	ajaxSyncRequest("get-shutter-bathroom");
 	ajaxSyncRequest("get-shutter-kitchen");
 	ajaxSyncRequest("get-autoLightning-hall");
-	ajaxSyncRequest("get-autoLightning-room");
+	ajaxSyncRequest("get-autoLightning-bedroom");
 	ajaxSyncRequest("get-autoLightning-bathroom");
 	ajaxSyncRequest("get-autoLightning-kitchen");
 	ajaxSyncRequest("get-window-hall");
-	ajaxSyncRequest("get-window-room");
+	ajaxSyncRequest("get-window-bedroom");
 	ajaxSyncRequest("get-window-bathroom");
 	ajaxSyncRequest("get-window-kitchen");
-	
+	ajaxSyncRequest("get-fan-hall");
+	ajaxSyncRequest("get-fan-bedroom");
+	ajaxSyncRequest("get-fan-bathroom");
+	ajaxSyncRequest("get-fan-kitchen");
 }
 
 </script>
