@@ -8,7 +8,6 @@
 	   	<welcome-file>default.html</welcome-file>
 	   	<welcome-file>default.htm</welcome-file>
 	   	<welcome-file>default.jsp</welcome-file>
-	   	<welcome-file>Domotic.jsp</welcome-file>
 	 </welcome-file-list>
   
 	<servlet>
@@ -49,24 +48,24 @@
 		<url-pattern>/get-fireSystem</url-pattern>
 		<url-pattern>/set-light-hall-null</url-pattern>
 		<url-pattern>/get-light-hall</url-pattern>
-		<url-pattern>/set-light-room-null</url-pattern>
-		<url-pattern>/get-light-room</url-pattern>
+		<url-pattern>/set-light-bedroom-null</url-pattern>
+		<url-pattern>/get-light-bedroom</url-pattern>
 		<url-pattern>/set-light-bathroom-null</url-pattern>
 		<url-pattern>/get-light-bathroom</url-pattern>
 		<url-pattern>/set-light-kitchen-null</url-pattern>
 		<url-pattern>/get-light-kitchen</url-pattern>
 		<url-pattern>/set-shutter-hall-null</url-pattern>
 		<url-pattern>/get-shutter-hall</url-pattern>
-		<url-pattern>/set-shutter-room-null</url-pattern>
-		<url-pattern>/get-shutter-room</url-pattern>
+		<url-pattern>/set-shutter-bedroom-null</url-pattern>
+		<url-pattern>/get-shutter-bedroom</url-pattern>
 		<url-pattern>/set-shutter-bathroom-null</url-pattern>
 		<url-pattern>/get-shutter-bathroom</url-pattern>
 		<url-pattern>/set-shutter-kitchen-null</url-pattern>
 		<url-pattern>/get-shutter-kitchen</url-pattern>
 		<url-pattern>/set-autoLightning-hall-null</url-pattern>
 		<url-pattern>/get-autoLightning-hall</url-pattern>
-		<url-pattern>/set-autoLightning-room-null</url-pattern>
-		<url-pattern>/get-autoLightning-room</url-pattern>
+		<url-pattern>/set-autoLightning-bedroom-null</url-pattern>
+		<url-pattern>/get-autoLightning-bedroom</url-pattern>
 		<url-pattern>/set-autoLightning-bathroom-null</url-pattern>
 		<url-pattern>/get-autoLightning-bathroom</url-pattern>
 		<url-pattern>/set-autoLightning-kitchen-null</url-pattern>
@@ -81,16 +80,16 @@
 		<url-pattern>/set-lightning-hall-8</url-pattern>
 		<url-pattern>/set-lightning-hall-9</url-pattern>
 		<url-pattern>/set-lightning-hall-10</url-pattern>
-		<url-pattern>/set-lightning-room-1</url-pattern>
-		<url-pattern>/set-lightning-room-2</url-pattern>
-		<url-pattern>/set-lightning-room-3</url-pattern>
-		<url-pattern>/set-lightning-room-4</url-pattern>
-		<url-pattern>/set-lightning-room-5</url-pattern>
-		<url-pattern>/set-lightning-room-6</url-pattern>
-		<url-pattern>/set-lightning-room-7</url-pattern>
-		<url-pattern>/set-lightning-room-8</url-pattern>
-		<url-pattern>/set-lightning-room-9</url-pattern>
-		<url-pattern>/set-lightning-room-10</url-pattern>
+		<url-pattern>/set-lightning-bedroom-1</url-pattern>
+		<url-pattern>/set-lightning-bedroom-2</url-pattern>
+		<url-pattern>/set-lightning-bedroom-3</url-pattern>
+		<url-pattern>/set-lightning-bedroom-4</url-pattern>
+		<url-pattern>/set-lightning-bedroom-5</url-pattern>
+		<url-pattern>/set-lightning-bedroom-6</url-pattern>
+		<url-pattern>/set-lightning-bedroom-7</url-pattern>
+		<url-pattern>/set-lightning-bedroom-8</url-pattern>
+		<url-pattern>/set-lightning-bedroom-9</url-pattern>
+		<url-pattern>/set-lightning-bedroom-10</url-pattern>
 		<url-pattern>/set-lightning-bathroom-1</url-pattern>
 		<url-pattern>/set-lightning-bathroom-2</url-pattern>
 		<url-pattern>/set-lightning-bathroom-3</url-pattern>
@@ -113,12 +112,20 @@
 		<url-pattern>/set-lightning-kitchen-10</url-pattern>
 		<url-pattern>/set-window-hall-null</url-pattern>
 		<url-pattern>/get-window-hall</url-pattern>
-		<url-pattern>/set-window-room-null</url-pattern>
-		<url-pattern>/get-window-room</url-pattern>
+		<url-pattern>/set-window-bedroom-null</url-pattern>
+		<url-pattern>/get-window-bedroom</url-pattern>
 		<url-pattern>/set-window-bathroom-null</url-pattern>
 		<url-pattern>/get-window-bathroom</url-pattern>
 		<url-pattern>/set-window-kitchen-null</url-pattern>
 		<url-pattern>/get-window-kitchen</url-pattern>
+		<url-pattern>/set-fan-hall-null</url-pattern>
+		<url-pattern>/get-fan-hall</url-pattern>
+		<url-pattern>/set-fan-bedroom-null</url-pattern>
+		<url-pattern>/get-fan-bedroom</url-pattern>
+		<url-pattern>/set-fan-bathroom-null</url-pattern>
+		<url-pattern>/get-fan-bathroom</url-pattern>
+		<url-pattern>/set-fan-kitchen-null</url-pattern>
+		<url-pattern>/get-fan-kitchen</url-pattern>
 	</servlet-mapping>
 
 </web-app>
