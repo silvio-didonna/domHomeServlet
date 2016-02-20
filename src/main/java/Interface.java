@@ -26,7 +26,7 @@ public class Interface extends HttpServlet
 	
 	boolean sicurezza = false;
 	boolean boxAuto = false;
-	boolean tempAuto = true;
+	boolean tempAuto = false;
 	int tempVal = 20;
 	double currentTemp = 20;
 	boolean antiIncendio = false;
@@ -41,11 +41,11 @@ public class Interface extends HttpServlet
 	boolean luceAutoSalone = false;
 	int valLuceAutoSalone = 1;
 	boolean luceAutoCamera = false;
-	int valLuceAutoCamera = 4;
+	int valLuceAutoCamera = 1;
 	boolean luceAutoBagno = false;
-	int valLuceAutoBagno = 6;
+	int valLuceAutoBagno = 1;
 	boolean luceAutoCucina = false;
-	int valLuceAutoCucina = 8;
+	int valLuceAutoCucina = 1;
 	boolean finestraSalone = false;
 	boolean finestraCamera = false;
 	boolean finestraBagno = false;
