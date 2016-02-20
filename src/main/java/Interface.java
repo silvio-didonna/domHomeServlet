@@ -27,7 +27,7 @@ public class Interface extends HttpServlet
 	boolean sicurezza = false;
 	boolean boxAuto = false;
 	boolean tempAuto = true;
-	int tempVal = 18;
+	int tempVal = 20;
 	double currentTemp = 20;
 	boolean antiIncendio = false;
 	boolean luceSalone = false;

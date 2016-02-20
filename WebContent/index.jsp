@@ -319,11 +319,11 @@
 							<option value = "8"> livello 8 </option>
 							<option value = "7"> livello 7 </option>
 							<option value = "6"> livello 6 </option>
-							<option value = "5" selected> livello 5 </option>
+							<option value = "5"> livello 5 </option>
 							<option value = "4"> livello 4 </option>
 							<option value = "3"> livello 3 </option>
 							<option value = "2"> livello 2 </option>
-							<option value = "1"> livello 1 </option>
+							<option value = "1" selected> livello 1 </option>
 						</select>
 						
 						<td> <label class="switch switch-flat">
@@ -336,11 +336,11 @@
 							<option value = "8"> livello 8 </option>
 							<option value = "7"> livello 7 </option>
 							<option value = "6"> livello 6 </option>
-							<option value = "5" selected> livello 5 </option>
+							<option value = "5"> livello 5 </option>
 							<option value = "4"> livello 4 </option>
 							<option value = "3"> livello 3 </option>
 							<option value = "2"> livello 2 </option>
-							<option value = "1"> livello 1 </option>
+							<option value = "1" selected> livello 1 </option>
 						</select>
 						
 						<td> <label class="switch switch-flat">
@@ -353,11 +353,11 @@
 							<option value = "8"> livello 8 </option>
 							<option value = "7"> livello 7 </option>
 							<option value = "6"> livello 6 </option>
-							<option value = "5" selected> livello 5 </option>
+							<option value = "5"> livello 5 </option>
 							<option value = "4"> livello 4 </option>
 							<option value = "3"> livello 3 </option>
 							<option value = "2"> livello 2 </option>
-							<option value = "1"> livello 1 </option>
+							<option value = "1" selected> livello 1 </option>
 						</select>
 						
 						<td> <label class="switch switch-flat">
@@ -370,11 +370,11 @@
 							<option value = "8"> livello 8 </option>
 							<option value = "7"> livello 7 </option>
 							<option value = "6"> livello 6 </option>
-							<option value = "5" selected> livello 5 </option>
+							<option value = "5"> livello 5 </option>
 							<option value = "4"> livello 4 </option>
 							<option value = "3"> livello 3 </option>
 							<option value = "2"> livello 2 </option>
-							<option value = "1"> livello 1 </option>
+							<option value = "1" selected> livello 1 </option>
 						</select>
 						
 						<td> <img src="images/light-gif.gif" width = "80" height = "80"> </td>
