@@ -408,26 +408,26 @@
                     <tr>
                         <th> VENTILATORE </th>
                         <td> <label class="switch switch-flat">
-						<input class="switch-input" type="checkbox" id="Ventilatore-Salone" onclick = 'ajaxSyncRequest("set-fan-hall-null")' />
+						<input class="switch-input" type="checkbox" id="Ventilatore-Salone" onclick = "SetVentilatoreSalone()" />
 						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label> </td>
 						
 						
                         <td> <label class="switch switch-flat">
-						<input class="switch-input" type="checkbox" id="Ventilatore-Camera" onclick = 'ajaxSyncRequest("set-fan-bedroom-null")' />
+						<input class="switch-input" type="checkbox" id="Ventilatore-Camera" onclick = "SetVentilatoreCamera()" />
 						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label> </td>
 						
 						
                         <td> <label class="switch switch-flat">
-						<input class="switch-input" type="checkbox" id="Ventilatore-Bagno" onclick = 'ajaxSyncRequest("set-fan-bathroom-null")' />
+						<input class="switch-input" type="checkbox" id="Ventilatore-Bagno" onclick = "SetVentilatoreBagno()" />
 						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label> </td>
 						
 						
                         <td> <label class="switch switch-flat">
-						<input class="switch-input" type="checkbox" id="Ventilatore-Cucina" onclick = 'ajaxSyncRequest("set-fan-kitchen-null")' />
+						<input class="switch-input" type="checkbox" id="Ventilatore-Cucina" onclick = "SetVentilatoreCucina()" />
 						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label> </td> 
 						
 						
-						<td> <img id = "Window-pic" src="images/fan.png" width = "80" height = "80"> </td>
+						<td> <img id = "Fan-pic" src="images/fan-off.png" width = "80" height = "80"> </td>
                     </tr>
                 </tbody>
             </table> 
@@ -509,12 +509,44 @@ function SetFinestraCucina()
 	ajaxSyncRequest("set-window-kitchen-null");
 }
 
+function SetVentilatoreSalone()
+{
+	CambiaVentilatore();
+	ajaxSyncRequest("set-fan-hall-null");
+}
+
+function SetVentilatoreCamera()
+{
+	CambiaVentilatore();
+	ajaxSyncRequest("set-fan-bedroom-null");
+}
+
+function SetVentilatoreBagno()
+{
+	CambiaVentilatore();
+	ajaxSyncRequest("set-fan-bathroom-null");
+}
+
+function SetVentilatoreCucina()
+{
+	CambiaVentilatore();
+	ajaxSyncRequest("set-fan-kitchen-null");
+}
+
 function CambiaFinestra()
 {
 	if (document.getElementById("Finestra-Salone").checked == true || document.getElementById("Finestra-Camera").checked == true || document.getElementById("Finestra-Bagno").checked == true || document.getElementById("Finestra-Cucina").checked == true)
 		document.getElementById("Window-pic").src = "images/window-open.png";
 	else
 		document.getElementById("Window-pic").src = "images/window-close.png";
+}
+
+function CambiaVentilatore()
+{
+	if (document.getElementById("Ventilatore-Salone").checked == true || document.getElementById("Ventilatore-Camera").checked == true || document.getElementById("Ventilatore-Bagno").checked == true || document.getElementById("Ventilatore-Cucina").checked == true)
+		document.getElementById("Fan-pic").src = "images/fan-on.png";
+	else
+		document.getElementById("Fan-pic").src = "images/fan-off.png";
 }
 
 function ChiudiFinestre()
@@ -937,6 +969,8 @@ function ajaxSyncRequest(reqURL)
 						document.getElementById("Ventilatore-Salone").checked = false;
 					else
 						document.getElementById("Ventilatore-Salone").checked = true;
+					
+					CambiaVentilatore();
 				}
 				
 				if (reqURL == "get-fan-bedroom")
@@ -945,6 +979,8 @@ function ajaxSyncRequest(reqURL)
 						document.getElementById("Ventilatore-Camera").checked = false;
 					else
 						document.getElementById("Ventilatore-Camera").checked = true;
+					
+					CambiaVentilatore();
 				}
 				
 				if (reqURL == "get-fan-bathroom")
@@ -953,6 +989,8 @@ function ajaxSyncRequest(reqURL)
 						document.getElementById("Ventilatore-Bagno").checked = false;
 					else
 						document.getElementById("Ventilatore-Bagno").checked = true;
+					
+					CambiaVentilatore();
 				}
 				
 				if (reqURL == "get-fan-kitchen")
@@ -961,6 +999,8 @@ function ajaxSyncRequest(reqURL)
 						document.getElementById("Ventilatore-Cucina").checked = false;
 					else
 						document.getElementById("Ventilatore-Cucina").checked = true;
+					
+					CambiaVentilatore();
 				}
 			}
 			
