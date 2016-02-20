@@ -38,8 +38,8 @@ public class Interface extends HttpServlet
 	boolean tapparellaCamera = true;
 	boolean tapparellaBagno = false;
 	boolean tapparellaCucina = true;
-	boolean luceAutoSalone = true;
-	int valLuceAutoSalone = 10;
+	boolean luceAutoSalone = false;
+	int valLuceAutoSalone = 1;
 	boolean luceAutoCamera = false;
 	int valLuceAutoCamera = 4;
 	boolean luceAutoBagno = false;
@@ -50,6 +50,10 @@ public class Interface extends HttpServlet
 	boolean finestraCamera = false;
 	boolean finestraBagno = false;
 	boolean finestraCucina = false;
+	boolean ventilatoreSalone = false;
+	boolean ventilatoreCamera = false;
+	boolean ventilatoreBagno = false;
+	boolean ventilatoreCucina = false;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException 
@@ -686,7 +690,7 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("set-light-room-null") == true)
+		if (richiesta.equals("set-light-bedroom-null") == true)
 		{
 			/*
 			if (luceCamera)
@@ -711,7 +715,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + luceCamera + "-----------");
 		}
 		
-		if (richiesta.equals("get-light-room") == true)
+		if (richiesta.equals("get-light-bedroom") == true)
 		{
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
@@ -822,7 +826,7 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("set-shutter-room-null") == true)
+		if (richiesta.equals("set-shutter-bedroom-null") == true)
 		{
 			/*
 			if (tapparellaCamera)
@@ -847,7 +851,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + tapparellaCamera + "-----------");
 		}
 		
-		if (richiesta.equals("get-shutter-room") == true)
+		if (richiesta.equals("get-shutter-bedroom") == true)
 		{
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
@@ -949,7 +953,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + luceAutoSalone + "-----------");
 		}
 		
-		if (richiesta.equals("set-autoLightning-room-null") == true)
+		if (richiesta.equals("set-autoLightning-bedroom-null") == true)
 		{
 			/*
 			if (luceAutoCamera)
@@ -1224,7 +1228,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoSalone + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-1") == true)
+		if (richiesta.equals("set-lightning-bedroom-1") == true)
 		{
 			//valLuceAutoCamera = 1;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1244,7 +1248,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-2") == true)
+		if (richiesta.equals("set-lightning-bedroom-2") == true)
 		{
 			//valLuceAutoCamera = 2;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1264,7 +1268,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-3") == true)
+		if (richiesta.equals("set-lightning-bedroom-3") == true)
 		{
 			//valLuceAutoCamera = 3;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1284,7 +1288,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-4") == true)
+		if (richiesta.equals("set-lightning-bedroom-4") == true)
 		{
 			//valLuceAutoCamera = 4;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1304,7 +1308,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-5") == true)
+		if (richiesta.equals("set-lightning-bedroom-5") == true)
 		{
 			//valLuceAutoCamera = 5;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1324,7 +1328,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-6") == true)
+		if (richiesta.equals("set-lightning-bedroom-6") == true)
 		{
 			//valLuceAutoCamera = 6;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1344,7 +1348,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-7") == true)
+		if (richiesta.equals("set-lightning-bedroom-7") == true)
 		{
 			//valLuceAutoCamera = 7;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1364,7 +1368,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-8") == true)
+		if (richiesta.equals("set-lightning-bedroom-8") == true)
 		{
 			//valLuceAutoCamera = 8;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1384,7 +1388,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-9") == true)
+		if (richiesta.equals("set-lightning-bedroom-9") == true)
 		{
 			//valLuceAutoCamera = 9;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1404,7 +1408,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + valLuceAutoCamera + "-----------");
 		}
 		
-		if (richiesta.equals("set-lightning-room-10") == true)
+		if (richiesta.equals("set-lightning-bedroom-10") == true)
 		{
 			//valLuceAutoCamera = 10;
 			response.setHeader("Cache-Control", "no-cache");
@@ -1849,7 +1853,7 @@ public class Interface extends HttpServlet
 			System.out.println("risposta gateway : " + finestraSalone + "-----------");
 		}
 		
-		if (richiesta.equals("set-window-room-null") == true)
+		if (richiesta.equals("set-window-bedroom-null") == true)
 		{
 			/*
 			if (finestraCamera)
@@ -1936,7 +1940,7 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("get-autoLightning-room") == true)
+		if (richiesta.equals("get-autoLightning-bedroom") == true)
 		{
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
@@ -1981,7 +1985,7 @@ public class Interface extends HttpServlet
 			out.print(message);
 		}
 		
-		if (richiesta.equals("get-window-room") == true)
+		if (richiesta.equals("get-window-bedroom") == true)
 		{
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
@@ -2005,6 +2009,118 @@ public class Interface extends HttpServlet
 			response.setHeader("Pragma", "no-cache");
 			PrintWriter out = response.getWriter();
 			message = Boolean.toString(finestraCucina);
+			out.print(message);
+		}
+		
+		if (richiesta.equals("set-fan-hall-null") == true)
+		{
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			PrintWriter out = response.getWriter();
+			message = "Comando Eseguito";
+			out.print(message);
+			String messageToAgent = richiesta;
+			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			try {
+				JadeGateway.execute(board);
+			} catch (ControllerException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ventilatoreSalone = Boolean.valueOf(board.getMessage());
+			System.out.println("risposta gateway : " + ventilatoreSalone + "-----------");
+		}
+		
+		if (richiesta.equals("set-fan-bedroom-null") == true)
+		{
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			PrintWriter out = response.getWriter();
+			message = "Comando Eseguito";
+			out.print(message);
+			String messageToAgent = richiesta;
+			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			try {
+				JadeGateway.execute(board);
+			} catch (ControllerException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ventilatoreCamera = Boolean.valueOf(board.getMessage());
+			System.out.println("risposta gateway : " + ventilatoreCamera + "-----------");
+		}
+		
+		if (richiesta.equals("set-fan-bathroom-null") == true)
+		{
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			PrintWriter out = response.getWriter();
+			message = "Comando Eseguito";
+			out.print(message);
+			String messageToAgent = richiesta;
+			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			try {
+				JadeGateway.execute(board);
+			} catch (ControllerException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ventilatoreBagno = Boolean.valueOf(board.getMessage());
+			System.out.println("risposta gateway : " + ventilatoreBagno + "-----------");
+		}
+		
+		if (richiesta.equals("set-fan-kitchen-null") == true)
+		{
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			PrintWriter out = response.getWriter();
+			message = "Comando Eseguito";
+			out.print(message);
+			String messageToAgent = richiesta;
+			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			try {
+				JadeGateway.execute(board);
+			} catch (ControllerException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ventilatoreCucina = Boolean.valueOf(board.getMessage());
+			System.out.println("risposta gateway : " + ventilatoreCucina + "-----------");
+		}
+		
+		if (richiesta.equals("get-fan-hall") == true)
+		{
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			PrintWriter out = response.getWriter();
+			message = Boolean.toString(ventilatoreSalone);
+			out.print(message);
+		}
+		
+		if (richiesta.equals("get-fan-bedroom") == true)
+		{
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			PrintWriter out = response.getWriter();
+			message = Boolean.toString(ventilatoreCamera);
+			out.print(message);
+		}
+		
+		if (richiesta.equals("get-fan-bathroom") == true)
+		{
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			PrintWriter out = response.getWriter();
+			message = Boolean.toString(ventilatoreBagno);
+			out.print(message);
+		}
+		
+		if (richiesta.equals("get-fan-kitchen") == true)
+		{
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Pragma", "no-cache");
+			PrintWriter out = response.getWriter();
+			message = Boolean.toString(ventilatoreCucina);
 			out.print(message);
 		}
 	}
