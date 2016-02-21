@@ -200,6 +200,15 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = String.valueOf(currentTemp);
 			out.print(message);
+			String messageToAgent = "set-currentTemp-hall-null"; //compatibilita'
+			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			try {
+				JadeGateway.execute(board);
+			} catch (ControllerException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentTemp = Float.parseFloat(board.getMessage());
 		}
 		
 		if (richiesta.equals("set-temp-general-10") == true)
