@@ -767,7 +767,10 @@ function ajaxSyncRequest(reqURL)
 				if (reqURL == "get-autoTemp")
 				{
 					if (xmlhttp.responseText == "false")
+					{
 						document.getElementById("Temperatura").checked = false;
+						document.getElementById("Valore-Temperatura").disabled = true;
+					}
 					else
 						{
 							document.getElementById("Temperatura").checked = true;
@@ -870,7 +873,10 @@ function ajaxSyncRequest(reqURL)
 				if (reqURL == "get-autoLightning-hall")
 				{
 					if (xmlhttp.responseText == "false")
+					{
 						document.getElementById("LuceSalone-Auto").checked = false;
+						document.getElementById("Valore-LuceSalone").disabled = true;
+					}
 					else
 						{
 							document.getElementById("LuceSalone-Auto").checked = true;
@@ -884,7 +890,10 @@ function ajaxSyncRequest(reqURL)
 				if (reqURL == "get-autoLightning-bedroom")
 				{
 					if (xmlhttp.responseText == "false")
+					{
 						document.getElementById("LuceCamera-Auto").checked = false;
+						document.getElementById("Valore-LuceCamera").disabled = true;
+					}
 					else
 						{
 							document.getElementById("LuceCamera-Auto").checked = true;
@@ -898,7 +907,10 @@ function ajaxSyncRequest(reqURL)
 				if (reqURL == "get-autoLightning-bathroom")
 				{
 					if (xmlhttp.responseText == "false")
+					{
 						document.getElementById("LuceBagno-Auto").checked = false;
+						document.getElementById("Valore-LuceBagno").disabled = true;
+					}
 					else
 						{
 							document.getElementById("LuceBagno-Auto").checked = true;
@@ -912,7 +924,10 @@ function ajaxSyncRequest(reqURL)
 				if (reqURL == "get-autoLightning-kitchen")
 				{
 					if (xmlhttp.responseText == "false")
+					{
 						document.getElementById("LuceCucina-Auto").checked = false;
+						document.getElementById("Valore-LuceCucina").disabled = true;
+					}
 					else
 						{
 							document.getElementById("LuceCucina-Auto").checked = true;
