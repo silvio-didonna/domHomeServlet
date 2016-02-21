@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title> Domotic Control </title>
+</head>
+<iframe src="Domotic.jsp" style="posizion:fixed; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:600px; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;" id="Interface" ></iframe>
+<body onload="setTimeout('init();', 100);">
+    <center>
+      <div> <img id="mjpeg_dest" /> </div>
+    
+	
+	<!--  
+	<iframe width="450" height="260" style="border: 1px solid #cccccc;" src="http://api.thingspeak.com/channels/56613/charts/1?width=450&height=260&results=40&dynamic=true&type=spline&yaxis=%C2%B0C&title=Temperatura" ></iframe>
+	<iframe width="450" height="260" style="border: 1px solid #cccccc;" src="http://api.thingspeak.com/channels/56613/charts/2?width=450&height=260&results=40&dynamic=true&type=spline&yaxis=lumen&title=Luminosit%C3%A0" ></iframe>
+ 	-->
+ 	<iframe width="450" height="260" style="border: 1px solid #cccccc;" src="http://192.168.1.111:3000/channels/1/charts/1?width=450&height=260&results=60&dynamic=true" ></iframe>
+ 	<iframe width="450" height="260" style="border: 1px solid #cccccc;" src="http://192.168.1.111:3000/channels/1/charts/2?width=450&height=260&results=60&dynamic=true" ></iframe>
+ 	
+ 	</center>
+ <script type = "text/javascript" language = "javascript">
+
+var mjpeg_img;
+
+function reload_img () 
+{
+	mjpeg_img.src = "http://192.168.1.111/html/cam_pic.php?time=" + new Date().getTime();
+}
+	
+function error_img () 
+{
+	setTimeout("mjpeg_img.src = 'http://192.168.1.111/html/cam_pic.php?time=' + new Date().getTime();", 100);
+}
+	
+function init() 
+{
+	mjpeg_img = document.getElementById("mjpeg_dest");
+	mjpeg_img.onload = reload_img;
+	mjpeg_img.onerror = error_img;
+	reload_img();
+}
+
+</script>
+</body>
+</html>

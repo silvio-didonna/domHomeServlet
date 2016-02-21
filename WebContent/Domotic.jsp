@@ -1,7 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-        <title> Domotic Control </title>
 		<meta http-equiv="Content-Type" content="text/html" charset="ISO-8859-1"/>
         <meta http-equiv="refresh" content="5">
         <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
@@ -290,17 +289,17 @@
 						
 						
                         <td> <label class="switch switch-flat">
-						<input class="switch-input" type="checkbox" id="Tapparella-Camera" onclick = 'ajaxSyncRequest("set-shutter-bedroom-null")'/>
+						<input class="switch-input" type="checkbox" id="Tapparella-Camera" />
 						<span class="switch-label" data-on="Open" data-off="Close"> </span> <span class="switch-handle"></span> </label> </td>
 						
 						
                         <td> <label class="switch switch-flat">
-						<input class="switch-input" type="checkbox" id="Tapparella-Bagno" onclick = 'ajaxSyncRequest("set-shutter-bathroom-null")'/>
+						<input class="switch-input" type="checkbox" id="Tapparella-Bagno" />
 						<span class="switch-label" data-on="Open" data-off="Close"> </span> <span class="switch-handle"></span> </label> </td>
 						
 						
                         <td> <label class="switch switch-flat">
-						<input class="switch-input" type="checkbox" id="Tapparella-Cucina" onclick = 'ajaxSyncRequest("set-shutter-kitchen-null")'/>
+						<input class="switch-input" type="checkbox" id="Tapparella-Cucina" />
 						<span class="switch-label" data-on="Open" data-off="Close"> </span> <span class="switch-handle"></span> </label> </td>
 						
 						
@@ -330,7 +329,7 @@
 						<input class="switch-input" type="checkbox" id="LuceCamera-Auto" onclick = "AbilitaLuceCamera()" />
 						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label>
 						
-						<select id = "Valore-LuceCamera" onclick = 'ajaxSyncRequest("set-lightning-bedroom")' disabled> 
+						<select id = "Valore-LuceCamera" disabled> 
 							<option value = "10"> livello 10 </option>
 							<option value = "9"> livello 9 </option>
 							<option value = "8"> livello 8 </option>
@@ -347,7 +346,7 @@
 						<input class="switch-input" type="checkbox" id="LuceBagno-Auto" onclick = "AbilitaLuceBagno()" />
 						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label>
 						
-						<select id = "Valore-LuceBagno" onclick = 'ajaxSyncRequest("set-lightning-bathroom")' disabled>
+						<select id = "Valore-LuceBagno" disabled>
 							<option value = "10"> livello 10 </option>
 							<option value = "9"> livello 9 </option>
 							<option value = "8"> livello 8 </option>
@@ -364,7 +363,7 @@
 						<input class="switch-input" type="checkbox" id="LuceCucina-Auto" onclick = "AbilitaLuceCucina()" />
 						<span class="switch-label" data-on="On" data-off="Off"> </span> <span class="switch-handle"></span> </label>
 						
-						<select id = "Valore-LuceCucina" onclick = 'ajaxSyncRequest("set-lightning-kitchen")' disabled>
+						<select id = "Valore-LuceCucina" disabled>
 							<option value = "10"> livello 10 </option>
 							<option value = "9"> livello 9 </option>
 							<option value = "8"> livello 8 </option>
@@ -430,7 +429,8 @@
 						<td> <img id = "Fan-pic" src="images/fan-off.png" width = "80" height = "80"> </td>
                     </tr>
                 </tbody>
-            </table> 
+            </table>
+	
 	<span id="message"></span>
 
 <script type = "text/javascript" language = "javascript">
@@ -462,19 +462,19 @@ function SetLuceSalone()
 function SetLuceCamera()
 {
 	CambiaLuce();
-	ajaxSyncRequest("set-light-bedroom-null");
+	//ajaxSyncRequest("set-light-bedroom-null");
 }
 
 function SetLuceBagno()
 {
 	CambiaLuce();
-	ajaxSyncRequest("set-light-bathroom-null");
+	//ajaxSyncRequest("set-light-bathroom-null");
 }
 
 function SetLuceCucina()
 {
 	CambiaLuce();
-	ajaxSyncRequest("set-light-kitchen-null");
+	//ajaxSyncRequest("set-light-kitchen-null");
 }
 
 function CambiaLuce()
@@ -494,19 +494,19 @@ function SetFinestraSalone()
 function SetFinestraCamera()
 {
 	CambiaFinestra();
-	ajaxSyncRequest("set-window-bedroom-null");
+	//ajaxSyncRequest("set-window-bedroom-null");
 }
 
 function SetFinestraBagno()
 {
 	CambiaFinestra();
-	ajaxSyncRequest("set-window-bathroom-null");
+	//ajaxSyncRequest("set-window-bathroom-null");
 }
 
 function SetFinestraCucina()
 {
 	CambiaFinestra();
-	ajaxSyncRequest("set-window-kitchen-null");
+	//ajaxSyncRequest("set-window-kitchen-null");
 }
 
 function SetVentilatoreSalone()
@@ -518,19 +518,19 @@ function SetVentilatoreSalone()
 function SetVentilatoreCamera()
 {
 	CambiaVentilatore();
-	ajaxSyncRequest("set-fan-bedroom-null");
+	//ajaxSyncRequest("set-fan-bedroom-null");
 }
 
 function SetVentilatoreBagno()
 {
 	CambiaVentilatore();
-	ajaxSyncRequest("set-fan-bathroom-null");
+	//ajaxSyncRequest("set-fan-bathroom-null");
 }
 
 function SetVentilatoreCucina()
 {
 	CambiaVentilatore();
-	ajaxSyncRequest("set-fan-kitchen-null");
+	//ajaxSyncRequest("set-fan-kitchen-null");
 }
 
 function CambiaFinestra()
@@ -673,7 +673,7 @@ function AbilitaLuceCamera()
 		ApriLuceTapparellaCamera();
 		document.getElementById("Valore-LuceCamera").disabled = true;
 	}
-	ajaxSyncRequest("set-autoLightning-bedroom-null");
+	//ajaxSyncRequest("set-autoLightning-bedroom-null");
 }
 
 function AbilitaLuceBagno()
@@ -688,7 +688,7 @@ function AbilitaLuceBagno()
 		ApriLuceTapparellaBagno();
 		document.getElementById("Valore-LuceBagno").disabled = true;
 	}
-	ajaxSyncRequest("set-autoLightning-bathroom-null");
+	//ajaxSyncRequest("set-autoLightning-bathroom-null");
 }
 
 function AbilitaLuceCucina()
@@ -703,7 +703,7 @@ function AbilitaLuceCucina()
 		ApriLuceTapparellaCucina();
 		document.getElementById("Valore-LuceCucina").disabled = true;
 	}
-	ajaxSyncRequest("set-autoLightning-kitchen-null");
+	//ajaxSyncRequest("set-autoLightning-kitchen-null");
 }
 
 function ajaxSyncRequest(reqURL)
