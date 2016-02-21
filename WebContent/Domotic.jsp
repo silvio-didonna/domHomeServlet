@@ -770,6 +770,8 @@ function ajaxSyncRequest(reqURL)
 					{
 						document.getElementById("Temperatura").checked = false;
 						document.getElementById("Valore-Temperatura").disabled = true;
+						ApriFinestre();
+						AttivaVentilatori();
 					}
 					else
 						{
@@ -876,6 +878,8 @@ function ajaxSyncRequest(reqURL)
 					{
 						document.getElementById("LuceSalone-Auto").checked = false;
 						document.getElementById("Valore-LuceSalone").disabled = true;
+						
+						ApriLuceTapparellaSalone();
 					}
 					else
 						{
@@ -893,6 +897,8 @@ function ajaxSyncRequest(reqURL)
 					{
 						document.getElementById("LuceCamera-Auto").checked = false;
 						document.getElementById("Valore-LuceCamera").disabled = true;
+						
+						ApriLuceTapparellaCamera();
 					}
 					else
 						{
@@ -910,6 +916,8 @@ function ajaxSyncRequest(reqURL)
 					{
 						document.getElementById("LuceBagno-Auto").checked = false;
 						document.getElementById("Valore-LuceBagno").disabled = true;
+						
+						ApriLuceTapparellaBagno();
 					}
 					else
 						{
@@ -927,6 +935,8 @@ function ajaxSyncRequest(reqURL)
 					{
 						document.getElementById("LuceCucina-Auto").checked = false;
 						document.getElementById("Valore-LuceCucina").disabled = true;
+						
+						ApriLuceTapparellaCucina();
 					}
 					else
 						{
