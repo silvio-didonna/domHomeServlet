@@ -11,10 +11,8 @@ import java.util.Vector;
 
 import gateway.bean.BlackBoardBean;
 import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREInitiator;
 import jade.wrapper.gateway.*;
 
@@ -49,7 +47,12 @@ public class MyGateWayAgent extends GatewayAgent {
                 addBehaviour(new AchieveREInitiator(this, msg) {
 
 
-                    protected void handleInform(ACLMessage inform) {
+                    /**
+					 * 
+					 */
+					private static final long serialVersionUID = 1858354932656472L;
+
+					protected void handleInform(ACLMessage inform) {
                         System.out.println("Agent " + inform.getSender().getName() + " send " + inform.getContent());
                         board.setMessage(inform.getContent());
                         releaseCommand(board);	
@@ -74,7 +77,8 @@ public class MyGateWayAgent extends GatewayAgent {
                         }
                     }
 
-                    protected void handleAllResultNotifications(Vector notifications) {
+                    @SuppressWarnings("rawtypes")
+					protected void handleAllResultNotifications(Vector notifications) {
                         //if (notifications.size() < nResponders) {
                             // Some responder didn't reply within the specified timeout
                         //    System.out.println("Timeout expired: missing  responses");
