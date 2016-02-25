@@ -70,8 +70,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -98,8 +98,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -126,8 +126,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -157,8 +157,7 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = String.valueOf(currentTemp);
 			out.print(message);
-			String messageToAgent = "set-currentTemp-hall-null"; //compatibilita'
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			BlackBoardBean board = new BlackBoardBean("set-currentTemp-hall-null"); //compatibilita'
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -175,8 +174,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -194,8 +193,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -213,8 +212,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -232,8 +231,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -251,8 +250,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -270,8 +269,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -289,8 +288,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -308,8 +307,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -327,8 +326,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -346,8 +345,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -365,8 +364,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -384,8 +383,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -403,8 +402,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -422,8 +421,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -441,8 +440,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -460,8 +459,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -479,8 +478,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -498,8 +497,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -517,8 +516,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -536,8 +535,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -555,8 +554,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -575,8 +574,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -604,8 +603,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -633,8 +632,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -662,8 +661,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -691,8 +690,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -720,8 +719,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -749,8 +748,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -778,8 +777,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -807,8 +806,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -836,8 +835,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -856,8 +855,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -876,8 +875,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -896,8 +895,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -915,8 +914,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -934,8 +933,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -953,8 +952,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -972,8 +971,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -991,8 +990,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1010,8 +1009,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1029,8 +1028,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1048,8 +1047,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1067,8 +1066,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1086,8 +1085,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1105,8 +1104,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1124,8 +1123,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1143,8 +1142,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1162,8 +1161,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1181,8 +1180,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1200,8 +1199,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1219,8 +1218,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1238,8 +1237,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1257,8 +1256,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1276,8 +1275,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1295,8 +1294,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1314,8 +1313,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1333,8 +1332,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1352,8 +1351,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1371,8 +1370,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1390,8 +1389,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1409,8 +1408,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1428,8 +1427,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1447,8 +1446,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1466,8 +1465,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1485,8 +1484,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1504,8 +1503,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1523,8 +1522,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1542,8 +1541,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1561,8 +1560,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1580,8 +1579,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1599,8 +1598,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1618,8 +1617,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1637,8 +1636,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1656,8 +1655,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1676,8 +1675,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1696,8 +1695,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1716,8 +1715,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1736,8 +1735,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1839,8 +1838,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1858,8 +1857,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1877,8 +1876,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
@@ -1896,8 +1895,8 @@ public class Interface extends HttpServlet
 			PrintWriter out = response.getWriter();
 			message = "Comando Eseguito";
 			out.print(message);
-			String messageToAgent = richiesta;
-			BlackBoardBean board = new BlackBoardBean(messageToAgent);
+			
+			BlackBoardBean board = new BlackBoardBean(richiesta);
 			try {
 				JadeGateway.execute(board);
 			} catch (ControllerException | InterruptedException e) {
