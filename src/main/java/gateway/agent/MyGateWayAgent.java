@@ -87,33 +87,6 @@ public class MyGateWayAgent extends GatewayAgent {
 		}
 		
 	}
-/*
-	public void setup()
-	{
-		
-		// Waiting for the answer
-		addBehaviour(new CyclicBehaviour(this) 
-		{
-			private static final long serialVersionUID = 1599048356876043814L;
 
-			public void action() {
-				MessageTemplate template = MessageTemplate.and(
-						MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
-						MessageTemplate.MatchPerformative(ACLMessage.INFORM) );
-				
-				ACLMessage msg = receive(template);
-				
-				//if ((msg!=null)&&(messageContent!=null))	{
-				if ((msg!=null)&&(messageContent!=null))	{
-					messageContent = msg.getContent();
-					System.out.println(messageContent);
-					releaseCommand(messageContentBackup);				
-				} else block();
-			 }
-		});	
-		
-		super.setup();
-	}
-*/
 		
 }
