@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/tnw513/domHomeServlet.svg?token=HfjjsxUxWbpxK7P9Cq3v&branch=master)](https://travis-ci.com/tnw513/domHomeServlet)
+[![Build Status](https://travis-ci.org/tnw513/domHomeServlet.svg?branch=master)](https://travis-ci.org/tnw513/domHomeServlet)
 
 # domHome #
 
